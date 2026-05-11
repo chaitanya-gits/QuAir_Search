@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Center — QuAir Search</title>
+  <link rel="stylesheet" href="quair.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">[QuAir Search]™</a>
+    <ul class="nav-links">
+    <li><a href="/about">About</a></li>
+    <li><a href="/help" class="active">Help</a></li>
+    <li><a href="/feedback">Feedback</a></li>
+    <li><a href="/privacy">Privacy</a></li>
+    <li><a href="/terms">Terms</a></li>
+  </ul>
+</nav>
+
+<main class="page-wrap">
+
+  <div class="page-hero">
+    <span class="page-tag">Help Center</span>
+    <h1>How can we help you?</h1>
+    <p>Find answers about QuAir Search — how it works, what makes it different, and how to get the most out of it.</p>
+  </div>
+
+  <!-- Quick Topics -->
+  <div class="content-section">
+    <h2>Quick Topics</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3>Using QuAir</h3>
+        <p>Tips for better searches and understanding results.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚛️</div>
+        <h3>Quantum SEO</h3>
+        <p>What it means and why it matters for your searches.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Privacy</h3>
+        <p>How QuAir protects your data and searches.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🐛</div>
+        <h3>Report an Issue</h3>
+        <p>Found a bug? Let us know via Feedback.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="accordion">
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          What is QuAir Search?
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          QuAir is a quantum-SEO-powered search engine focused on privacy, relevance, and speed. Unlike traditional search engines optimized for advertising revenue, QuAir ranks results based on genuine signal quality — semantic intent, content accuracy, and contextual relevance.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          What does "Quantum SEO" mean?
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          Quantum SEO refers to a probabilistic, multi-dimensional approach to ranking web content. Instead of linear scoring (like traditional PageRank), QuAir evaluates multiple interpretations of a query simultaneously, weighing semantic context, content freshness, and signal authenticity — reducing the impact of link spam and keyword stuffing.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Does QuAir track my searches?
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          No. QuAir does not log, store, or analyze your search queries. We do not build user profiles, sell data to advertisers, or share any identifying information with third parties. Your searches are truly private.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          How do I get better search results?
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          QuAir understands natural language, so you can search in full sentences or questions. For best results: be specific, use descriptive phrases, and try rephrasing if the first result set isn't ideal. Advanced filters and operators are coming in future updates.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Is QuAir free to use?
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          Yes. QuAir is completely free during our current early-access phase. We may introduce optional premium features in the future, but core search will always remain free and ad-free.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          How do I report incorrect or harmful results?
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          Use our <a href="/feedback" style="color:var(--electric-blue); font-weight:500;">Feedback page</a> to report problematic results. Select "Report a Result" as the topic and include the search query and the URL in question. We review all reports within 48 hours.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          Is QuAir available as a browser extension or app?
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          Not yet. Browser extensions, mobile apps, and default-search-engine integrations are on our roadmap. Sign up via Feedback to be notified when they launch.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+    <h2>Still need help?</h2>
+    <p>Our team is here during the early-access phase. Send us your question or suggestion directly.</p>
+    <a href="/feedback" class="btn btn-primary" style="margin-top:8px;">Contact Us →</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 [QuAir Search]™. All rights reserved.</span>
+    <ul class="footer-links">
+      <li><a href="/about">About</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/help">Help</a></li>
+      <li><a href="/feedback">Feedback</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  function toggleAccordion(btn) {
+    const body = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.accordion-btn').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+    // Toggle clicked
+    if (!isOpen) {
+      btn.classList.add('open');
+      body.classList.add('open');
+    }
+  }
+</script>
+
+</body>
+</html>

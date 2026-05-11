@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[QuAir Search]</title>
+  <link id="favicon" rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%234870ff'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5' transform='rotate(60 32 32)'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5' transform='rotate(120 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/styles.css?v=20260508v12" />
+</head>
+
+<body>
+  <main class="page">
+    <header class="page-header">
+      <div class="header-brand-stack">
+        <a id="topBrandButton" class="top-brand" href="/" aria-label="QuAir Search">[QuAir Search]™</a>
+      </div>
+
+      <div class="header-actions">
+        <div id="userProfile" class="user-profile" hidden>
+          <button id="avatarButton" class="avatar-button" type="button" aria-label="User menu" aria-expanded="false"
+            aria-controls="profileDropdown">
+            <img id="avatarImage" class="avatar-image" src="" alt="" />
+            <span id="avatarFallback" class="avatar-fallback" aria-hidden="true"></span>
+          </button>
+          <div id="profileDropdown" class="profile-dropdown" role="menu" hidden>
+            <div class="profile-info">
+              <strong id="profileName" class="profile-name"></strong>
+              <span id="profileEmail" class="profile-email"></span>
+            </div>
+            <hr class="profile-divider" />
+            <button class="profile-menu-item" type="button" role="menuitem" data-profile-panel="overview">Profile
+              overview</button>
+            <button class="profile-menu-item" type="button" role="menuitem"
+              data-profile-panel="settings">Settings</button>
+            <button id="menuAdminDashboard" class="profile-menu-item" type="button" role="menuitem"
+              data-profile-panel="admin" hidden>Admin activity</button>
+            <button id="logoutButton" class="profile-menu-item" type="button" role="menuitem">Sign out</button>
+
+            <div id="accountsSection" class="dropdown-accounts-section">
+              <div id="accountsList" class="accounts-list"></div>
+              <button id="addAccountButton" class="dropdown-feature-item" type="button" role="menuitem">
+                <svg class="dropdown-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span class="dropdown-feature-text">Add another account</span>
+              </button>
+            </div>
+
+            <div class="dropdown-more-section">
+              <span class="dropdown-more-label">More from QuAir Search</span>
+
+              <button id="menuSearchHistory" class="dropdown-feature-item" type="button" role="menuitem">
+                <svg class="dropdown-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span class="dropdown-feature-text">Search history</span>
+                <span id="historyStatusLabel" class="dropdown-feature-badge">Saving</span>
+              </button>
+
+              <button id="menuSafeSearch" class="dropdown-feature-item" type="button" role="menuitem">
+                <svg class="dropdown-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="13.5" cy="6.5" r=".5" />
+                  <circle cx="17.5" cy="10.5" r=".5" />
+                  <circle cx="8.5" cy="7.5" r=".5" />
+                  <circle cx="6.5" cy="12.5" r=".5" />
+                  <path
+                    d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.5-1.1-.3-.3-.5-.7-.5-1.1 0-.9.7-1.6 1.6-1.6H19c2.2 0 4-1.8 4-4 0-5.5-4.5-10-10-10z" />
+                </svg>
+                <span class="dropdown-feature-text">Theme</span>
+                <span id="safeSearchStatusLabel" class="dropdown-feature-badge">System</span>
+              </button>
+
+              <button id="menuLanguage" class="dropdown-feature-item" type="button" role="menuitem">
+                <div class="dropdown-feature-icon-wrap">
+                  <svg class="dropdown-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19L10 5L16 19M6 15H14" />
+                    <path d="M15 15C15 12.2 17.2 10 20 10V19M22 19H18" />
+                  </svg>
+                </div>
+                <span class="dropdown-feature-text">Display languages</span>
+                <span id="languageStatusLabel" class="dropdown-feature-badge">English</span>
+              </button>
+
+              <button id="menuRegion" class="dropdown-feature-item" type="button" role="menuitem">
+                <div class="dropdown-feature-icon-wrap">
+                  <div id="regionFlagIcon" class="region-flag-mini"></div>
+                </div>
+                <span class="dropdown-feature-text">Region results</span>
+                <span id="regionStatusLabel" class="dropdown-feature-badge">India</span>
+              </button>
+
+              <button id="menuBookmarks" class="dropdown-feature-item" type="button" role="menuitem">
+                <svg class="dropdown-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                </svg>
+                <span class="dropdown-feature-text">Bookmarks</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <nav class="auth-actions" aria-label="Account actions" hidden>
+          <button class="auth-button auth-button-primary" type="button" data-auth-trigger="signup">
+            Sign up for more ↓
+          </button>
+          <button id="externalSettingsButton" class="auth-button auth-button-secondary auth-button-icon" type="button" data-profile-panel="settings" aria-label="Settings">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1 class="brand">QuAir</h1>
+      <p class="subcopy">
+        Explore hybrid search results, quick explanations, and source-backed answers in one place.
+      </p>
+
+      <div class="search-stage">
+        <div class="search-card">
+          <div class="search-shell">
+            <button id="attachButton" class="icon-button plus-button" type="button" aria-label="Upload image or file">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M21.44 11.05l-8.49 8.49a6 6 0 0 1-8.49-8.49l9.2-9.2a4 4 0 0 1 5.66 5.66l-9.19 9.19a2 2 0 0 1-2.83-2.83l8.48-8.48">
+                </path>
+              </svg>
+            </button>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6"></circle>
+              <path d="M20 20l-4.2-4.2"></path>
+            </svg>
+
+            <div class="search-input-wrap">
+              <div id="attachPreview" class="attach-preview" aria-live="polite"></div>
+              <input id="query" class="query-input" type="text" placeholder="Ask anything" autocomplete="off"
+                aria-label="Search query" aria-controls="suggestPanel" aria-expanded="false" />
+            </div>
+
+            <button id="clearButton" class="icon-button clear-button" type="button" aria-label="Clear search"
+              title="Clear">
+              ×
+            </button>
+
+            <button id="voiceButton" class="icon-button" type="button" aria-label="Voice search">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 4a3 3 0 0 1 3 3v4a3 3 0 0 1-6 0V7a3 3 0 0 1 3-3z"></path>
+                <path d="M19 11a7 7 0 0 1-14 0"></path>
+                <path d="M12 18v3"></path>
+              </svg>
+            </button>
+
+            <button id="searchButton" class="icon-button search-submit" type="button" aria-label="Run search">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 19V5"></path>
+                <path d="M5 12l7-7 7 7"></path>
+              </svg>
+            </button>
+
+            <div id="voiceFeedback" class="voice-feedback" aria-live="polite">
+              <button id="voiceStopButton" class="voice-stop" type="button" aria-label="Stop recording">
+                <span class="voice-pulse" aria-hidden="true"></span>
+                <span>Listening</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="attachMenu" class="attach-menu">
+            <button id="uploadAttachmentButton" class="attach-option" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M21.44 11.05l-8.49 8.49a6 6 0 0 1-8.49-8.49l9.2-9.2a4 4 0 0 1 5.66 5.66l-9.19 9.19a2 2 0 0 1-2.83-2.83l8.48-8.48">
+                </path>
+              </svg>
+              <span>Upload photos &amp; files</span>
+            </button>
+          </div>
+
+          <input id="filePicker" type="file" hidden multiple
+            accept="image/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls,.json,.ppt,.pptx" />
+
+          <div id="suggestPanel" class="suggest-panel" role="listbox"></div>
+        </div>
+      </div>
+
+      <nav class="search-tabs" aria-label="Search filters">
+        <button class="search-tab is-active" type="button" data-search-tab="all">All</button>
+        <button class="search-tab" type="button" data-search-tab="images">Images</button>
+        <button class="search-tab" type="button" data-search-tab="videos">Videos</button>
+        <button class="search-tab" type="button" data-search-tab="maps">Maps</button>
+        <button class="search-tab" type="button" data-search-tab="news">News</button>
+        <button class="search-tab" type="button" data-search-tab="mail">Mail</button>
+        <button class="search-tab" type="button" data-search-tab="shopping">Shopping</button>
+        <button class="search-tab" type="button" data-search-tab="stocks">Stocks</button>
+      </nav>
+
+      <div class="utilities-launcher">
+        <button id="utilitiesToggle" class="utilities-toggle" type="button" aria-expanded="false"
+          aria-controls="utilitiesPanel">
+          Utilities
+        </button>
+      </div>
+      <div id="utilitiesModal" class="history-modal" aria-hidden="true">
+        <div id="utilitiesBackdrop" class="history-backdrop"></div>
+        <section class="history-panel utilities-modal-panel" role="dialog" aria-modal="true" aria-label="Utilities tools">
+          <div class="history-panel-header">
+            <div>
+              <h2 class="history-panel-title">Utilities &amp; Tools</h2>
+              <div class="utilities-subtitle">A unified command center for your daily operational needs.</div>
+            </div>
+            <div class="history-header-actions">
+              <button id="utilitiesCloseButton" class="history-close" type="button" aria-label="Close utilities">&times;</button>
+            </div>
+          </div>
+
+          <section id="utilitiesPanel" class="utilities-panel utilities-panel-modal" aria-label="Utilities tools">
+            <div class="utilities-grid utilities-grid-modern">
+
+              <article class="utility-card utility-card-time">
+                <div class="utility-card-head">
+                  <div>
+                    <div class="utility-card-kicker">Current local time</div>
+                    <h3 class="utility-card-title">Local time</h3>
+                  </div>
+                  <div class="utility-time-toggle" role="group" aria-label="Time view">
+                    <button id="utilityTimeModeDigitalBtn" class="utility-time-toggle-btn is-active" type="button" data-time-mode="digital">Digital</button>
+                    <button id="utilityTimeModeAnalogBtn" class="utility-time-toggle-btn" type="button" data-time-mode="analog">Analog</button>
+                  </div>
+                </div>
+                <div class="utility-time-layout">
+                  <div id="utilityTimeDigitalWrap" class="utility-time-digital-modern">
+                    <div class="utility-time-city">Local</div>
+                    <div class="utility-time-big">
+                      <span id="utilityTimeOutput" class="utility-time-big-value">00:00</span>
+                      <span id="utilityTimeAmPm" class="utility-time-ampm">PM</span>
+                    </div>
+                    <div id="utilityTimeMeta" class="utility-time-meta">Loading local time</div>
+                  </div>
+                  <div id="utilityTimeAnalogWrap" class="utility-time-analog-modern" hidden>
+                    <div class="utility-analog-clock" aria-hidden="true">
+                      <div class="utility-analog-face">
+                        <div id="utilityAnalogHourHand" class="utility-analog-hand utility-analog-hour"></div>
+                        <div id="utilityAnalogMinuteHand" class="utility-analog-hand utility-analog-minute"></div>
+                        <div id="utilityAnalogSecondHand" class="utility-analog-hand utility-analog-second"></div>
+                        <div class="utility-analog-center"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="utility-card utility-card-calc">
+                <div class="utility-card-head utility-card-head-tight">
+                  <div>
+                    <div class="utility-card-kicker">Calculator</div>
+                    <h3 class="utility-card-title">Quick math</h3>
+                  </div>
+                </div>
+
+                <div class="utility-calc-display">
+                  <div id="utilityCalcExpr" class="utility-calc-expr">0</div>
+                  <div id="utilityCalcResult" class="utility-calc-result">0</div>
+                </div>
+
+                <div class="utility-calc-grid" aria-label="Calculator keypad">
+                  <button class="utility-calc-btn" type="button" data-calc-action="clear">C</button>
+                  <button class="utility-calc-btn" type="button" data-calc-action="back">⌫</button>
+                  <button class="utility-calc-btn" type="button" data-calc-value="%">%</button>
+                  <button class="utility-calc-btn utility-calc-btn-op" type="button" data-calc-value="/">÷</button>
+
+                  <button class="utility-calc-btn" type="button" data-calc-value="7">7</button>
+                  <button class="utility-calc-btn" type="button" data-calc-value="8">8</button>
+                  <button class="utility-calc-btn" type="button" data-calc-value="9">9</button>
+                  <button class="utility-calc-btn utility-calc-btn-op" type="button" data-calc-value="*">×</button>
+
+                  <button class="utility-calc-btn" type="button" data-calc-value="4">4</button>
+                  <button class="utility-calc-btn" type="button" data-calc-value="5">5</button>
+                  <button class="utility-calc-btn" type="button" data-calc-value="6">6</button>
+                  <button class="utility-calc-btn utility-calc-btn-op" type="button" data-calc-value="-">−</button>
+
+                  <button class="utility-calc-btn" type="button" data-calc-value="1">1</button>
+                  <button class="utility-calc-btn" type="button" data-calc-value="2">2</button>
+                  <button class="utility-calc-btn" type="button" data-calc-value="3">3</button>
+                  <button class="utility-calc-btn utility-calc-btn-op" type="button" data-calc-value="+">+</button>
+
+                  <button class="utility-calc-btn utility-calc-btn-wide" type="button" data-calc-value="0">0</button>
+                  <button class="utility-calc-btn" type="button" data-calc-value=".">.</button>
+                  <button class="utility-calc-btn utility-calc-btn-eq" type="button" data-calc-action="equals">=</button>
+                </div>
+
+                <!-- keep old form hidden for compatibility -->
+                <form id="utilityCalculatorForm" class="utility-form" hidden>
+                  <input id="utilityCalculatorInput" class="utility-input" type="text" />
+                  <button class="utility-action" type="submit">Calculate</button>
+                </form>
+                <div id="utilityCalculatorOutput" class="utility-output" hidden></div>
+              </article>
+
+              <article class="utility-card utility-card-convert">
+                <div class="utility-card-head utility-card-head-tight">
+                  <div>
+                    <div class="utility-card-kicker">Unit converter</div>
+                    <h3 class="utility-card-title">Distance &amp; Length</h3>
+                  </div>
+                </div>
+
+                <div class="utility-convert-row">
+                  <div class="utility-convert-field">
+                    <div class="utility-convert-label">From</div>
+                    <div class="utility-convert-input-row">
+                      <input id="utilityDistanceFrom" class="utility-convert-input" type="number" step="any" value="150" />
+                      <select id="utilityDistanceFromUnit" class="utility-convert-unit">
+                        <option value="km">km</option>
+                        <option value="mi">miles</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button id="utilityDistanceSwap" class="utility-convert-swap" type="button" aria-label="Swap units">⇄</button>
+
+                  <div class="utility-convert-field">
+                    <div class="utility-convert-label">To</div>
+                    <div class="utility-convert-input-row">
+                      <input id="utilityDistanceTo" class="utility-convert-input" type="number" step="any" value="93.2" />
+                      <select id="utilityDistanceToUnit" class="utility-convert-unit">
+                        <option value="mi">miles</option>
+                        <option value="km">km</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="utility-convert-tabs" aria-label="Converter mode">
+                  <button class="utility-convert-tab" type="button" data-convert-mode="weight">Weight</button>
+                  <button class="utility-convert-tab is-active" type="button" data-convert-mode="distance">Distance</button>
+                  <button class="utility-convert-tab" type="button" data-convert-mode="area">Area</button>
+                </div>
+
+                <!-- keep old form hidden for compatibility -->
+                <form id="utilityConverterForm" class="utility-form" hidden>
+                  <input id="utilityConverterInput" class="utility-input" type="text" />
+                  <button class="utility-action" type="submit">Convert</button>
+                </form>
+                <div id="utilityConverterOutput" class="utility-output" hidden></div>
+              </article>
+
+              <article class="utility-card">
+                <div class="utility-card-head">
+                  <h3>Currency Converter</h3>
+                  <span id="utilityCurrencyUpdated" class="utility-currency-updated">Last Updated —</span>
+                </div>
+                <form id="utilityCurrencyForm" class="utility-currency-rate" aria-label="Currency converter">
+                  <div class="utility-currency-rate-card">
+                    <div class="utility-currency-rate-head">
+                      <span class="utility-currency-rate-symbol" aria-hidden="true">$</span>
+                      <select id="utilityCurrencyFrom" class="utility-currency-rate-select" aria-label="From currency">
+                        <option value="USD">USD - United States Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                        <option value="AUD">AUD - Australian Dollar</option>
+                        <option value="SGD">SGD - Singapore Dollar</option>
+                        <option value="CNY">CNY - Chinese Yuan</option>
+                        <option value="BRL">BRL - Brazilian Real</option>
+                      </select>
+                    </div>
+                    <input id="utilityCurrencyAmount" class="utility-currency-rate-amount" type="number" step="any" value="1" aria-label="Amount" />
+                  </div>
+
+                  <button id="utilityCurrencySwap" class="utility-currency-rate-swap" type="button" aria-label="Swap currencies">
+                    <span aria-hidden="true">↻</span>
+                  </button>
+
+                  <div class="utility-currency-rate-card">
+                    <div class="utility-currency-rate-head">
+                      <span class="utility-currency-rate-symbol" aria-hidden="true">₹</span>
+                      <select id="utilityCurrencyTo" class="utility-currency-rate-select" aria-label="To currency">
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="USD">USD - United States Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                        <option value="AUD">AUD - Australian Dollar</option>
+                        <option value="SGD">SGD - Singapore Dollar</option>
+                        <option value="CNY">CNY - Chinese Yuan</option>
+                        <option value="BRL">BRL - Brazilian Real</option>
+                      </select>
+                    </div>
+                    <div id="utilityCurrencyToAmount" class="utility-currency-rate-result" aria-live="polite">—</div>
+                  </div>
+
+                  <button class="utility-currency-rate-submit" type="submit">Convert</button>
+                </form>
+
+                <div id="utilityCurrencyOutput" class="utility-output utility-output-subtle">Enter an amount to convert.</div>
+                <div id="utilityCurrencyMeta" class="utility-output utility-output-subtle"></div>
+              </article>
+            </div>
+          </section>
+        </section>
+      </div>
+
+      <div id="searchingStatus" class="searching-status" aria-live="polite" aria-label="">
+        <span class="searching-status-text"></span>
+        <span class="searching-bubble"></span>
+        <span class="searching-bubble"></span>
+        <span class="searching-bubble"></span>
+      </div>
+    </section>
+
+    <section class="results-section">
+      <article id="aiAnswer" class="ai-answer" aria-live="polite">
+        <div class="answer-label">AI Overview</div>
+        <div id="answerText" class="overview-body"></div>
+        <div id="citations" class="citations"></div>
+      </article>
+
+      <div class="results-head" id="resultsHead">
+        <div id="statusPill" class="status-pill"></div>
+        <div id="analyticsBoard" class="analytics-board" hidden></div>
+      </div>
+
+      <div id="instantAnswer" class="instant-answer" hidden></div>
+
+      <div id="spellCorrection" class="spell-correction" hidden>
+        <p class="spell-correction-label">
+          These are results for <a id="spellCorrectedLink" class="spell-corrected-link" href="#"></a>
+        </p>
+        <p class="spell-correction-original">
+          Search instead for <a id="spellOriginalLink" class="spell-original-link" href="#"></a>
+        </p>
+      </div>
+
+      <div id="results" class="results-list"></div>
+      <div id="loadMoreWrap" class="load-more-wrap" hidden>
+        <button id="loadMoreButton" class="load-more-button" type="button">Load more results</button>
+      </div>
+      <div id="emptyState" class="empty-state"></div>
+    </section>
+
+    <section class="weather-card" id="weatherCard" aria-live="polite">
+      <div class="weather-card-inner">
+        <!-- Location Row -->
+        <div class="wc-location-row">
+          <svg class="wc-pin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          <p id="locationText" class="wc-location-text">Requesting your current location...</p>
+          <button id="weatherLocationToggle" class="wc-location-action" type="button" aria-expanded="false"
+            aria-controls="weatherLocationControls">
+            Change
+          </button>
+          <span id="weatherRefreshBtn" class="wc-refresh-btn" title="Refresh weather" role="button" tabindex="0"
+            aria-label="Refresh weather">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+            </svg>
+          </span>
+        </div>
+        <div id="weatherLocationControls" class="wc-location-popover" hidden>
+          <div class="wc-location-popover-card">
+            <div class="wc-location-popover-head">
+              <strong>Custom weather place</strong>
+              <button id="weatherLocationCloseBtn" class="wc-location-close" type="button" aria-label="Close location editor">×</button>
+            </div>
+            <form id="weatherLocationForm" class="wc-location-form">
+              <input id="weatherCityInput" class="wc-location-input" type="text" placeholder="City name" autocomplete="off" />
+              <input id="weatherStateInput" class="wc-location-input" type="text" placeholder="State" autocomplete="off" />
+              <input id="weatherCountryInput" class="wc-location-input" type="text" placeholder="Country" autocomplete="off" />
+              <input id="weatherPincodeInput" class="wc-location-input" type="text" placeholder="Pincode" autocomplete="off" />
+              <div class="wc-location-actions">
+                <button class="wc-location-submit" type="submit">Apply</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Weather Body (hidden until data loads) -->
+        <div id="weatherBody" class="wc-body" hidden>
+
+          <!-- Header: Weather title + day/time + right-side condition -->
+          <div class="wc-header">
+            <div class="wc-header-left">
+              <span class="wc-header-title">Weather</span>
+              <span class="wc-header-datetime" id="weatherDatetime"></span>
+            </div>
+            <div class="wc-header-condition" id="weatherHeaderCondition"></div>
+          </div>
+
+          <!-- Main: emoji + temp block + forecast -->
+          <div class="wc-main">
+            <div class="wc-emoji-wrap" id="weatherEmoji" aria-hidden="true">🌤️</div>
+            <div class="wc-temp-block">
+              <span class="wc-temp" id="weatherTemp">--°C</span>
+              <span class="wc-feels" id="weatherFeels">Feels like --°C</span>
+            </div>
+
+            <!-- Compact 4-Day Forecast moved here -->
+            <div class="wc-forecast-inline" id="weatherForecast" aria-label="4-day forecast"></div>
+          </div>
+
+          <div class="wc-stats">
+            <div class="wc-stat">
+              <svg class="wc-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+              </svg>
+              <span class="wc-stat-label">Humidity</span>
+              <span class="wc-stat-value" id="weatherHumidity">--%</span>
+            </div>
+            <div class="wc-stat">
+              <svg class="wc-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2" />
+              </svg>
+              <span class="wc-stat-label">Wind</span>
+              <span class="wc-stat-value" id="weatherWind">-- km/h</span>
+            </div>
+            <div class="wc-stat">
+              <svg class="wc-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
+              </svg>
+              <span class="wc-stat-label">Rain</span>
+              <span class="wc-stat-value" id="weatherRain">-- mm</span>
+            </div>
+            <div class="wc-stat">
+              <svg class="wc-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+              <span class="wc-stat-label">UV Index</span>
+              <span class="wc-stat-value" id="weatherUV">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status/error text -->
+        <div id="locationMeta" class="wc-meta" hidden></div>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <p class="footer-tagline">[QuAir Search]™</p>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about" target="_blank" rel="noreferrer noopener">About us</a>
+        <a href="/privacy" target="_blank" rel="noreferrer noopener">Privacy</a>
+        <a href="/terms" target="_blank" rel="noreferrer noopener">Terms</a>
+        <a href="/help" target="_blank" rel="noreferrer noopener">Help</a>
+        <a href="/feedback" target="_blank" rel="noreferrer noopener">Feedback</a>
+      </nav>
+      <p class="footer-copy">&copy; 2026 QuAir Search.</p>
+    </footer>
+  </main>
+
+  <div id="authModal" class="auth-modal" aria-hidden="true">
+    <div id="authBackdrop" class="auth-backdrop"></div>
+    <section class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="authTitle"
+      aria-describedby="authDescription">
+      <button id="authCloseButton" class="auth-close" type="button" aria-label="Close authentication dialog">
+        ×
+      </button>
+
+      <div class="auth-dialog-header">
+        <span id="authEyebrow" class="auth-eyebrow">QuAir account</span>
+        <h2 id="authTitle" class="auth-title">Create your account</h2>
+        <p id="authDescription" class="auth-description"></p>
+      </div>
+
+      <div class="auth-providers">
+        <button class="provider-button" type="button" data-provider="Google">
+          <span class="provider-icon provider-icon-google" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path fill="#4285f4"
+                d="M21.6 12.23c0-.74-.07-1.45-.19-2.13H12v4.03h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.9-1.75 2.98-4.32 2.98-7.43z">
+              </path>
+              <path fill="#34a853"
+                d="M12 22c2.7 0 4.97-.89 6.62-2.34l-3.24-2.51c-.9.6-2.05.96-3.38.96-2.6 0-4.8-1.76-5.59-4.12H3.06v2.59A10 10 0 0 0 12 22z">
+              </path>
+              <path fill="#fbbc05" d="M6.41 13.99a6.02 6.02 0 0 1 0-3.98V7.42H3.06a10 10 0 0 0 0 9.16l3.35-2.59z">
+              </path>
+              <path fill="#ea4335"
+                d="M12 5.89c1.47 0 2.79.51 3.82 1.5l2.87-2.87C16.96 2.91 14.69 2 12 2a10 10 0 0 0-8.94 5.42l3.35 2.59C7.2 7.65 9.4 5.89 12 5.89z">
+              </path>
+            </svg>
+          </span>
+          <span id="googleLabel">Continue with Google</span>
+        </button>
+      </div>
+
+      <div class="auth-divider" aria-hidden="true">
+        <span></span>
+        <strong>or</strong>
+        <span></span>
+      </div>
+
+      <form id="authForm" class="auth-form">
+        <label class="auth-field">
+          <span class="auth-field-label">Email address</span>
+          <input id="authEmailInput" class="auth-input" type="email" placeholder="you@example.com"
+            autocomplete="email" />
+        </label>
+        <button id="authSubmitButton" class="auth-submit" type="submit">Continue</button>
+      </form>
+
+      <p class="auth-footnote">
+        By continuing, you agree to the <a class="auth-footnote-link" href="/terms" target="_blank"
+          rel="noreferrer noopener">Terms</a> and <a class="auth-footnote-link" href="/privacy" target="_blank"
+          rel="noreferrer noopener">Privacy Policy</a>.
+      </p>
+    </section>
+  </div>
+
+  <div id="profileModal" class="profile-modal" aria-hidden="true">
+    <div id="profileBackdrop" class="profile-backdrop"></div>
+    <section class="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profilePanelTitle">
+      <button id="profileCloseButton" class="profile-close" type="button" aria-label="Close profile panel">
+        ×
+      </button>
+
+      <div class="profile-panel-header">
+        <p class="profile-panel-kicker">Account</p>
+        <h2 id="profilePanelTitle" class="profile-panel-title">Your profile</h2>
+        <p id="profilePanelDescription" class="profile-panel-description"></p>
+      </div>
+
+      <div id="profileOverviewSection" class="profile-section">
+        <div class="profile-summary-card">
+          <div class="profile-summary-avatar-wrap" title="Double-click to change profile picture">
+            <img id="profileSummaryAvatar" class="profile-summary-avatar" src="" alt="" />
+            <span id="profileSummaryFallback" class="profile-summary-fallback" aria-hidden="true"></span>
+          </div>
+          <div class="profile-summary-content">
+            <div id="profileGreeting" class="profile-greeting" aria-hidden="true"></div>
+            <span id="profileSummaryEmail" class="profile-summary-email"></span>
+            <span id="profileSummaryProvider" class="profile-summary-provider"></span>
+          </div>
+        </div>
+
+        <form id="profileForm" class="profile-form">
+          <label class="profile-field">
+            <span class="profile-field-label">Display name</span>
+            <input id="profileNameInput" class="profile-input" type="text" placeholder="Your display name" />
+          </label>
+          <label class="profile-field">
+            <span class="profile-field-label">Email or username</span>
+            <input id="profileHandleInput" class="profile-input" type="text"
+              placeholder="you@example.com or @username" />
+          </label>
+          <input id="profileAvatarFileInput" type="file" hidden accept="image/*" />
+          <p class="profile-avatar-help">Double-click the profile photo above to upload a picture from your device.</p>
+          <button class="profile-save-button" type="submit">Save profile</button>
+        </form>
+      </div>
+
+      <div id="profilePhotoMenu" class="profile-photo-menu" hidden>
+        <div id="profilePhotoMenuBackdrop" class="profile-photo-menu-backdrop"></div>
+        <div class="profile-photo-menu-card" role="dialog" aria-modal="true" aria-label="Change profile photo">
+          <div class="profile-photo-menu-title">Change Profile Photo</div>
+          <button id="profilePhotoMenuUploadBtn" class="profile-photo-menu-action" type="button">Upload Photo</button>
+          <button id="profilePhotoMenuRemoveBtn" class="profile-photo-menu-action profile-photo-menu-action-danger" type="button">
+            Remove Current Photo
+          </button>
+          <button id="profilePhotoMenuCancelBtn" class="profile-photo-menu-action" type="button">Cancel</button>
+        </div>
+      </div>
+
+      <form id="settingsForm" class="settings-card" hidden>
+        <div class="settings-field">
+          <div class="settings-field-head">
+            <span class="settings-field-icon" aria-hidden="true">
+              <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 22s4-5.5 4-10-4-10-4-10-4 5.5-4 10 4 10 4 10z"></path>
+                <path d="M2 12h20"></path>
+              </svg>
+            </span>
+            <span class="settings-field-label">Display Language</span>
+          </div>
+          <div class="custom-select-container">
+            <button id="languageSelectButton" class="custom-select-button" type="button">
+              <span id="currentLanguageName">English</span>
+              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div id="languageOptions" class="custom-select-options" hidden></div>
+          </div>
+          <select id="settingDisplayLanguage" class="settings-select" hidden></select>
+        </div>
+
+        <div class="settings-field">
+          <div class="settings-field-head">
+            <span class="settings-field-icon" aria-hidden="true">
+              <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </span>
+            <span class="settings-field-label">Region results</span>
+          </div>
+          <div class="custom-select-container">
+            <button id="regionSelectButton" class="custom-select-button" type="button">
+              <div id="currentRegionFlag" class="region-flag-mini"></div>
+              <span id="currentRegionName">India</span>
+              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div id="regionOptions" class="custom-select-options" hidden></div>
+          </div>
+          <select id="settingRegion" class="settings-select" hidden></select>
+        </div>
+
+        <div class="settings-field">
+          <div class="settings-field-head">
+            <span class="settings-field-icon" aria-hidden="true">
+              <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22a10 10 0 1 1 10-10c0 1.1-.9 2-2 2h-2.2c-1.2 0-2.1 1-2.1 2.1 0 .6.2 1.1.6 1.5.4.4.6.9.6 1.5 0 1.1-.9 2-2 2z" />
+                <circle cx="6.5" cy="11.5" r=".6" />
+                <circle cx="8.5" cy="7.5" r=".6" />
+                <circle cx="12.5" cy="6.5" r=".6" />
+                <circle cx="16.5" cy="8.5" r=".6" />
+              </svg>
+            </span>
+            <span class="settings-field-label">Theme</span>
+          </div>
+
+          <!-- Keep the select (hidden) for persistence -->
+          <select id="settingTheme" class="settings-hidden-select" aria-hidden="true" tabindex="-1">
+            <option value="system">Default device</option>
+            <option value="light">Light theme</option>
+            <option value="dark">Dark theme</option>
+          </select>
+
+          <div class="settings-theme-row" role="group" aria-label="Theme">
+            <button id="settingThemeSystemBtn" class="settings-theme-btn" type="button" data-theme-value="system">
+              <span class="settings-theme-icon" aria-hidden="true">
+                <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="12" rx="2" />
+                  <path d="M8 20h8" />
+                  <path d="M12 16v4" />
+                </svg>
+              </span>
+              <span class="settings-theme-text">System</span>
+            </button>
+            <button id="settingThemeLightBtn" class="settings-theme-btn" type="button" data-theme-value="light">
+              <span class="settings-theme-icon" aria-hidden="true">
+                <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2" />
+                  <path d="M12 20v2" />
+                  <path d="M4.93 4.93l1.41 1.41" />
+                  <path d="M17.66 17.66l1.41 1.41" />
+                  <path d="M2 12h2" />
+                  <path d="M20 12h2" />
+                  <path d="M4.93 19.07l1.41-1.41" />
+                  <path d="M17.66 6.34l1.41-1.41" />
+                </svg>
+              </span>
+              <span class="settings-theme-text">Light</span>
+            </button>
+            <button id="settingThemeDarkBtn" class="settings-theme-btn" type="button" data-theme-value="dark">
+              <span class="settings-theme-icon" aria-hidden="true">
+                <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+              <span class="settings-theme-text">Dark</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-field settings-toggle-field">
+          <div class="settings-field-head">
+            <span class="settings-field-icon" aria-hidden="true">
+              <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2l8 4v6c0 5-3.4 9.4-8 10-4.6-.6-8-5-8-10V6l8-4z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+            </span>
+            <div class="settings-toggle-text">
+              <span class="settings-field-label">Safe Search</span>
+              <span class="settings-field-sub">Filter explicit content from results</span>
+            </div>
+          </div>
+
+          <!-- Keep the select (hidden) for persistence -->
+          <select id="settingSafeSearch" class="settings-hidden-select" aria-hidden="true" tabindex="-1">
+            <option value="moderate">Moderate</option>
+            <option value="strict">Strict</option>
+            <option value="off">Off</option>
+          </select>
+
+          <label class="settings-switch" title="Toggle safe search">
+            <input id="settingSafeSearchToggle" class="settings-switch-input" type="checkbox" />
+            <span class="settings-switch-slider" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <button class="settings-save" type="submit">Save settings</button>
+      </form>
+
+      <section id="adminActivitySection" class="profile-section" hidden>
+        <div class="profile-summary-card">
+          <div class="profile-summary-content">
+            <div class="profile-greeting">Admin activity table</div>
+            <span class="profile-summary-email">Signed-up users, searches, and visited result URLs</span>
+          </div>
+        </div>
+        <div class="history-header-actions">
+          <button id="adminActivityRefreshButton" class="history-export" type="button">Refresh</button>
+        </div>
+        <div id="adminActivityStatus" class="utility-output utility-output-subtle">Loading activity…</div>
+        <div class="profile-summary-card">
+          <div class="profile-summary-content">
+            <div class="profile-greeting">Read-only report</div>
+            <span id="adminReportSummary" class="profile-summary-email">Loading report summary…</span>
+          </div>
+        </div>
+        <pre id="adminReportJson" class="utility-output utility-output-subtle" style="white-space: pre-wrap;"></pre>
+        <table class="overview-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Signed Up</th>
+              <th>Search Query</th>
+              <th>Searched At</th>
+              <th>Visited Website</th>
+              <th>Visited At</th>
+            </tr>
+          </thead>
+          <tbody id="adminActivityTableBody"></tbody>
+        </table>
+      </section>
+    </section>
+  </div>
+
+  <div id="historyModal" class="history-modal" aria-hidden="true">
+    <div id="historyBackdrop" class="history-backdrop"></div>
+    <section class="history-panel" role="dialog" aria-modal="true" aria-labelledby="historyPanelTitle">
+      <div class="history-panel-header">
+        <h2 id="historyPanelTitle" class="history-panel-title">Search history</h2>
+        <div class="history-header-actions">
+          <label class="history-toggle-wrap" title="Toggle history saving">
+            <input id="historySavingToggle" type="checkbox" class="history-toggle-input" />
+            <span class="history-toggle-slider"></span>
+            <span class="history-toggle-label">Saving</span>
+          </label>
+          <button id="historyExportButton" class="history-export" type="button" title="Export history">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+          </button>
+          <button id="historyDeleteAllButton" class="history-delete-all" type="button">Delete all</button>
+          <button id="historyCloseButton" class="history-close" type="button"
+            aria-label="Close history">&times;</button>
+        </div>
+      </div>
+      <div id="historyList" class="history-list"></div>
+    </section>
+  </div>
+
+  <div id="bookmarksModal" class="history-modal" aria-hidden="true">
+    <div id="bookmarksBackdrop" class="history-backdrop"></div>
+    <section class="history-panel" role="dialog" aria-modal="true" aria-labelledby="bookmarksPanelTitle">
+      <div class="history-panel-header">
+        <h2 id="bookmarksPanelTitle" class="history-panel-title">Bookmarks</h2>
+        <div class="history-header-actions">
+          <button id="bookmarksCloseButton" class="history-close" type="button"
+            aria-label="Close bookmarks">&times;</button>
+        </div>
+      </div>
+      <div id="bookmarksList" class="history-list"></div>
+    </section>
+  </div>
+
+  <div id="imagePreviewModal" class="image-preview-modal" aria-hidden="true">
+    <div id="imagePreviewBackdrop" class="image-preview-backdrop"></div>
+    <section class="image-preview-dialog" role="dialog" aria-modal="true" aria-label="Image preview">
+      <button id="imagePreviewCloseButton" class="image-preview-close" type="button" aria-label="Close image preview">
+        ×
+      </button>
+      <img id="imagePreviewImage" class="image-preview-image" src="" alt="Uploaded image preview" />
+    </section>
+  </div>
+
+  <div id="accountSwitchToast" class="account-switch-toast" aria-live="polite" hidden></div>
+
+  <script type="module" src="/assets/app.js?v=20260508v12"></script>
+</body>
+
+</html>

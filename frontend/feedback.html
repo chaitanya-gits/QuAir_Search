@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback — QuAir Search</title>
+  <link rel="stylesheet" href="quair.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">[QuAir Search]™</a>  
+  <ul class="nav-links">
+    <li><a href="/about">About</a></li>
+    <li><a href="/help">Help</a></li>
+    <li><a href="/feedback" class="active">Feedback</a></li>
+    <li><a href="/privacy">Privacy</a></li>
+    <li><a href="/terms">Terms</a></li>
+  </ul>
+</nav>
+
+<main class="page-wrap">
+
+  <div class="page-hero">
+    <span class="page-tag">Get in Touch</span>
+    <h1>We want to hear from you.</h1>
+    <p>QuAir is in early development and your feedback directly shapes what we build next. Every submission is read by the team.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px;">
+    <div class="card">
+      <div class="card-icon">💡</div>
+      <h3>Feature Requests</h3>
+      <p>Tell us what's missing or what you'd love to see.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🐛</div>
+      <h3>Bug Reports</h3>
+      <p>Help us fix what's broken before it reaches others.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⭐</div>
+      <h3>General Feedback</h3>
+      <p>Thoughts on the design, results quality, or anything else.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚩</div>
+      <h3>Report a Result</h3>
+      <p>Flag inaccurate, harmful, or manipulated search results.</p>
+    </div>
+  </div>
+
+  <!-- Feedback Form -->
+  <div class="content-section">
+    <h2>Send Feedback</h2>
+
+    <div class="form-group">
+      <label for="name">Your Name <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
+      <input type="text" id="name" placeholder="e.g. Alex Kumar" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address <span style="color:var(--text-muted); font-weight:400;">(optional — for follow-up)</span></label>
+      <input type="email" id="email" placeholder="you@example.com" />
+    </div>
+
+    <div class="form-group">
+      <label for="topic">Topic</label>
+      <select id="topic">
+        <option value="" disabled selected>Select a topic...</option>
+        <option value="feature">Feature Request</option>
+        <option value="bug">Bug Report</option>
+        <option value="general">General Feedback</option>
+        <option value="result">Report a Result</option>
+        <option value="privacy">Privacy Concern</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="message">Your Message <span style="color:#e25050; font-size:0.8rem;">*</span></label>
+      <textarea id="message" placeholder="Describe your feedback, bug, or idea in as much detail as you like..."></textarea>
+    </div>
+
+    <!-- Rating -->
+    <div class="form-group">
+      <label>How would you rate QuAir so far?</label>
+      <div id="rating-group" style="display:flex; gap:8px; margin-top:4px;">
+        <button class="rating-btn" onclick="selectRating(this, 1)" title="1 - Poor">😞</button>
+        <button class="rating-btn" onclick="selectRating(this, 2)" title="2 - Fair">😐</button>
+        <button class="rating-btn" onclick="selectRating(this, 3)" title="3 - Good">🙂</button>
+        <button class="rating-btn" onclick="selectRating(this, 4)" title="4 - Great">😊</button>
+        <button class="rating-btn" onclick="selectRating(this, 5)" title="5 - Excellent">🤩</button>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="submitFeedback()">
+      Send Feedback
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+
+    <div class="success-msg" id="success-msg">
+      <span>✅</span>
+      <span>Thank you! Your feedback has been received. We read every submission.</span>
+    </div>
+
+    <div id="error-msg" style="display:none; background:#fff0f0; border:1.5px solid #e25050; color:#b03030; border-radius:6px; padding:14px 18px; font-size:0.9rem; font-weight:500; margin-top:16px;">
+      ⚠️ Please write a message before submitting.
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <p style="font-size:0.875rem; color:var(--text-muted);">
+    By submitting this form, you agree to our <a href="/privacy" style="color:var(--electric-blue); text-decoration:none;">Privacy Policy</a>. We do not share your feedback with third parties.
+  </p>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 [QuAir Search]™. All rights reserved.</span>
+    <ul class="footer-links">
+      <li><a href="/about">About</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/help">Help</a></li>
+      <li><a href="/feedback">Feedback</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .rating-btn {
+    background: var(--off-white);
+    border: 1.5px solid var(--mid-gray);
+    border-radius: var(--radius-sm);
+    font-size: 1.4rem;
+    width: 48px; height: 48px;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rating-btn:hover { border-color: var(--electric-blue); background: var(--blue-light); transform: scale(1.1); }
+  .rating-btn.selected { border-color: var(--electric-blue); background: var(--blue-light); box-shadow: var(--shadow-blue); transform: scale(1.12); }
+</style>
+
+<script>
+  let selectedRating = null;
+
+  function selectRating(btn, value) {
+    selectedRating = value;
+    document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function submitFeedback() {
+    const message = document.getElementById('message').value.trim();
+    const success = document.getElementById('success-msg');
+    const error = document.getElementById('error-msg');
+
+    error.style.display = 'none';
+    success.classList.remove('show');
+
+    if (!message) {
+      error.style.display = 'block';
+      return;
+    }
+
+    // Simulate submission
+    success.classList.add('show');
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('topic').value = '';
+    document.getElementById('message').value = '';
+    selectedRating = null;
+    document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+
+    success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+
+</body>
+</html>

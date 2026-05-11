@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantum-seo-worker
+  namespace: quantum-seo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quantum-seo-worker
+  template:
+    metadata:
+      labels:
+        app: quantum-seo-worker
+    spec:
+      containers:
+        - name: worker
+          image: quantum-seo/worker:latest
+          env:
+            - name: ES_URL
+              value: http://opensearch:9200
+            - name: DATABASE_URL
+              value: postgresql://quantum:quantum@postgres:5432/quantum_seo
+            - name: REDIS_URL
+              value: redis://redis:6379/0

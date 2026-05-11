@@ -1,0 +1,12 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}\\.tools\\python313\\python.exe",
+  "python.testing.unittestEnabled": true,
+  "python.testing.unittestArgs": [
+    "-t",
+    ".",
+    "-s",
+    "tests",
+    "-p",
+    "test_*.py"
+  ]
+}

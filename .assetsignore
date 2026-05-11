@@ -1,0 +1,31 @@
+# Dependency and VCS directories
+node_modules/
+.git/
+
+# Local environment and Wrangler state
+.env
+.env.*
+!.env.example
+.wrangler/
+
+# Source and development files that are not static site assets
+ai/
+api/
+crawler/
+frontend/
+gateway/
+indexer/
+infrastructure/
+ranking/
+retrieval/
+*.ts
+*.tsx
+tsconfig.json
+package.json
+package-lock.json
+serve.mjs
+serve.log
+serve.err
+
+# Documentation and repository metadata
+*.md

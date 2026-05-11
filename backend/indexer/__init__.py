@@ -1,0 +1,1 @@
+"""OpenSearch indexing helpers."""

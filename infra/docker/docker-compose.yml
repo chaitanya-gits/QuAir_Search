@@ -1,0 +1,82 @@
+services:
+  backend:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.backend
+    image: quantum-seo-backend:latest
+    container_name: quantum-seo-backend
+    init: true
+    restart: unless-stopped
+    env_file:
+      - ../../.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      ES_URL: ""
+      ENABLE_SEARCH_INDEX: "false"
+      REDIS_URL: redis://redis:6379/0
+<<<<<<< HEAD
+      DATABASE_URL: "${DATABASE_URL}"
+=======
+>>>>>>> 082393a (Remove nested repo and clean structure)
+      ENABLE_CRAWL_SCHEDULER: "false"
+      CRAWL_MAX_RESPONSE_BYTES: 2000000
+      POSTGRES_MIN_POOL_SIZE: 1
+      POSTGRES_MAX_POOL_SIZE: 3
+      SEARCH_WEB_FALLBACK_TIMEOUT_SECONDS: "8.0"
+      SEARCH_MODE_TIMEOUT_SECONDS: "4.5"
+    command:
+      - uvicorn
+      - backend.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "3000"
+<<<<<<< HEAD
+=======
+      - --reload
+      - --reload-dir
+      - /app/backend
+      - --reload-dir
+      - /app/frontend
+    volumes:
+      - ../../backend:/app/backend
+      - ../../frontend:/app/frontend
+>>>>>>> 082393a (Remove nested repo and clean structure)
+    ports:
+      - "3000:3000"
+    cpus: 1.0
+    mem_limit: 512m
+    mem_reservation: 128m
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: quantum-seo-redis
+    init: true
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly
+      - "no"
+      - --save
+      - ""
+      - --maxmemory
+      - 64mb
+      - --maxmemory-policy
+      - allkeys-lru
+    volumes:
+      - redis-data:/data
+    cpus: 0.25
+    mem_limit: 96m
+    mem_reservation: 16m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  redis-data:
