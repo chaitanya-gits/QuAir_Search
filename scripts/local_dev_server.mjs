@@ -39,7 +39,23 @@ async function proxyToBackend(request, response, requestUrl) {
     return;
   }
 
-  const target = new URL(requestUrl.pathname + requestUrl.search, API_PROXY_ORIGIN);
+  const proxyPath = requestUrl.pathname;
+  if (!proxyPath.startsWith("/api/auth/")) {
+    sendText(response, 403, "Forbidden");
+    return;
+  }
+
+  // Reject traversal/control-character variants before forwarding.
+  if (
+    proxyPath.includes("..") ||
+    proxyPath.includes("\\") ||
+    /[\u0000-\u001F\u007F]/.test(proxyPath)
+  ) {
+    sendText(response, 400, "Invalid auth proxy path");
+    return;
+  }
+
+  const target = new URL(proxyPath + requestUrl.search, API_PROXY_ORIGIN);
   const headers = new Headers();
   for (const [key, value] of Object.entries(request.headers)) {
     if (!value) continue;
