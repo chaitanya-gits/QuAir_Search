@@ -13,16 +13,13 @@ BLOCKED_TRENDING_QUERIES = {
     "how to make chicken biryani",
     "world war 2",
     "reciprocal rank fusion",
-    "access key secret access key akiav4nzkrnaravzpxhh t6h7pjmnbcqmcybeoq1iq1g0upexa3alapvy8lzt",
+    "access key secret access key",
     "what common mistakes should someone avoid when learning about world war 2?",
     "untitled.png",
 }
-<<<<<<< HEAD
 
 
 logger = logging.getLogger(__name__)
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
 
 
 class RedisStorage:
@@ -53,15 +50,11 @@ class RedisStorage:
 
     async def get_trending_queries(self, limit: int) -> list[str]:
         end_index = max(limit - 1, 0)
-<<<<<<< HEAD
         try:
             items = await self._redis.zrevrange(TRENDING_KEY, 0, end_index)
         except Exception:  # pragma: no cover - defensive
             logger.exception("failed to fetch trending queries")
             return []
-=======
-        items = await self._redis.zrevrange(TRENDING_KEY, 0, end_index)
->>>>>>> 082393a (Remove nested repo and clean structure)
         return [item for item in items if _normalize_trending_query(item)]
 
     async def get_suggestions(self, prefix: str, limit: int) -> list[str]:
@@ -83,15 +76,11 @@ class RedisStorage:
                 logger.exception("failed to push crawl frontier")
 
     async def pop_frontier(self) -> str | None:
-<<<<<<< HEAD
         try:
             return await self._redis.lpop(FRONTIER_KEY)
         except Exception:  # pragma: no cover - defensive
             logger.exception("failed to pop crawl frontier")
             return None
-=======
-        return await self._redis.lpop(FRONTIER_KEY)
->>>>>>> 082393a (Remove nested repo and clean structure)
 
 
 def _normalize_trending_query(value: str) -> str:

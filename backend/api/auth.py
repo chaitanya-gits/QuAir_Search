@@ -9,14 +9,9 @@ import urllib.parse
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 import httpx
-<<<<<<< HEAD
 from fastapi import APIRouter, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, EmailStr
-=======
-from fastapi import APIRouter, Request, Response
-from fastapi.responses import JSONResponse, RedirectResponse
->>>>>>> 082393a (Remove nested repo and clean structure)
 
 from backend.config import settings
 
@@ -31,17 +26,11 @@ _STATE_MAX_AGE = 600
 
 _GOOGLE_STATE_COOKIE = "google_oauth_state"
 _GOOGLE_EXPECTED_EMAIL_COOKIE = "google_oauth_expected_email"
-<<<<<<< HEAD
 _GOOGLE_FLOW_COOKIE = "google_oauth_flow"
 
 # Per-account session cookie prefix.  Cookie name = _ACCT_PREFIX + md5(email).
 _ACCT_PREFIX = "qsession_"
 _DB_ACCT_PREFIX = "qdbsession_"
-=======
-
-# Per-account session cookie prefix.  Cookie name = _ACCT_PREFIX + md5(email).
-_ACCT_PREFIX = "qsession_"
->>>>>>> 082393a (Remove nested repo and clean structure)
 
 
 def _b64url(data: bytes) -> str:
@@ -91,15 +80,12 @@ def _email_cookie_name(email: str) -> str:
     return f"{_ACCT_PREFIX}{digest}"
 
 
-<<<<<<< HEAD
 def _database_email_cookie_name(email: str) -> str:
     """Return a per-account database session cookie name derived from email."""
     digest = hashlib.md5(email.strip().lower().encode()).hexdigest()[:12]
     return f"{_DB_ACCT_PREFIX}{digest}"
 
 
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
 def _issue_session_cookie(response: Response, user: dict) -> None:
     token = _create_jwt({**user, "exp": int(time.time()) + _TOKEN_MAX_AGE})
     # Set the active session cookie.
@@ -107,15 +93,9 @@ def _issue_session_cookie(response: Response, user: dict) -> None:
         "session",
         token,
         httponly=True,
-<<<<<<< HEAD
         samesite=settings.cookie_samesite,
         max_age=_TOKEN_MAX_AGE,
         secure=settings.cookie_secure,
-=======
-        samesite="lax",
-        max_age=_TOKEN_MAX_AGE,
-        secure=False,
->>>>>>> 082393a (Remove nested repo and clean structure)
     )
     # Also store a per-account cookie so we can switch back to this account
     # without going through Google OAuth again.
@@ -125,7 +105,6 @@ def _issue_session_cookie(response: Response, user: dict) -> None:
             _email_cookie_name(email),
             token,
             httponly=True,
-<<<<<<< HEAD
             samesite=settings.cookie_samesite,
             max_age=_TOKEN_MAX_AGE,
             secure=settings.cookie_secure,
@@ -149,11 +128,6 @@ def _issue_database_session_cookie(response: Response, session_token: str, email
             samesite=settings.cookie_samesite,
             max_age=2592000,
             secure=settings.cookie_secure,
-=======
-            samesite="lax",
-            max_age=_TOKEN_MAX_AGE,
-            secure=False,
->>>>>>> 082393a (Remove nested repo and clean structure)
         )
 
 
@@ -165,7 +139,6 @@ def _build_redirect(path: str) -> str:
 def _clear_google_oauth_cookies(response: Response) -> None:
     response.delete_cookie(_GOOGLE_STATE_COOKIE)
     response.delete_cookie(_GOOGLE_EXPECTED_EMAIL_COOKIE)
-<<<<<<< HEAD
     response.delete_cookie(_GOOGLE_FLOW_COOKIE)
 
 
@@ -231,6 +204,17 @@ async def set_session(request: Request, response: Response) -> dict:
     if not user:
         return JSONResponse({"ok": False, "error": "invalid_jwt"}, status_code=401)
 
+    postgres = request.app.state.postgres
+    if not postgres.is_available:
+        return JSONResponse({"ok": False, "error": "database_unavailable"}, status_code=503)
+
+    db_session = await postgres.get_session(session_token)
+    if not db_session:
+        return JSONResponse({"ok": False, "error": "invalid_session"}, status_code=401)
+    jwt_user_id = str(user.get("id", "")).strip()
+    if str(db_session.get("user_id", "")) != jwt_user_id:
+        return JSONResponse({"ok": False, "error": "session_user_mismatch"}, status_code=401)
+
     email = user.get("email", "")
     if email:
         # Set the per-account cookies
@@ -270,11 +254,8 @@ async def set_session(request: Request, response: Response) -> dict:
     )
 
     return {"ok": True}
-=======
 
 
-# ── Account switch (local, no Google redirect) ────────────────────────────────
->>>>>>> 082393a (Remove nested repo and clean structure)
 @router.post("/switch")
 async def local_switch(request: Request):
     """Switch to a previously-authenticated account using stored session cookies.
@@ -290,12 +271,14 @@ async def local_switch(request: Request):
     if not target_email:
         return JSONResponse({"ok": False, "error": "missing_email"}, status_code=400)
 
-<<<<<<< HEAD
+    postgres = request.app.state.postgres
+    if not postgres.is_available:
+        return JSONResponse({"ok": False, "error": "database_unavailable"}, status_code=503)
+
     # Look up the per-account browser session first. This is the fastest path
     # and does not need a Google account chooser.
     cookie_name = _email_cookie_name(target_email)
     stored_token = request.cookies.get(cookie_name, "")
-    postgres = request.app.state.postgres
     db_user = await postgres.get_user_by_email(target_email)
     user = _verify_jwt(stored_token) if stored_token else None
     db_cookie_name = _database_email_cookie_name(target_email)
@@ -352,42 +335,6 @@ async def local_switch(request: Request):
     _issue_session_cookie(response, response_user)
     if session_token:
         _issue_database_session_cookie(response, session_token, target_email)
-=======
-    # Look up the per-account cookie.
-    cookie_name = _email_cookie_name(target_email)
-    stored_token = request.cookies.get(cookie_name, "")
-    if not stored_token:
-        return JSONResponse({"ok": False, "error": "no_stored_session"}, status_code=404)
-
-    # Verify the token is still valid.
-    user = _verify_jwt(stored_token)
-    if not user:
-        # Token expired — clear the stale per-account cookie.
-        response = JSONResponse({"ok": False, "error": "session_expired"}, status_code=401)
-        response.delete_cookie(cookie_name)
-        return response
-
-    # Make this the active session.
-    response = JSONResponse({
-        "ok": True,
-        "user": {
-            "authenticated": True,
-            "provider": user.get("provider", ""),
-            "name": user.get("name", ""),
-            "email": user.get("email", ""),
-            "username": user.get("username", ""),
-            "picture": user.get("picture", ""),
-        },
-    })
-    response.set_cookie(
-        "session",
-        stored_token,
-        httponly=True,
-        samesite="lax",
-        max_age=_TOKEN_MAX_AGE,
-        secure=False,
-    )
->>>>>>> 082393a (Remove nested repo and clean structure)
     return response
 
 
@@ -396,6 +343,12 @@ async def local_switch(request: Request):
 async def google_login(request: Request):
     if not settings.google_client_id or not settings.google_client_secret:
         return JSONResponse({"detail": "Google OAuth is not configured."}, status_code=503)
+
+    if not request.app.state.postgres.is_available:
+        return JSONResponse(
+            {"detail": "Database is unavailable; sign-in requires PostgreSQL."},
+            status_code=503,
+        )
 
     state = secrets.token_urlsafe(32)
     params = {
@@ -409,7 +362,6 @@ async def google_login(request: Request):
     }
     login_hint = request.query_params.get("login_hint", "")
     expected_email = request.query_params.get("expected_email", "")
-<<<<<<< HEAD
     flow = request.query_params.get("flow", "redirect").strip().lower()
     if login_hint:
         params["login_hint"] = login_hint
@@ -432,26 +384,14 @@ async def google_login(request: Request):
         max_age=_STATE_MAX_AGE,
         secure=settings.cookie_secure,
     )
-=======
-    if login_hint:
-        params["login_hint"] = login_hint
-
-    response = RedirectResponse(f"{_GOOGLE_AUTH_URL}?{urllib.parse.urlencode(params)}")
-    response.set_cookie(_GOOGLE_STATE_COOKIE, state, httponly=True, samesite="lax", max_age=_STATE_MAX_AGE)
->>>>>>> 082393a (Remove nested repo and clean structure)
     if expected_email:
         response.set_cookie(
             _GOOGLE_EXPECTED_EMAIL_COOKIE,
             expected_email,
             httponly=True,
-<<<<<<< HEAD
             samesite=settings.cookie_samesite,
             max_age=_STATE_MAX_AGE,
             secure=settings.cookie_secure,
-=======
-            samesite="lax",
-            max_age=_STATE_MAX_AGE,
->>>>>>> 082393a (Remove nested repo and clean structure)
         )
     else:
         response.delete_cookie(_GOOGLE_EXPECTED_EMAIL_COOKIE)
@@ -462,7 +402,6 @@ async def google_login(request: Request):
 async def google_callback(request: Request, code: str = "", state: str = "", error: str = ""):
     saved_state = request.cookies.get(_GOOGLE_STATE_COOKIE, "")
     expected_email = request.cookies.get(_GOOGLE_EXPECTED_EMAIL_COOKIE, "")
-<<<<<<< HEAD
     flow = request.cookies.get(_GOOGLE_FLOW_COOKIE, "redirect")
 
     # Handle Google error responses (e.g., prompt=none returning interaction_required).
@@ -471,35 +410,24 @@ async def google_callback(request: Request, code: str = "", state: str = "", err
             response = _build_popup_response("error", error=error)
             _clear_google_oauth_cookies(response)
             return response
-=======
-
-    # Handle Google error responses (e.g., prompt=none returning interaction_required).
-    if error:
->>>>>>> 082393a (Remove nested repo and clean structure)
         response = RedirectResponse(f"/?auth_error={urllib.parse.quote(error)}")
         _clear_google_oauth_cookies(response)
         return response
 
     if not saved_state or not hmac.compare_digest(saved_state, state):
-<<<<<<< HEAD
         if flow == "popup":
             response = _build_popup_response("error", error="invalid_state")
             _clear_google_oauth_cookies(response)
             return response
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
         response = RedirectResponse("/?auth_error=invalid_state")
         _clear_google_oauth_cookies(response)
         return response
 
     if not code:
-<<<<<<< HEAD
         if flow == "popup":
             response = _build_popup_response("error", error="missing_code")
             _clear_google_oauth_cookies(response)
             return response
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
         response = RedirectResponse("/?auth_error=missing_code")
         _clear_google_oauth_cookies(response)
         return response
@@ -526,13 +454,10 @@ async def google_callback(request: Request, code: str = "", state: str = "", err
             user_response.raise_for_status()
             info = user_response.json()
     except httpx.HTTPError:
-<<<<<<< HEAD
         if flow == "popup":
             response = _build_popup_response("error", error="token_exchange")
             _clear_google_oauth_cookies(response)
             return response
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
         response = RedirectResponse("/?auth_error=token_exchange")
         _clear_google_oauth_cookies(response)
         return response
@@ -540,43 +465,41 @@ async def google_callback(request: Request, code: str = "", state: str = "", err
     provider_email = str(info.get("email", "")).strip().lower()
     is_verified = bool(info.get("email_verified", False))
     if not provider_email or not is_verified:
-<<<<<<< HEAD
         if flow == "popup":
             response = _build_popup_response("error", error="email_invalid")
             _clear_google_oauth_cookies(response)
             return response
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
         response = RedirectResponse("/?auth_error=email_invalid")
         _clear_google_oauth_cookies(response)
         return response
 
     if expected_email and provider_email != expected_email.strip().lower():
-<<<<<<< HEAD
         if flow == "popup":
             response = _build_popup_response("error", error="email_mismatch")
             _clear_google_oauth_cookies(response)
             return response
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
         response = RedirectResponse("/?auth_error=email_mismatch")
         _clear_google_oauth_cookies(response)
         return response
 
     user = {
         "provider": "google",
-<<<<<<< HEAD
-=======
-        "id": info.get("sub", ""),
->>>>>>> 082393a (Remove nested repo and clean structure)
         "name": info.get("name", ""),
         "email": provider_email,
         "username": provider_email.split("@")[0] if provider_email else "",
         "picture": info.get("picture", ""),
     }
 
-<<<<<<< HEAD
     postgres = request.app.state.postgres
+    if not postgres.is_available:
+        if flow == "popup":
+            response = _build_popup_response("error", error="database_unavailable")
+            _clear_google_oauth_cookies(response)
+            return response
+        response = RedirectResponse("/?auth_error=database_unavailable")
+        _clear_google_oauth_cookies(response)
+        return response
+
     db_user = await postgres.upsert_oauth_user(
         email=provider_email,
         display_name=user["name"],
@@ -616,11 +539,6 @@ async def google_callback(request: Request, code: str = "", state: str = "", err
     _clear_google_oauth_cookies(response)
     _issue_session_cookie(response, user)
     _issue_database_session_cookie(response, session_token, provider_email)
-=======
-    response = RedirectResponse("/?auth=success")
-    _clear_google_oauth_cookies(response)
-    _issue_session_cookie(response, user)
->>>>>>> 082393a (Remove nested repo and clean structure)
     return response
 
 
@@ -629,7 +547,6 @@ async def get_me(request: Request):
     token = request.cookies.get("session", "")
     user = _verify_jwt(token) if token else None
     if not user:
-<<<<<<< HEAD
         qtoken = request.cookies.get("qsession", "")
         if qtoken:
             session = await request.app.state.postgres.get_session(qtoken)
@@ -650,25 +567,17 @@ async def get_me(request: Request):
                 })
                 _issue_database_session_cookie(response, qtoken, session["email"])
                 return response
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
         return JSONResponse({"authenticated": False}, status_code=401)
 
     user_data = {
         "authenticated": True,
-<<<<<<< HEAD
         "id": user.get("id", ""),
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
         "provider": user.get("provider", ""),
         "name": user.get("name", ""),
         "email": user.get("email", ""),
         "username": user.get("username", ""),
         "picture": user.get("picture", ""),
-<<<<<<< HEAD
         "is_admin": bool(user.get("is_admin", False)),
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
     }
 
     response = JSONResponse(user_data)
@@ -683,7 +592,6 @@ async def get_me(request: Request):
                 cookie_name,
                 token,
                 httponly=True,
-<<<<<<< HEAD
                 samesite=settings.cookie_samesite,
                 max_age=_TOKEN_MAX_AGE,
                 secure=settings.cookie_secure,
@@ -692,12 +600,6 @@ async def get_me(request: Request):
         session = await request.app.state.postgres.get_session(qtoken) if qtoken else None
         if session and session["email"].lower() == email.strip().lower():
             _issue_database_session_cookie(response, qtoken, email)
-=======
-                samesite="lax",
-                max_age=_TOKEN_MAX_AGE,
-                secure=False,
-            )
->>>>>>> 082393a (Remove nested repo and clean structure)
 
     return response
 
@@ -708,7 +610,6 @@ async def logout(request: Request):
     # Find the active user's email so we can remove that specific per-account cookie.
     active_token = request.cookies.get("session", "")
     active_user = _verify_jwt(active_token) if active_token else None
-<<<<<<< HEAD
     qtoken = request.cookies.get("qsession")
     active_session = None
     if qtoken:
@@ -716,13 +617,10 @@ async def logout(request: Request):
             active_session = await request.app.state.postgres.get_session(qtoken)
         except Exception:
             active_session = None
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
 
     response = JSONResponse({"ok": True})
     response.delete_cookie("session")
 
-<<<<<<< HEAD
     if qtoken:
         try:
             await request.app.state.postgres.invalidate_session(qtoken)
@@ -730,21 +628,16 @@ async def logout(request: Request):
             pass
         response.delete_cookie("qsession")
 
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
     # Also remove the per-account cookie for the signed-out user.
     if active_user:
         email = active_user.get("email", "")
         if email:
             response.delete_cookie(_email_cookie_name(email))
-<<<<<<< HEAD
             response.delete_cookie(_database_email_cookie_name(email))
     elif active_session:
         email = active_session.get("email", "")
         if email:
             response.delete_cookie(_email_cookie_name(email))
             response.delete_cookie(_database_email_cookie_name(email))
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
 
     return response

@@ -21,3 +21,16 @@ ai-search-engine.md
 .env
 .env.*
 !.env.example
+.envrc
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+*.key
+.aws/
+.secrets/
+secrets.local.yaml
+*-secrets.local.yaml

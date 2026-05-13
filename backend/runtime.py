@@ -6,12 +6,9 @@ from dataclasses import dataclass
 
 from backend.config import settings
 from backend.crawler.frontier import CrawlFrontier
+from backend.security_redact import safe_exception_summary
 from backend.indexer.es_client import DisabledSearchIndexClient, SearchIndexClient
-<<<<<<< HEAD
 from backend.storage.postgres import DisabledPostgresStorage, PostgresStorage
-=======
-from backend.storage.postgres import PostgresStorage
->>>>>>> 082393a (Remove nested repo and clean structure)
 from backend.storage.redis import RedisStorage
 
 
@@ -36,7 +33,10 @@ async def open_runtime_services(
     try:
         await postgres.connect()
     except Exception as exc:  # pragma: no cover - startup fallback
-        logger.warning("Postgres unavailable at startup; continuing in degraded mode: %s", exc)
+        logger.warning(
+            "Postgres unavailable at startup; continuing in degraded mode: %s",
+            safe_exception_summary(exc),
+        )
         postgres = DisabledPostgresStorage(settings.database_url, exc)
 
     redis = RedisStorage(settings.redis_url) if with_redis else None

@@ -8,5 +8,6 @@
     "tests",
     "-p",
     "test_*.py"
-  ]
+  ],
+  "git.ignoreLimitWarning": true
 }

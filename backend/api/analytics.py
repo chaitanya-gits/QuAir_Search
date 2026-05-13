@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Request
-from pydantic import BaseModel
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
 router = APIRouter()
 
@@ -33,12 +34,15 @@ class ImpressionTrackPayload(BaseModel):
     anonymous_id: str = ""
     search_event_id: str | None = None
     event_type: str
-    payload: dict = {}
+    payload: dict = Field(default_factory=dict)
 
 
 @router.post("/track/search")
 async def track_search(body: SearchTrackPayload, request: Request) -> dict:
     postgres = request.app.state.postgres
+    if not postgres.is_available:
+        return JSONResponse({"detail": "Analytics requires PostgreSQL."}, status_code=503)
+
     session = getattr(request.state, "session", None)
     event_id = await postgres.record_search_event(
         user_id=str(session["user_id"]) if session else None,
@@ -62,6 +66,9 @@ async def track_search(body: SearchTrackPayload, request: Request) -> dict:
 @router.post("/track/click")
 async def track_click(body: ClickTrackPayload, request: Request) -> dict:
     postgres = request.app.state.postgres
+    if not postgres.is_available:
+        return JSONResponse({"detail": "Analytics requires PostgreSQL."}, status_code=503)
+
     session = getattr(request.state, "session", None)
     await postgres.record_click_event(
         user_id=str(session["user_id"]) if session else None,
@@ -83,6 +90,9 @@ async def track_click(body: ClickTrackPayload, request: Request) -> dict:
 @router.post("/track/impression")
 async def track_impression(body: ImpressionTrackPayload, request: Request) -> dict:
     postgres = request.app.state.postgres
+    if not postgres.is_available:
+        return JSONResponse({"detail": "Analytics requires PostgreSQL."}, status_code=503)
+
     session = getattr(request.state, "session", None)
     await postgres.record_impression_event(
         user_id=str(session["user_id"]) if session else None,

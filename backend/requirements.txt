@@ -2,13 +2,8 @@ APScheduler==3.10.4
 anthropic==0.30.0
 asyncpg==0.30.0
 beautifulsoup4==4.12.3
-<<<<<<< HEAD
 elasticsearch==8.13.0
 fastapi==0.136.1
-=======
-fastapi==0.115.12
-google-generativeai==0.8.5
->>>>>>> 082393a (Remove nested repo and clean structure)
 httpx==0.28.1
 opensearch-py==2.6.0
 pydantic==2.13.3
@@ -19,7 +14,6 @@ uvicorn==0.34.0
 google-genai==1.73.1
 Pillow==11.2.1
 pytesseract==0.3.13
-asyncpg==0.30.0
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.9
 email-validator==2.3.0

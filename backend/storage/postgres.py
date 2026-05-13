@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 import asyncpg
@@ -118,6 +119,21 @@ GET_USER_BY_ID_SQL = """
 SELECT id, email, display_name, handle, avatar_url, provider, provider_id,
        is_active, is_admin, created_at, updated_at
 FROM users WHERE id = $1
+"""
+
+GET_USER_SETTINGS_SQL = """
+SELECT settings, updated_at
+FROM user_settings
+WHERE user_id = $1
+"""
+
+UPSERT_USER_SETTINGS_SQL = """
+INSERT INTO user_settings (user_id, settings, updated_at)
+VALUES ($1, $2::jsonb, NOW())
+ON CONFLICT (user_id) DO UPDATE
+SET settings = EXCLUDED.settings,
+    updated_at = NOW()
+RETURNING settings, updated_at
 """
 
 CREATE_SESSION_SQL = """
@@ -260,6 +276,41 @@ class PostgresStorage:
         self._database_url = database_url
         self._pool: asyncpg.Pool | None = None
 
+    async def _ensure_schema(self) -> None:
+        """Apply SQL migrations (idempotent) on startup."""
+        migrations_dir = Path(__file__).resolve().parent.parent / "db" / "migrations"
+        if not migrations_dir.exists():
+            return
+
+        async with self.pool.acquire() as connection:
+            await connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS schema_migrations (
+                    id TEXT PRIMARY KEY,
+                    applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                )
+                """
+            )
+
+            applied = {
+                row["id"]
+                for row in await connection.fetch("SELECT id FROM schema_migrations")
+            }
+
+            for migration_path in sorted(migrations_dir.glob("*.sql")):
+                migration_id = migration_path.name
+                if migration_id in applied:
+                    continue
+                sql = migration_path.read_text(encoding="utf-8")
+                if not sql.strip():
+                    continue
+                async with connection.transaction():
+                    await connection.execute(sql)
+                    await connection.execute(
+                        "INSERT INTO schema_migrations (id) VALUES ($1) ON CONFLICT (id) DO NOTHING",
+                        migration_id,
+                    )
+
     async def connect(self) -> None:
         if self._pool is None:
             ssl_arg = True if "neon.tech" in self._database_url or "sslmode=require" in self._database_url else None
@@ -267,11 +318,9 @@ class PostgresStorage:
                 self._database_url,
                 min_size=settings.postgres_min_pool_size,
                 max_size=settings.postgres_max_pool_size,
-<<<<<<< HEAD
                 ssl=ssl_arg,
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
             )
+            await self._ensure_schema()
 
     async def disconnect(self) -> None:
         if self._pool is not None:
@@ -405,6 +454,20 @@ class PostgresStorage:
         import uuid
         row = await self.pool.fetchrow(GET_USER_BY_ID_SQL, uuid.UUID(user_id))
         return dict(row) if row else None
+
+    async def get_user_settings(self, user_id: str) -> dict | None:
+        import uuid
+        row = await self.pool.fetchrow(GET_USER_SETTINGS_SQL, uuid.UUID(user_id))
+        return dict(row) if row else None
+
+    async def upsert_user_settings(self, *, user_id: str, settings_payload: dict[str, Any]) -> dict:
+        import json, uuid
+        row = await self.pool.fetchrow(
+            UPSERT_USER_SETTINGS_SQL,
+            uuid.UUID(user_id),
+            json.dumps(settings_payload or {}),
+        )
+        return dict(row) if row else {"settings": settings_payload or {}, "updated_at": None}
 
     async def list_users(self, limit: int = 50, offset: int = 0) -> list[dict]:
         rows = await self.pool.fetch(LIST_USERS_SQL, limit, offset)
@@ -671,3 +734,115 @@ class DisabledPostgresStorage(PostgresStorage):
 
     async def get_admin_user_activity_report(self, sample_limit: int = 20) -> dict[str, Any]:
         return {"summary": {}, "sample_rows": []}
+
+    async def upsert_oauth_user(
+        self,
+        *,
+        email: str,
+        display_name: str,
+        handle: str,
+        avatar_url: str,
+        provider: str,
+        provider_id: str,
+    ) -> dict:
+        return {"id": "00000000-0000-0000-0000-000000000000", "is_admin": False}
+
+    async def get_user_by_email(self, email: str) -> dict | None:
+        return None
+
+    async def get_user_by_id(self, user_id: str) -> dict | None:
+        return None
+
+    async def get_user_settings(self, user_id: str) -> dict | None:
+        return None
+
+    async def upsert_user_settings(self, *, user_id: str, settings_payload: dict[str, Any]) -> dict:
+        return {"settings": settings_payload or {}, "updated_at": None}
+
+    async def create_session(
+        self,
+        *,
+        user_id: str,
+        session_token: str,
+        ip_address: str,
+        user_agent: str,
+        device_type: str = "unknown",
+        country_code: str = "",
+    ) -> dict:
+        return {
+            "id": "00000000-0000-0000-0000-000000000000",
+            "user_id": user_id,
+            "session_token": session_token,
+        }
+
+    async def get_session(self, session_token: str) -> dict | None:
+        return None
+
+    async def touch_session(self, session_token: str) -> None:
+        return None
+
+    async def invalidate_session(self, session_token: str) -> None:
+        return None
+
+    async def record_login_event(
+        self,
+        *,
+        user_id: str | None,
+        email: str,
+        provider: str,
+        success: bool,
+        ip_address: str,
+        user_agent: str,
+        failure_reason: str = "",
+    ) -> None:
+        return None
+
+    async def record_search_event(
+        self,
+        *,
+        user_id: str | None = None,
+        session_id: str | None = None,
+        anonymous_id: str = "",
+        query_raw: str,
+        query_normalized: str,
+        result_count: int = 0,
+        response_ms: int | None = None,
+        ip_address: str = "",
+        user_agent: str = "",
+        region: str = "",
+        display_language: str = "en-US",
+        safe_search: str = "moderate",
+        has_attachment: bool = False,
+        search_tab: str = "all",
+    ) -> str:
+        return ""
+
+    async def record_click_event(
+        self,
+        *,
+        user_id: str | None = None,
+        session_id: str | None = None,
+        anonymous_id: str = "",
+        search_event_id: str | None = None,
+        result_url: str,
+        result_title: str = "",
+        result_domain: str = "",
+        result_rank: int | None = None,
+        query_raw: str = "",
+        ip_address: str = "",
+        user_agent: str = "",
+        referrer_url: str = "",
+    ) -> None:
+        return None
+
+    async def record_impression_event(
+        self,
+        *,
+        user_id: str | None = None,
+        session_id: str | None = None,
+        anonymous_id: str = "",
+        search_event_id: str | None = None,
+        event_type: str,
+        payload: dict | None = None,
+    ) -> None:
+        return None

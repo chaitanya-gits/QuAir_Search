@@ -4,7 +4,7 @@ services:
       context: ../..
       dockerfile: infra/docker/Dockerfile.backend
     image: quantum-seo-backend:latest
-    container_name: quantum-seo-backend
+    container_name: quantum-seo-backend-v2
     init: true
     restart: unless-stopped
     env_file:
@@ -15,10 +15,6 @@ services:
       ES_URL: ""
       ENABLE_SEARCH_INDEX: "false"
       REDIS_URL: redis://redis:6379/0
-<<<<<<< HEAD
-      DATABASE_URL: "${DATABASE_URL}"
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
       ENABLE_CRAWL_SCHEDULER: "false"
       CRAWL_MAX_RESPONSE_BYTES: 2000000
       POSTGRES_MIN_POOL_SIZE: 1
@@ -32,19 +28,11 @@ services:
       - 0.0.0.0
       - --port
       - "3000"
-<<<<<<< HEAD
-=======
-      - --reload
-      - --reload-dir
-      - /app/backend
-      - --reload-dir
-      - /app/frontend
-    volumes:
-      - ../../backend:/app/backend
-      - ../../frontend:/app/frontend
->>>>>>> 082393a (Remove nested repo and clean structure)
     ports:
       - "3000:3000"
+    volumes:
+      - ../../backend:/app/backend:ro
+      - ../../frontend:/app/frontend:ro
     cpus: 1.0
     mem_limit: 512m
     mem_reservation: 128m
@@ -54,7 +42,7 @@ services:
 
   redis:
     image: redis:7.4-alpine
-    container_name: quantum-seo-redis
+    container_name: quantum-seo-redis-v2
     init: true
     restart: unless-stopped
     command:

@@ -15,14 +15,13 @@ crawler/
 frontend/
 gateway/
 indexer/
-infrastructure/
+infra/
 ranking/
 retrieval/
 *.ts
 *.tsx
 tsconfig.json
 package.json
-package-lock.json
 serve.mjs
 serve.log
 serve.err

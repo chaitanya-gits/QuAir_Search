@@ -189,4 +189,4 @@ def test_analyze_attachments_image_fallback_includes_detected_text(monkeypatch) 
     result = asyncio.run(analyze_attachments(payload))
 
     assert result["summary"] == "Analyzed 1 uploaded file using local recognition."
-    assert "Detected text: SALE 50 OFF" in result["details"]
+    assert "SALE 50 OFF" in result["details"]

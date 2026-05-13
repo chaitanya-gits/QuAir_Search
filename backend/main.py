@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+import os
 from pathlib import Path
 from typing import Iterable
 
@@ -11,11 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-<<<<<<< HEAD
 from backend.api.analytics import router as analytics_router
 from backend.api.admin import router as admin_router
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
 from backend.api.auth import router as auth_router
 from backend.api.health import router as health_router
 from backend.api.search import router as search_router
@@ -23,11 +21,8 @@ from backend.api.suggest import router as suggest_router
 from backend.api.trending import router as trending_router
 from backend.api.attachments import router as attachments_router
 from backend.api.config_api import router as config_router
-<<<<<<< HEAD
+from backend.api.settings import router as settings_router
 from backend.config import settings, validate_security_settings
-=======
-from backend.config import settings
->>>>>>> 082393a (Remove nested repo and clean structure)
 from backend.crawler.scheduler import CrawlScheduler
 from backend.runtime import build_frontier, open_runtime_services, require_redis, require_search_index
 from backend.search.engine import SearchEngine
@@ -38,10 +33,18 @@ validate_security_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    enable_search_index = str(os.getenv("ENABLE_SEARCH_INDEX", str(settings.enable_search_index))).strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
     async with open_runtime_services(
         with_redis=True,
+        # Always attach a search_index object to the app (real or disabled),
+        # so downstream components don't need special-casing.
         with_search_index=True,
-        ensure_index=True,
+        ensure_index=enable_search_index,
     ) as services:
         redis = require_redis(services)
         search_index = require_search_index(services)
@@ -57,11 +60,7 @@ async def lifespan(app: FastAPI):
         )
         app.state.frontier = frontier
         app.state.scheduler = None
-<<<<<<< HEAD
         if settings.enable_crawl_scheduler and services.postgres.is_available:
-=======
-        if settings.enable_crawl_scheduler:
->>>>>>> 082393a (Remove nested repo and clean structure)
             app.state.scheduler = CrawlScheduler(frontier, services.postgres, search_index)
             app.state.scheduler.start()
 
@@ -75,11 +74,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=settings.app_name, lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-<<<<<<< HEAD
     allow_origins=settings.cors_allow_origins,
-=======
-    allow_origins=["*"],
->>>>>>> 082393a (Remove nested repo and clean structure)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -96,20 +91,28 @@ async def session_middleware(request: Request, call_next):
             request.state.session = None
     else:
         request.state.session = None
-    return await call_next(request)
+    response = await call_next(request)
+
+    host = (request.url.hostname or "").lower()
+    path = request.url.path
+    if request.method == "GET" and host in {"localhost", "127.0.0.1"}:
+        if path == "/" or path.startswith("/assets/") or path.endswith((".html", ".js", ".css")):
+            response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+
+    return response
 
 app.include_router(search_router, prefix="/api")
 app.include_router(suggest_router, prefix="/api")
 app.include_router(trending_router, prefix="/api")
 app.include_router(health_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
-<<<<<<< HEAD
 app.include_router(analytics_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
 app.include_router(attachments_router, prefix="/api")
 app.include_router(config_router, prefix="/api")
+app.include_router(settings_router, prefix="/api")
 
 
 def _iter_tracked_files() -> Iterable[Path]:

@@ -13,29 +13,32 @@ const WEATHER_REFRESH_MIN_UPDATE_METERS = 10;
 const APP_BRAND_TITLE = "[QuAir Search]";
 
 const topLanguageOptions = [
-  "en-US", "en-GB", "en-IN", "hi", "bn", "te", "mr", "ta", "ur", "gu", "kn",
-  "ml", "pa", "or", "as", "es", "fr", "de", "it", "pt", "ru",
-  "zh", "ja", "ko", "ar", "tr", "nl", "pl", "sv", "no", "da",
-  "fi", "el", "he", "th", "vi", "id", "ms", "tl", "uk", "ro",
-  "hu", "cs", "sk", "sl", "hr", "sr", "bg", "lt", "lv", "et",
-  "fa", "sw", "am", "so", "zu", "xh", "af", "is", "ga", "cy",
-  "mt", "sq", "mk", "bs", "kk", "uz", "ky", "tg", "mn", "ne",
-  "si", "my", "km", "lo", "ka", "hy", "az", "be", "eu", "gl",
-  "ca", "eo", "la", "yo", "ig", "ha", "ceb", "jv", "su", "ps",
-  "sd", "sa", "mi", "haw", "sm", "st", "sn", "ny", "lb", "fo",
+  "en-US", "en-GB", "en-IN", "en-AU", "en-CA", "en-NZ", "en-ZA", "en-IE",
+  "hi", "bn", "te", "mr", "ta", "ur", "gu", "kn", "ml", "pa", "or", "as", "sa", "ne", "si",
+  "es", "es-MX", "es-AR", "fr", "fr-CA", "de", "it", "pt", "pt-BR", "ru", "uk", "be",
+  "zh", "zh-TW", "ja", "ko", "ar", "tr", "nl", "pl", "sv", "no", "da", "fi",
+  "el", "he", "th", "vi", "id", "ms", "tl", "fil", "ro", "hu", "cs", "sk", "sl", "hr", "sr", "bg",
+  "lt", "lv", "et", "fa", "ps", "sw", "am", "ti", "so", "zu", "xh", "af", "st", "sn", "rw", "ny",
+  "is", "ga", "cy", "gd", "mt", "sq", "mk", "bs", "kk", "uz", "ky", "tg", "tk", "mn", "az", "hy", "ka",
+  "my", "km", "lo", "eu", "gl", "ca", "co", "oc", "br", "eo", "la", "yi", "yo", "ig", "ha",
+  "ceb", "jv", "su", "mg", "mi", "haw", "sm", "to", "fj", "lb", "fo", "ku", "ckb", "sd"
 ];
 
 const topRegionOptions = [
-  "IN", "US", "GB", "CA", "AU", "DE", "FR", "IT", "ES", "NL",
-  "BR", "MX", "AR", "CO", "CL", "PE", "VE", "ZA", "NG", "EG",
-  "KE", "ET", "MA", "DZ", "TN", "GH", "UG", "TZ", "CM", "SN",
-  "SA", "AE", "QA", "KW", "OM", "BH", "JO", "LB", "IL", "TR",
-  "IR", "IQ", "PK", "BD", "NP", "LK", "MM", "TH", "VN", "MY",
-  "SG", "ID", "PH", "KR", "JP", "CN", "TW", "HK", "NZ", "RU",
-  "UA", "PL", "SE", "NO", "DK", "FI", "IE", "PT", "BE", "CH",
-  "AT", "CZ", "HU", "RO", "GR", "BG", "HR", "RS", "SK", "SI",
-  "LT", "LV", "EE", "IS", "LU", "MT", "CY", "GE", "KZ", "UZ",
-  "AZ", "MN", "KH", "LA", "BT", "AF", "BY", "MD", "AL", "ME",
+  "AF", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM", "AW", "AU", "AT", "AZ",
+  "BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ", "BM", "BT", "BO", "BA", "BW", "BR", "BN", "BG", "BF", "BI",
+  "KH", "CM", "CA", "CV", "KY", "CF", "TD", "CL", "CN", "CO", "KM", "CG", "CD", "CR", "CI", "HR", "CU", "CY", "CZ",
+  "DK", "DJ", "DM", "DO", "EC", "EG", "SV", "GQ", "ER", "EE", "SZ", "ET",
+  "FJ", "FI", "FR", "GA", "GM", "GE", "DE", "GH", "GR", "GD", "GT", "GN", "GW", "GY",
+  "HT", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IL", "IT",
+  "JM", "JP", "JO", "KZ", "KE", "KI", "KP", "KR", "KW", "KG",
+  "LA", "LV", "LB", "LS", "LR", "LY", "LI", "LT", "LU",
+  "MO", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MR", "MU", "MX", "FM", "MD", "MC", "MN", "ME", "MA", "MZ", "MM",
+  "NA", "NR", "NP", "NL", "NZ", "NI", "NE", "NG", "MK", "NO",
+  "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PL", "PT", "PR", "QA",
+  "RO", "RU", "RW", "KN", "LC", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", "SK", "SI", "SB", "SO", "ZA", "SS", "ES", "LK", "SD", "SR", "SE", "CH", "SY",
+  "TW", "TJ", "TZ", "TH", "TL", "TG", "TO", "TT", "TN", "TR", "TM", "TV", "UG", "UA", "AE", "GB", "US", "UY", "UZ",
+  "VU", "VA", "VE", "VN", "YE", "ZM", "ZW"
 ];
 
 const textNodeOriginalMap = new WeakMap();
@@ -173,16 +176,6 @@ const elements = {
   historySavingToggle: document.getElementById("historySavingToggle"),
   historyStatusLabel: document.getElementById("historyStatusLabel"),
   languageStatusLabel: document.getElementById("languageStatusLabel"),
-  menuRegion: document.getElementById("menuRegion"),
-  regionStatusLabel: document.getElementById("regionStatusLabel"),
-  regionFlagIcon: document.getElementById("regionFlagIcon"),
-  languageSelectButton: document.getElementById("languageSelectButton"),
-  languageOptions: document.getElementById("languageOptions"),
-  currentLanguageName: document.getElementById("currentLanguageName"),
-  regionSelectButton: document.getElementById("regionSelectButton"),
-  regionOptions: document.getElementById("regionOptions"),
-  currentRegionFlag: document.getElementById("currentRegionFlag"),
-  currentRegionName: document.getElementById("currentRegionName"),
   menuLanguage: document.getElementById("menuLanguage"),
   menuAdminDashboard: document.getElementById("menuAdminDashboard"),
   menuSafeSearch: document.getElementById("menuSafeSearch"),
@@ -191,6 +184,7 @@ const elements = {
   accountsList: document.getElementById("accountsList"),
   addAccountButton: document.getElementById("addAccountButton"),
   topBrandButton: document.getElementById("topBrandButton"),
+  headerSettingsBtn: document.getElementById("headerSettingsBtn"),
   userProfile: document.getElementById("userProfile"),
   instantAnswer: document.getElementById("instantAnswer"),
   loadMoreWrap: document.getElementById("loadMoreWrap"),
@@ -217,8 +211,19 @@ const elements = {
   utilityDistanceToUnit: document.getElementById("utilityDistanceToUnit"),
   utilityDistanceSwap: document.getElementById("utilityDistanceSwap"),
   utilityTimeOutput: document.getElementById("utilityTimeOutput"),
-  utilityTimeAmPm: document.getElementById("utilityTimeAmPm"),
   utilityTimeMeta: document.getElementById("utilityTimeMeta"),
+  utilityTzSelect1: document.getElementById("utilityTzSelect1"),
+  utilityTzSelect2: document.getElementById("utilityTzSelect2"),
+  utilityTzSelect3: document.getElementById("utilityTzSelect3"),
+  utilityTzSelectA1: document.getElementById("utilityTzSelectA1"),
+  utilityTzSelectA2: document.getElementById("utilityTzSelectA2"),
+  utilityTzSelectA3: document.getElementById("utilityTzSelectA3"),
+  utilityTimeTzOutput1: document.getElementById("utilityTimeTzOutput1"),
+  utilityTimeTzOutput2: document.getElementById("utilityTimeTzOutput2"),
+  utilityTimeTzOutput3: document.getElementById("utilityTimeTzOutput3"),
+  utilityTimeTzMeta1: document.getElementById("utilityTimeTzMeta1"),
+  utilityTimeTzMeta2: document.getElementById("utilityTimeTzMeta2"),
+  utilityTimeTzMeta3: document.getElementById("utilityTimeTzMeta3"),
   utilityAnalogHourHand: document.getElementById("utilityAnalogHourHand"),
   utilityAnalogMinuteHand: document.getElementById("utilityAnalogMinuteHand"),
   utilityAnalogSecondHand: document.getElementById("utilityAnalogSecondHand"),
@@ -231,11 +236,18 @@ const elements = {
   utilityCurrencyAmount: document.getElementById("utilityCurrencyAmount"),
   utilityCurrencyFrom: document.getElementById("utilityCurrencyFrom"),
   utilityCurrencyTo: document.getElementById("utilityCurrencyTo"),
-  utilityCurrencySwap: document.getElementById("utilityCurrencySwap"),
-  utilityCurrencyToAmount: document.getElementById("utilityCurrencyToAmount"),
-  utilityCurrencyUpdated: document.getElementById("utilityCurrencyUpdated"),
   utilityCurrencyOutput: document.getElementById("utilityCurrencyOutput"),
   utilityCurrencyMeta: document.getElementById("utilityCurrencyMeta"),
+  settingsModal: document.getElementById("settingsModal"),
+  settingsBackdrop: document.getElementById("settingsBackdrop"),
+  settingsCloseBtn: document.getElementById("settingsCloseBtn"),
+  settingsPopupForm: document.getElementById("settingsPopupForm"),
+  settingsPopupLanguage: document.getElementById("settingsPopupLanguage"),
+  settingsPopupRegion: document.getElementById("settingsPopupRegion"),
+  settingsPopupThemeSystem: document.getElementById("settingsPopupThemeSystem"),
+  settingsPopupThemeLight: document.getElementById("settingsPopupThemeLight"),
+  settingsPopupThemeDark: document.getElementById("settingsPopupThemeDark"),
+  settingsPopupSafeSearch: document.getElementById("settingsPopupSafeSearch"),
   attachButton: document.getElementById("attachButton"),
   attachPreview: document.getElementById("attachPreview"),
   attachMenu: document.getElementById("attachMenu"),
@@ -779,6 +791,7 @@ function openUtilitiesModal() {
   if (!modal) return;
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
+  initUtilityDropdowns();
   // Utilities panel is always visible inside the modal.
   if (elements.utilitiesPanel) {
     elements.utilitiesPanel.hidden = false;
@@ -801,10 +814,6 @@ function closeUtilitiesModal() {
 
 function setUtilityTimeMode(mode) {
   const nextMode = mode === "analog" ? "analog" : "digital";
-  const layout = document.querySelector(".utility-card-time .utility-time-layout");
-  if (layout) {
-    layout.classList.toggle("is-digital", nextMode === "digital");
-  }
   if (elements.utilityTimeDigitalWrap) {
     elements.utilityTimeDigitalWrap.hidden = nextMode !== "digital";
   }
@@ -835,33 +844,227 @@ function renderCalc(expr) {
   }
 }
 
-const UNIT_CONVERSIONS = {
-  distance: {
-    km: { mi: 0.621371 },
-    mi: { km: 1.60934 }
-  },
-  weight: {
-    kg: { lbs: 2.20462 },
-    lbs: { kg: 0.453592 }
-  },
-  area: {
-    sqkm: { sqmi: 0.386102 },
-    sqmi: { sqkm: 2.58999 }
-  }
-};
-
-let currentConvertMode = "distance";
-
-function convertUnitValue(value, fromUnit, toUnit) {
+function convertDistanceValue(value, fromUnit, toUnit) {
   const v = Number(value);
   if (!Number.isFinite(v)) return "";
   if (fromUnit === toUnit) return String(v);
-  
-  const factor = UNIT_CONVERSIONS[currentConvertMode]?.[fromUnit]?.[toUnit];
-  if (factor) {
-    return String(+(v * factor).toFixed(4));
-  }
+  if (fromUnit === "km" && toUnit === "mi") return String((v * 0.621371).toFixed(4));
+  if (fromUnit === "mi" && toUnit === "km") return String((v * 1.60934).toFixed(4));
   return "";
+}
+
+function convertUnitValue(value, fromUnit, toUnit, mode) {
+  const v = Number(value);
+  if (!Number.isFinite(v)) return "";
+  if (fromUnit === toUnit) return String(v);
+
+  if (mode === "weight") {
+    if (fromUnit === "kg" && toUnit === "lb") return String((v * 2.2046226218).toFixed(4));
+    if (fromUnit === "lb" && toUnit === "kg") return String((v / 2.2046226218).toFixed(4));
+    return "";
+  }
+
+  if (mode === "area") {
+    if (fromUnit === "sqm" && toUnit === "sqft") return String((v * 10.7639104167).toFixed(4));
+    if (fromUnit === "sqft" && toUnit === "sqm") return String((v / 10.7639104167).toFixed(4));
+    return "";
+  }
+
+  // distance (default)
+  return convertDistanceValue(v, fromUnit, toUnit);
+}
+
+function setConvertResultButtonText(text) {
+  const btn = document.getElementById("utilityConvertResultBtn");
+  if (btn) btn.textContent = text;
+}
+
+function getUtilityUnitMode() {
+  const stored = localStorage.getItem("utility_unit_mode");
+  if (stored === "weight" || stored === "area" || stored === "distance") return stored;
+  return "distance";
+}
+
+function setUtilityUnitMode(mode) {
+  const next = mode === "weight" || mode === "area" ? mode : "distance";
+  localStorage.setItem("utility_unit_mode", next);
+  return next;
+}
+
+function applyUtilityUnitModeUi(mode) {
+  const titleEl = document.querySelector(".utility-card-convert .utility-card-title");
+  if (titleEl) {
+    titleEl.textContent = mode === "weight" ? "Weight" : mode === "area" ? "Area" : "Distance & Length";
+  }
+
+  const buttons = [
+    document.getElementById("utilityConvertModeWeight"),
+    document.getElementById("utilityConvertModeDistance"),
+    document.getElementById("utilityConvertModeArea"),
+  ];
+  for (const btn of buttons) {
+    if (!btn) continue;
+    btn.classList.toggle("is-active", btn.dataset.unitMode === mode);
+  }
+
+  const fromUnit = elements.utilityDistanceFromUnit;
+  const toUnit = elements.utilityDistanceToUnit;
+  if (!fromUnit || !toUnit) return;
+
+  const setOptions = (selectEl, options, preferred) => {
+    selectEl.innerHTML = options.map((o) => `<option value="${escapeAttribute(o.value)}">${escapeHtml(o.label)}</option>`).join("");
+    if (preferred && options.some((o) => o.value === preferred)) {
+      selectEl.value = preferred;
+    }
+  };
+
+  let fromOpts;
+  let toOpts;
+  let fromPref;
+  let toPref;
+
+  if (mode === "weight") {
+    fromOpts = [{ value: "kg", label: "kg" }, { value: "lb", label: "lb" }];
+    fromPref = "kg";
+    toOpts   = [{ value: "lb", label: "lb" }, { value: "kg", label: "kg" }];
+    toPref   = "lb";
+  } else if (mode === "area") {
+    fromOpts = [{ value: "sqm", label: "sqm" }, { value: "sqft", label: "sqft" }];
+    fromPref = "sqm";
+    toOpts   = [{ value: "sqft", label: "sqft" }, { value: "sqm", label: "sqm" }];
+    toPref   = "sqft";
+  } else {
+    fromOpts = [{ value: "km", label: "km" }, { value: "mi", label: "miles" }];
+    fromPref = "km";
+    toOpts   = [{ value: "mi", label: "miles" }, { value: "km", label: "km" }];
+    toPref   = "mi";
+  }
+
+  setOptions(fromUnit, fromOpts, fromPref);
+  setOptions(toUnit, toOpts, toPref);
+
+  refreshUtilityUnitDropdown("unit-from", fromOpts, fromPref);
+  refreshUtilityUnitDropdown("unit-to", toOpts, toPref);
+}
+
+const CURRENCY_CODES = [
+  "AED","AUD","BRL","CAD","CHF","CNY","DKK","EUR","GBP","HKD",
+  "IDR","INR","JPY","KRW","MXN","MYR","NOK","NZD","PHP","PLN",
+  "RUB","SAR","SEK","SGD","THB","TRY","TWD","USD","ZAR","PKR"
+];
+
+function buildUtilityDropdownOptions(dropdown, options) {
+  const menu = dropdown.querySelector(".custom-dropdown-menu");
+  if (!menu) return;
+  menu.innerHTML = "";
+  for (const opt of options) {
+    const li = document.createElement("li");
+    li.className = "custom-dropdown-option";
+    li.setAttribute("role", "option");
+    li.dataset.value = opt.value;
+    li.innerHTML = `<span class="custom-dropdown-option-text">${escapeHtml(opt.label)}</span>`;
+    li.addEventListener("click", () => {
+      selectUtilityDropdownOption(dropdown, opt.value, opt.label);
+    });
+    menu.appendChild(li);
+  }
+}
+
+function selectUtilityDropdownOption(dropdown, value, label) {
+  const trigger = dropdown.querySelector(".custom-dropdown-trigger");
+  const valueEl = trigger?.querySelector(".custom-dropdown-value");
+  const menu = dropdown.querySelector(".custom-dropdown-menu");
+
+  if (valueEl) valueEl.textContent = label;
+  if (trigger) trigger.setAttribute("aria-expanded", "false");
+  if (menu) {
+    menu.hidden = true;
+    for (const opt of menu.querySelectorAll(".custom-dropdown-option")) {
+      opt.classList.toggle("is-selected", opt.dataset.value === value);
+    }
+  }
+
+  const type = dropdown.dataset.dropdown;
+  if (type === "currency-from" && elements.utilityCurrencyFrom) {
+    elements.utilityCurrencyFrom.value = value;
+    void updateCurrencyRatePreview();
+  } else if (type === "currency-to" && elements.utilityCurrencyTo) {
+    elements.utilityCurrencyTo.value = value;
+    void updateCurrencyRatePreview();
+  } else if (type === "unit-from" && elements.utilityDistanceFromUnit) {
+    elements.utilityDistanceFromUnit.value = value;
+    syncDistanceConversion("from");
+  } else if (type === "unit-to" && elements.utilityDistanceToUnit) {
+    elements.utilityDistanceToUnit.value = value;
+    syncDistanceConversion("from");
+  }
+}
+
+function refreshUtilityUnitDropdown(dropdownType, options, preferred) {
+  const id = dropdownType === "unit-from" ? "utilityUnitFromDropdown" : "utilityUnitToDropdown";
+  const dropdown = document.getElementById(id);
+  if (!dropdown) return;
+  buildUtilityDropdownOptions(dropdown, options);
+  const sel = preferred || options[0]?.value;
+  const label = options.find((o) => o.value === sel)?.label || sel;
+  const valueEl = dropdown.querySelector(".custom-dropdown-value");
+  if (valueEl) valueEl.textContent = label;
+  const menuOpts = dropdown.querySelectorAll(".custom-dropdown-option");
+  for (const opt of menuOpts) opt.classList.toggle("is-selected", opt.dataset.value === sel);
+}
+
+function populateUtilityCurrencySelect(selectEl, selectedValue) {
+  if (!selectEl) return;
+  selectEl.innerHTML = CURRENCY_CODES.map((code) => {
+    return `<option value="${escapeAttribute(code)}">${escapeHtml(code)}</option>`;
+  }).join("");
+  if (selectedValue && CURRENCY_CODES.includes(selectedValue)) {
+    selectEl.value = selectedValue;
+  }
+}
+
+function initUtilityDropdowns() {
+  initCustomDropdownListeners();
+
+  const currencyOpts = CURRENCY_CODES.map((c) => ({ value: c, label: c }));
+
+  populateUtilityCurrencySelect(elements.utilityCurrencyFrom, elements.utilityCurrencyFrom?.value || "USD");
+  populateUtilityCurrencySelect(elements.utilityCurrencyTo, elements.utilityCurrencyTo?.value || "INR");
+
+  const setupDrop = (id, opts, initVal) => {
+    const dropdown = document.getElementById(id);
+    if (!dropdown || dropdown.dataset.initialized === "true") return;
+    buildUtilityDropdownOptions(dropdown, opts);
+    if (initVal) {
+      const label = opts.find((o) => o.value === initVal)?.label || initVal;
+      const valueEl = dropdown.querySelector(".custom-dropdown-value");
+      if (valueEl) valueEl.textContent = label;
+      for (const opt of dropdown.querySelectorAll(".custom-dropdown-option")) {
+        opt.classList.toggle("is-selected", opt.dataset.value === initVal);
+      }
+    }
+    const trigger = dropdown.querySelector(".custom-dropdown-trigger");
+    if (trigger) {
+      trigger.addEventListener("click", (e) => {
+        e.preventDefault();
+        toggleCustomDropdown(dropdown);
+      });
+    }
+    dropdown.dataset.initialized = "true";
+  };
+
+  setupDrop("utilityCurrencyFromDropdown", currencyOpts, "USD");
+  setupDrop("utilityCurrencyToDropdown", currencyOpts, "INR");
+
+  const unitMode = getUtilityUnitMode();
+  const unitOpts = unitMode === "weight"
+    ? [{ value: "kg", label: "kg" }, { value: "lb", label: "lb" }]
+    : unitMode === "area"
+    ? [{ value: "sqm", label: "sqm" }, { value: "sqft", label: "sqft" }]
+    : [{ value: "km", label: "km" }, { value: "mi", label: "miles" }];
+  setupDrop("utilityUnitFromDropdown", unitOpts, unitOpts[0]?.value);
+  const unitToOpts = [...unitOpts].reverse();
+  setupDrop("utilityUnitToDropdown", unitToOpts, unitToOpts[0]?.value);
 }
 
 function syncDistanceConversion(changedSide = "from") {
@@ -869,19 +1072,108 @@ function syncDistanceConversion(changedSide = "from") {
   const toValue = elements.utilityDistanceTo?.value ?? "";
   const fromUnit = elements.utilityDistanceFromUnit?.value ?? "km";
   const toUnit = elements.utilityDistanceToUnit?.value ?? "mi";
+  const mode = getUtilityUnitMode();
 
   if (changedSide === "from") {
-    const next = convertUnitValue(fromValue, fromUnit, toUnit);
+    const next = convertUnitValue(fromValue, fromUnit, toUnit, mode);
     if (elements.utilityDistanceTo && next !== "") {
       elements.utilityDistanceTo.value = next;
     }
+    setConvertResultButtonText(next ? `${next} ${toUnit}` : "Result will appear here.");
     return;
   }
 
-  const next = convertUnitValue(toValue, toUnit, fromUnit);
+  const next = convertUnitValue(toValue, toUnit, fromUnit, mode);
   if (elements.utilityDistanceFrom && next !== "") {
     elements.utilityDistanceFrom.value = next;
   }
+  setConvertResultButtonText(next ? `${elements.utilityDistanceFrom.value} ${fromUnit}` : "Result will appear here.");
+}
+
+const UTILITY_TIMEZONE_OPTIONS = [
+  { label: "Tokyo", value: "Asia/Tokyo" },
+  { label: "London", value: "Europe/London" },
+  { label: "Barcelona", value: "Europe/Madrid" },
+  { label: "New York", value: "America/New_York" },
+  { label: "Dubai", value: "Asia/Dubai" },
+  { label: "Los Angeles", value: "America/Los_Angeles" },
+  { label: "Singapore", value: "Asia/Singapore" },
+  { label: "Sydney", value: "Australia/Sydney" },
+  { label: "Paris", value: "Europe/Paris" },
+  { label: "Berlin", value: "Europe/Berlin" },
+  { label: "Toronto", value: "America/Toronto" },
+  { label: "Chicago", value: "America/Chicago" },
+];
+
+function populateUtilityTimezoneSelect(selectEl, defaultValue) {
+  if (!selectEl) return;
+  if (!selectEl.options.length) {
+    const optionsMarkup = UTILITY_TIMEZONE_OPTIONS.map(({ label, value }) => {
+      return `<option value="${escapeAttribute(value)}">${escapeHtml(label)}</option>`;
+    }).join("");
+    selectEl.innerHTML = optionsMarkup;
+  }
+  if (defaultValue && Array.from(selectEl.options).some((opt) => opt.value === defaultValue)) {
+    selectEl.value = defaultValue;
+  }
+}
+
+function getUtilityTzPrefs() {
+  try {
+    const raw = localStorage.getItem("utility_timezones");
+    const parsed = raw ? JSON.parse(raw) : null;
+    if (!parsed || typeof parsed !== "object") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function setUtilityTzPrefs(prefs) {
+  try {
+    localStorage.setItem("utility_timezones", JSON.stringify(prefs));
+  } catch {
+    // ignore
+  }
+}
+
+function ensureUtilityTimezoneDefaults() {
+  const prefs = getUtilityTzPrefs() || {};
+  const next = {
+    tz1: typeof prefs.tz1 === "string" ? prefs.tz1 : "Asia/Tokyo",
+    tz2: typeof prefs.tz2 === "string" ? prefs.tz2 : "Europe/London",
+    tz3: typeof prefs.tz3 === "string" ? prefs.tz3 : "America/New_York",
+  };
+  setUtilityTzPrefs(next);
+  return next;
+}
+
+function getClockTimeParts(timeZone, date) {
+  const now = date || new Date();
+  if (!timeZone) {
+    const ms = now.getMilliseconds();
+    const second = now.getSeconds() + ms / 1000;
+    const minute = now.getMinutes() + second / 60;
+    const hour = (now.getHours() % 12) + minute / 60;
+    return { second, minute, hour };
+  }
+
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(now);
+
+  const get = (type) => Number.parseInt(parts.find((p) => p.type === type)?.value || "0", 10);
+  const secondInt = get("second");
+  const minuteInt = get("minute");
+  const hourInt = get("hour") % 12;
+  const second = secondInt;
+  const minute = minuteInt + second / 60;
+  const hour = hourInt + minute / 60;
+  return { second, minute, hour };
 }
 
 function updateUtilityTime() {
@@ -889,77 +1181,132 @@ function updateUtilityTime() {
     return;
   }
   const now = new Date();
-  const timeParts = new Intl.DateTimeFormat([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  }).formatToParts(now);
-  const hhmm = timeParts
-    .filter((p) => p.type === "hour" || p.type === "minute" || p.type === "literal")
-    .map((p) => p.value)
-    .join("")
-    .trim();
-  const dayPeriod = timeParts.find((p) => p.type === "dayPeriod")?.value || "";
-  elements.utilityTimeOutput.textContent = hhmm;
-  if (elements.utilityTimeAmPm) {
-    elements.utilityTimeAmPm.textContent = dayPeriod.toUpperCase();
-  }
+
+  const formatTimeHtml = (date, timeZone) => {
+    const parts = new Intl.DateTimeFormat(undefined, {
+      timeZone,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).formatToParts(date);
+    const hh = parts.find((p) => p.type === "hour")?.value || "00";
+    const mm = parts.find((p) => p.type === "minute")?.value || "00";
+    const dp = (parts.find((p) => p.type === "dayPeriod")?.value || "").toUpperCase();
+    const safeDp = dp === "AM" || dp === "PM" ? dp : "";
+    return `${escapeHtml(hh)}:${escapeHtml(mm)}${safeDp ? ` <span class="utility-time-ampm">${escapeHtml(safeDp)}</span>` : ""}`;
+  };
+
+  elements.utilityTimeOutput.innerHTML = formatTimeHtml(now);
   elements.utilityTimeMeta.textContent = now.toLocaleDateString([], {
     weekday: "long",
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric",
   });
+
+  const prefs = ensureUtilityTimezoneDefaults();
+  const customZones = [prefs.tz1, prefs.tz2, prefs.tz3];
+  const outEls = [elements.utilityTimeTzOutput1, elements.utilityTimeTzOutput2, elements.utilityTimeTzOutput3];
+  const metaEls = [elements.utilityTimeTzMeta1, elements.utilityTimeTzMeta2, elements.utilityTimeTzMeta3];
+
+  for (let i = 0; i < 3; i += 1) {
+    const tz = customZones[i];
+    const outEl = outEls[i];
+    const metaEl = metaEls[i];
+    if (!outEl || !metaEl) continue;
+    outEl.innerHTML = formatTimeHtml(now, tz);
+    metaEl.textContent = now.toLocaleDateString([], { timeZone: tz, weekday: "short", month: "short", day: "numeric" });
+  }
 
   if (
     elements.utilityAnalogHourHand
     && elements.utilityAnalogMinuteHand
     && elements.utilityAnalogSecondHand
   ) {
-    const ms = now.getMilliseconds();
-    const second = now.getSeconds() + ms / 1000;
-    const minute = now.getMinutes() + second / 60;
-    const hour = (now.getHours() % 12) + minute / 60;
+    // Legacy single analog clock (kept for backward compatibility; no-op if removed from DOM)
+    const { second, minute, hour } = getClockTimeParts(null, now);
+    elements.utilityAnalogSecondHand.style.setProperty("--rot", `${second * 6}deg`);
+    elements.utilityAnalogMinuteHand.style.setProperty("--rot", `${minute * 6}deg`);
+    elements.utilityAnalogHourHand.style.setProperty("--rot", `${hour * 30}deg`);
+  }
 
-    const secondDeg = second * 6; // 360 / 60
-    const minuteDeg = minute * 6; // 360 / 60
-    const hourDeg = hour * 30; // 360 / 12
+  // New analog grid clocks
+  for (const clock of document.querySelectorAll(".utility-analog-clock[data-analog-slot]")) {
+    const slot = clock.getAttribute("data-analog-slot");
+    let tz = null;
+    if (slot === "1") tz = prefs.tz1;
+    if (slot === "2") tz = prefs.tz2;
+    if (slot === "3") tz = prefs.tz3;
 
-    elements.utilityAnalogSecondHand.style.setProperty("--rot", `${secondDeg}deg`);
-    elements.utilityAnalogMinuteHand.style.setProperty("--rot", `${minuteDeg}deg`);
-    elements.utilityAnalogHourHand.style.setProperty("--rot", `${hourDeg}deg`);
+    const { second, minute, hour } = getClockTimeParts(tz, now);
+    const secondHand = clock.querySelector("[data-analog-hand='second']");
+    const minuteHand = clock.querySelector("[data-analog-hand='minute']");
+    const hourHand = clock.querySelector("[data-analog-hand='hour']");
+    if (secondHand) secondHand.style.setProperty("--rot", `${second * 6}deg`);
+    if (minuteHand) minuteHand.style.setProperty("--rot", `${minute * 6}deg`);
+    if (hourHand) hourHand.style.setProperty("--rot", `${hour * 30}deg`);
   }
 }
 
 async function fetchFxRate(from, to) {
-  if (from === to) return { rate: 1, source: "same currency" };
+  if (from === to) return { rate: 1, source: "same currency", updatedAt: null };
 
-  const liveRate = await fetchLiveFxRate(from, to);
-  if (Number.isFinite(liveRate) && liveRate > 0) {
-    return { rate: liveRate, source: "live rate" };
+  const live = await fetchLiveFxRate(from, to);
+  if (live && Number.isFinite(live.rate) && live.rate > 0) {
+    return { rate: live.rate, source: live.source || "live rate", updatedAt: live.updatedAt || null };
   }
 
   const fallbackRate = getFallbackFxRate(from, to);
   if (Number.isFinite(fallbackRate) && fallbackRate > 0) {
-    return { rate: fallbackRate, source: "offline estimate" };
+    return { rate: fallbackRate, source: "offline estimate", updatedAt: null };
   }
 
   throw new Error("FX rate not available.");
 }
 
 async function fetchLiveFxRate(from, to) {
-  const url = `https://open.er-api.com/v6/latest/${encodeURIComponent(from)}`;
-  try {
-    const resp = await fetch(url, { cache: "no-store" });
-    if (resp.ok) {
-      const payload = await resp.json();
-      const rate = payload?.rates?.[to];
-      if (Number.isFinite(rate)) {
-        return rate;
+  const endpoints = [
+    {
+      name: "exchangerate.host",
+      url: `https://api.exchangerate.host/latest?base=${encodeURIComponent(from)}&symbols=${encodeURIComponent(to)}`,
+      parse: (payload) => ({ rate: payload?.rates?.[to], updatedAt: payload?.date ? new Date(payload.date) : null }),
+    },
+    {
+      name: "frankfurter",
+      url: `https://api.frankfurter.app/latest?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+      parse: (payload) => ({ rate: payload?.rates?.[to], updatedAt: payload?.date ? new Date(payload.date) : null }),
+    },
+    {
+      name: "open.er-api.com",
+      url: `https://open.er-api.com/v6/latest/${encodeURIComponent(from)}`,
+      parse: (payload) => ({
+        rate: payload?.rates?.[to],
+        updatedAt: Number.isFinite(payload?.time_last_update_unix)
+          ? new Date(payload.time_last_update_unix * 1000)
+          : null,
+      }),
+    },
+  ];
+
+  for (const endpoint of endpoints) {
+    try {
+      const resp = await fetch(endpoint.url, { cache: "no-store" });
+      if (!resp.ok) {
+        continue;
       }
+
+      const payload = await resp.json();
+      const parsed = endpoint.parse(payload);
+      const rate = parsed?.rate;
+      if (Number.isFinite(rate)) {
+        return { rate, updatedAt: parsed?.updatedAt ?? null, source: endpoint.name };
+      }
+    } catch {
+      // Try the next endpoint before falling back to local estimates.
     }
-  } catch {}
-  return Number.NaN;
+  }
+
+  return null;
 }
 
 function getFallbackFxRate(from, to) {
@@ -978,28 +1325,30 @@ function setCurrencyUi(resultText, metaText) {
   if (elements.utilityCurrencyMeta) elements.utilityCurrencyMeta.textContent = metaText || "";
 }
 
-function setCurrencyUpdatedLabel(date) {
-  if (!elements.utilityCurrencyUpdated) return;
-  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
-    elements.utilityCurrencyUpdated.textContent = "Last Updated —";
+async function updateCurrencyRatePreview() {
+  if (!elements.utilityCurrencyFrom || !elements.utilityCurrencyTo) return;
+  if (!elements.utilityCurrencyMeta) return;
+
+  const from = elements.utilityCurrencyFrom.value;
+  const to = elements.utilityCurrencyTo.value;
+  if (!from || !to) {
+    elements.utilityCurrencyMeta.textContent = "";
     return;
   }
-  elements.utilityCurrencyUpdated.textContent = `Last Updated ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
-}
 
-function formatCurrencyNumber(value) {
-  if (!Number.isFinite(value)) return "—";
-  return new Intl.NumberFormat(undefined, { maximumFractionDigits: 6 }).format(value);
-}
-
-let currencyConvertTimer = null;
-
-function scheduleCurrencyConvert() {
-  if (!elements.utilityCurrencyForm) return;
-  if (currencyConvertTimer) window.clearTimeout(currencyConvertTimer);
-  currencyConvertTimer = window.setTimeout(() => {
-    elements.utilityCurrencyForm.requestSubmit();
-  }, 120);
+  try {
+    const { rate, source, updatedAt } = await fetchFxRate(from, to);
+    if (!Number.isFinite(rate) || rate <= 0) {
+      elements.utilityCurrencyMeta.textContent = "";
+      return;
+    }
+    const updatedLabel = updatedAt
+      ? ` • Updated ${updatedAt.toLocaleString()}`
+      : "";
+    elements.utilityCurrencyMeta.textContent = `1 ${from} = ${new Intl.NumberFormat(undefined, { maximumFractionDigits: 6 }).format(rate)} ${to} (${source})${updatedLabel}`;
+  } catch {
+    elements.utilityCurrencyMeta.textContent = "Rate unavailable (offline).";
+  }
 }
 
 function resetCurrencyManualRateMessage() {
@@ -3426,6 +3775,324 @@ function populateSettingsOptions() {
   }
 }
 
+function getCountryFlagEmoji(countryCode) {
+  const code = String(countryCode || "").toUpperCase();
+  if (code.length !== 2) return "";
+  const offset = 0x1F1E6 - 65;
+  return String.fromCodePoint(code.charCodeAt(0) + offset, code.charCodeAt(1) + offset);
+}
+
+function getFlagImgHtml(code, size = 20) {
+  const cc = String(code || "").toLowerCase();
+  if (!cc || cc.length !== 2) return "";
+  return `<img src="https://flagcdn.com/w${size}/${cc}.png" srcset="https://flagcdn.com/w${size * 2}/${cc}.png 2x" width="${size}" height="${Math.round(size * 0.75)}" alt="${cc.toUpperCase()} flag" class="flag-img" onerror="this.style.display='none'">`;
+}
+
+function formatRegionLabelWithFlag(code) {
+  const flag = getCountryFlagEmoji(code);
+  const name = formatRegionLabel(code);
+  return flag ? `${flag} ${name}` : name;
+}
+
+function buildFlagTriggerHtml(code, name) {
+  const flagHtml = getFlagImgHtml(code, 20);
+  return `<span class="custom-dropdown-trigger-inner">${flagHtml}<span>${name}</span></span>`;
+}
+
+const customDropdownState = {
+  languageDropdown: null,
+  regionDropdown: null,
+  cardLanguageDropdown: null,
+  cardRegionDropdown: null,
+  listenersInitialized: false,
+};
+
+function closeAllCustomDropdowns(exceptDropdown = null) {
+  const dropdowns = document.querySelectorAll(".custom-dropdown");
+  for (const dropdown of dropdowns) {
+    if (dropdown === exceptDropdown) continue;
+    const trigger = dropdown.querySelector(".custom-dropdown-trigger");
+    const menu = dropdown.querySelector(".custom-dropdown-menu");
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+    if (menu) menu.hidden = true;
+  }
+}
+
+function toggleCustomDropdown(dropdown) {
+  const trigger = dropdown.querySelector(".custom-dropdown-trigger");
+  const menu = dropdown.querySelector(".custom-dropdown-menu");
+  if (!trigger || !menu) return;
+
+  const isOpen = trigger.getAttribute("aria-expanded") === "true";
+
+  if (isOpen) {
+    trigger.setAttribute("aria-expanded", "false");
+    menu.hidden = true;
+  } else {
+    closeAllCustomDropdowns(dropdown);
+    trigger.setAttribute("aria-expanded", "true");
+    menu.hidden = false;
+    const selectedOption = menu.querySelector(".is-selected");
+    if (selectedOption) {
+      selectedOption.scrollIntoView({ block: "nearest" });
+    }
+  }
+}
+
+function selectCustomDropdownOption(dropdown, value, labelText, isRegion = false) {
+  const trigger = dropdown.querySelector(".custom-dropdown-trigger");
+  const valueEl = trigger?.querySelector(".custom-dropdown-value");
+  const menu = dropdown.querySelector(".custom-dropdown-menu");
+
+  if (valueEl) {
+    if (isRegion) {
+      valueEl.innerHTML = buildFlagTriggerHtml(value, labelText);
+    } else {
+      valueEl.textContent = labelText;
+    }
+  }
+  if (trigger) trigger.setAttribute("aria-expanded", "false");
+  if (menu) {
+    menu.hidden = true;
+    const options = menu.querySelectorAll(".custom-dropdown-option");
+    for (const opt of options) {
+      opt.classList.toggle("is-selected", opt.dataset.value === value);
+    }
+  }
+
+  const dropdownType = dropdown.dataset.dropdown;
+  let hiddenSelect = null;
+  if (dropdownType === "language") {
+    hiddenSelect = elements.settingsPopupLanguage;
+  } else if (dropdownType === "region") {
+    hiddenSelect = elements.settingsPopupRegion;
+  } else if (dropdownType === "card-language") {
+    hiddenSelect = elements.settingDisplayLanguage;
+  } else if (dropdownType === "card-region") {
+    hiddenSelect = elements.settingRegion;
+  }
+  if (hiddenSelect) hiddenSelect.value = value;
+}
+
+function buildCustomDropdownOptions(dropdown, options, formatter, withFlag = false) {
+  const menu = dropdown.querySelector(".custom-dropdown-menu");
+  if (!menu) return;
+
+  menu.innerHTML = "";
+  for (const code of options) {
+    const li = document.createElement("li");
+    li.className = "custom-dropdown-option";
+    li.setAttribute("role", "option");
+    li.dataset.value = code;
+
+    if (withFlag) {
+      const name = formatRegionLabel(code);
+      const flagImg = getFlagImgHtml(code, 20);
+      li.innerHTML = `<span class="custom-dropdown-option-flag">${flagImg}</span><span class="custom-dropdown-option-text">${name}</span>`;
+    } else {
+      li.innerHTML = `<span class="custom-dropdown-option-text">${formatter(code)}</span>`;
+    }
+
+    li.addEventListener("click", () => {
+      if (withFlag) {
+        const name = formatRegionLabel(code);
+        selectCustomDropdownOption(dropdown, code, name, true);
+      } else {
+        selectCustomDropdownOption(dropdown, code, formatter(code), false);
+      }
+    });
+
+    menu.appendChild(li);
+  }
+}
+
+function initCustomDropdownListeners() {
+  if (customDropdownState.listenersInitialized) return;
+
+  document.addEventListener("click", (e) => {
+    const isInsideDropdown = e.target.closest(".custom-dropdown");
+    if (!isInsideDropdown) {
+      closeAllCustomDropdowns();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAllCustomDropdowns();
+    }
+  });
+
+  customDropdownState.listenersInitialized = true;
+}
+
+function initSingleCustomDropdown(dropdown, optionsList, formatter, withFlag) {
+  if (!dropdown || dropdown.dataset.initialized === "true") return;
+
+  const sortedOptions = [...optionsList].sort((a, b) => {
+    const labelA = withFlag ? formatRegionLabel(a) : formatter(a);
+    const labelB = withFlag ? formatRegionLabel(b) : formatter(b);
+    return labelA.localeCompare(labelB);
+  });
+  buildCustomDropdownOptions(dropdown, sortedOptions, formatter, withFlag);
+
+  const trigger = dropdown.querySelector(".custom-dropdown-trigger");
+  if (trigger) {
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleCustomDropdown(dropdown);
+    });
+  }
+
+  dropdown.dataset.initialized = "true";
+}
+
+function initCustomDropdowns() {
+  initCustomDropdownListeners();
+
+  const langDropdown = document.getElementById("settingsPopupLanguageDropdown");
+  const regionDropdown = document.getElementById("settingsPopupRegionDropdown");
+  const cardLangDropdown = document.getElementById("settingLanguageDropdown");
+  const cardRegionDropdown = document.getElementById("settingRegionDropdown");
+
+  if (langDropdown && !customDropdownState.languageDropdown) {
+    customDropdownState.languageDropdown = langDropdown;
+    initSingleCustomDropdown(langDropdown, topLanguageOptions, formatLanguageLabel, false);
+  }
+
+  if (regionDropdown && !customDropdownState.regionDropdown) {
+    customDropdownState.regionDropdown = regionDropdown;
+    initSingleCustomDropdown(regionDropdown, topRegionOptions, formatRegionLabel, true);
+  }
+
+  if (cardLangDropdown && !customDropdownState.cardLanguageDropdown) {
+    customDropdownState.cardLanguageDropdown = cardLangDropdown;
+    initSingleCustomDropdown(cardLangDropdown, topLanguageOptions, formatLanguageLabel, false);
+  }
+
+  if (cardRegionDropdown && !customDropdownState.cardRegionDropdown) {
+    customDropdownState.cardRegionDropdown = cardRegionDropdown;
+    initSingleCustomDropdown(cardRegionDropdown, topRegionOptions, formatRegionLabel, true);
+  }
+}
+
+function syncCustomDropdownValue(dropdown, value, withFlag = false) {
+  const menu = dropdown.querySelector(".custom-dropdown-menu");
+  const trigger = dropdown.querySelector(".custom-dropdown-trigger");
+  const valueEl = trigger?.querySelector(".custom-dropdown-value");
+
+  if (menu) {
+    const options = menu.querySelectorAll(".custom-dropdown-option");
+    for (const opt of options) {
+      opt.classList.toggle("is-selected", opt.dataset.value === value);
+    }
+  }
+
+  if (valueEl) {
+    if (withFlag) {
+      valueEl.innerHTML = buildFlagTriggerHtml(value, formatRegionLabel(value));
+    } else {
+      valueEl.textContent = formatLanguageLabel(value);
+    }
+  }
+}
+
+function populateSettingsPopupOptions() {
+  initCustomDropdowns();
+
+  if (elements.settingsPopupLanguage && !elements.settingsPopupLanguage.options.length) {
+    const sortedLangs = [...topLanguageOptions].sort((a, b) => {
+      return formatLanguageLabel(a).localeCompare(formatLanguageLabel(b));
+    });
+    populateSelectOptions(elements.settingsPopupLanguage, sortedLangs, formatLanguageLabel);
+  }
+
+  if (elements.settingsPopupRegion && !elements.settingsPopupRegion.options.length) {
+    const sortedRegions = [...topRegionOptions].sort((a, b) => {
+      return formatRegionLabel(a).localeCompare(formatRegionLabel(b));
+    });
+    populateSelectOptions(elements.settingsPopupRegion, sortedRegions, formatRegionLabelWithFlag);
+  }
+}
+
+function setSettingsPopupThemeActive(themeValue) {
+  const buttons = [
+    elements.settingsPopupThemeSystem,
+    elements.settingsPopupThemeLight,
+    elements.settingsPopupThemeDark,
+  ];
+  for (const btn of buttons) {
+    if (!btn) continue;
+    btn.classList.toggle("is-active", btn.dataset.themeValue === themeValue);
+  }
+}
+
+function applySettingsPopupUi() {
+  const settings = loadSettings();
+  if (elements.settingsPopupLanguage) {
+    elements.settingsPopupLanguage.value = settings.displayLanguage;
+  }
+  if (elements.settingsPopupRegion) {
+    elements.settingsPopupRegion.value = settings.region;
+  }
+
+  if (customDropdownState.languageDropdown) {
+    syncCustomDropdownValue(customDropdownState.languageDropdown, settings.displayLanguage, false);
+  }
+  if (customDropdownState.regionDropdown) {
+    syncCustomDropdownValue(customDropdownState.regionDropdown, settings.region, true);
+  }
+
+  setSettingsPopupThemeActive(settings.theme || "system");
+  if (elements.settingsPopupSafeSearch) {
+    elements.settingsPopupSafeSearch.checked = settings.safeSearch !== "off";
+  }
+}
+
+function openSettingsPopup() {
+  const modal = elements.settingsModal || document.getElementById("settingsModal");
+  if (!modal) return;
+  populateSettingsPopupOptions();
+  applySettingsPopupUi();
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  // Force visibility even if some CSS/JS interferes.
+  modal.style.display = "grid";
+  modal.style.opacity = "1";
+  modal.style.pointerEvents = "auto";
+}
+
+function requestOpenSettings() {
+  // Always route to the Profile card Settings UI (works signed-in and signed-out).
+  closeSettingsPopup();
+  openProfilePanel("settings");
+}
+
+function closeSettingsPopup() {
+  const modal = elements.settingsModal || document.getElementById("settingsModal");
+  if (modal) {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    modal.style.display = "";
+    modal.style.opacity = "";
+    modal.style.pointerEvents = "";
+  }
+  closeAllCustomDropdowns();
+}
+
+function saveSettingsPopup() {
+  const currentSettings = loadSettings();
+  const newSettings = {
+    ...currentSettings,
+    displayLanguage: elements.settingsPopupLanguage?.value || currentSettings.displayLanguage,
+    region: elements.settingsPopupRegion?.value || currentSettings.region,
+    theme: document.querySelector(".settings-popup-theme-btn.is-active")?.dataset?.themeValue || "system",
+    safeSearch: elements.settingsPopupSafeSearch?.checked ? "moderate" : "off",
+  };
+  saveSettings(newSettings);
+  applyTheme(newSettings.theme);
+  closeSettingsPopup();
+}
+
 function getLanguageCodeForTranslation(displayLanguage) {
   return String(displayLanguage || "en").split("-")[0].toLowerCase();
 }
@@ -3974,11 +4641,19 @@ function applySettingsUi() {
   const settings = getStoredSettings();
 
   populateSettingsOptions();
+  initCustomDropdowns();
 
   elements.settingDisplayLanguage.value = settings.displayLanguage;
   elements.settingRegion.value = settings.region;
   elements.settingTheme.value = settings.theme;
   elements.settingSafeSearch.value = settings.safeSearch;
+
+  if (customDropdownState.cardLanguageDropdown) {
+    syncCustomDropdownValue(customDropdownState.cardLanguageDropdown, settings.displayLanguage, false);
+  }
+  if (customDropdownState.cardRegionDropdown) {
+    syncCustomDropdownValue(customDropdownState.cardRegionDropdown, settings.region, true);
+  }
 
   if (elements.settingSafeSearchToggle) {
     elements.settingSafeSearchToggle.checked = settings.safeSearch !== "off";
@@ -4032,29 +4707,71 @@ function persistSettingsFromUi() {
   syncHistoryUiState();
   void applyPageLanguage(newSettings.displayLanguage);
   void loadTrendingTopics();
+
+  if (state.profileUser?.authenticated) {
+    void persistSettingsToBackend(newSettings);
+  }
+}
+
+async function persistSettingsToBackend(settingsDoc) {
+  try {
+    await fetch("/api/settings/me", {
+      method: "PUT",
+      credentials: "same-origin",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        displayLanguage: settingsDoc.displayLanguage,
+        region: settingsDoc.region,
+        theme: settingsDoc.theme,
+        safeSearch: settingsDoc.safeSearch,
+        utility_timezones: getUtilityTzPrefs() || undefined,
+        utility_unit_mode: localStorage.getItem("utility_unit_mode") || undefined,
+      }),
+    });
+  } catch {
+    // Backend persistence is best-effort.
+  }
+}
+
+async function hydrateSettingsFromBackend() {
+  if (!state.profileUser?.authenticated) return;
+  try {
+    const resp = await fetch("/api/settings/me", { credentials: "same-origin" });
+    if (!resp.ok) return;
+    const payload = await resp.json();
+    const s = payload?.settings || {};
+    const merged = {
+      ...getStoredSettings(),
+      ...(typeof s.displayLanguage === "string" ? { displayLanguage: s.displayLanguage } : {}),
+      ...(typeof s.region === "string" ? { region: s.region } : {}),
+      ...(typeof s.theme === "string" ? { theme: s.theme } : {}),
+      ...(typeof s.safeSearch === "string" ? { safeSearch: s.safeSearch } : {}),
+    };
+    writeJsonStorage(settingsPrefsKey, merged);
+    if (s.utility_timezones && typeof s.utility_timezones === "object") {
+      localStorage.setItem("utility_timezones", JSON.stringify(s.utility_timezones));
+    }
+    if (typeof s.utility_unit_mode === "string") {
+      localStorage.setItem("utility_unit_mode", s.utility_unit_mode);
+    }
+    applySettingsUi();
+  } catch {
+    // ignore
+  }
 }
 
 function openProfilePanel(sectionName = "overview") {
-  // Allow settings to open without a profile user (for guest settings)
-  if (!state.profileUser && sectionName !== "settings") {
-    return;
-  }
-
+  // Allow opening Settings even when signed out.
   if (state.profileUser) {
     applyUserSummary(state.profileUser);
   }
-  
   applySettingsUi();
   setProfileSection(sectionName);
-  
-  if (sectionName === "admin" && state.profileUser?.is_admin) {
+  if (sectionName === "admin") {
     void loadAdminActivity();
   }
-
-  if (elements.profileModal) {
-    elements.profileModal.classList.add("is-open");
-    elements.profileModal.setAttribute("aria-hidden", "false");
-  }
+  elements.profileModal.classList.add("is-open");
+  elements.profileModal.setAttribute("aria-hidden", "false");
 }
 
 function closeProfilePanel() {
@@ -4079,6 +4796,10 @@ function showLoggedInUI(user) {
 
   document.querySelector(".auth-actions").hidden = true;
   elements.userProfile.hidden = false;
+
+  if (state.pendingOpenSettings) {
+    state.pendingOpenSettings = false;
+  }
 
   if (resolvedUser.picture) {
     elements.avatarImage.onerror = () => {
@@ -4159,201 +4880,7 @@ function syncHistoryUiState() {
     } catch {
       elements.languageStatusLabel.textContent = langTag;
     }
-    updateCustomLanguageSelect(langTag);
   }
-
-  if (elements.regionStatusLabel) {
-    const regionCode = settings.region || "IN";
-    try {
-      const dn = new Intl.DisplayNames([settings.displayLanguage || "en-US"], { type: "region" });
-      elements.regionStatusLabel.textContent = dn.of(regionCode) || regionCode;
-    } catch {
-      elements.regionStatusLabel.textContent = regionCode;
-    }
-
-    if (elements.regionFlagIcon) {
-      elements.regionFlagIcon.style.backgroundImage = `url(https://flagcdn.com/w40/${regionCode.toLowerCase()}.png)`;
-    }
-    updateCustomRegionSelect(regionCode);
-  }
-}
-
-function updateCustomLanguageSelect(langTag) {
-  if (!elements.currentLanguageName) return;
-  
-  try {
-    if (langTag === "en-US") elements.currentLanguageName.textContent = "English (American)";
-    else if (langTag === "en-GB") elements.currentLanguageName.textContent = "English (British)";
-    else if (langTag === "en-IN") elements.currentLanguageName.textContent = "English (India)";
-    else {
-      const langOnly = langTag.split("-")[0];
-      const dnEnglish = new Intl.DisplayNames(["en"], { type: "language" });
-      const englishName = dnEnglish.of(langOnly) || langOnly;
-      const dnNative = new Intl.DisplayNames([langTag], { type: "language" });
-      const nativeName = dnNative.of(langOnly) || langOnly;
-      
-      elements.currentLanguageName.textContent = nativeName !== englishName ? `${englishName} (${nativeName})` : englishName;
-    }
-  } catch {
-    elements.currentLanguageName.textContent = langTag;
-  }
-  
-  for (const opt of elements.languageOptions.querySelectorAll(".custom-select-option")) {
-    const val = opt.getAttribute("data-value");
-    opt.classList.toggle("is-selected", val === langTag);
-  }
-}
-
-function initCustomLanguageSelect() {
-  if (!elements.languageSelectButton || !elements.languageOptions) return;
-
-  const langOptionsList = [
-    "en-US", "en-GB", "en-IN", "hi-IN", "bn-IN", "ta-IN", "te-IN", "mr-IN", "gu-IN", "kn-IN", "ml-IN",
-    "pa-IN", "or-IN", "as-IN", "ks-IN", "ne-NP", "ur-PK", "sd-IN", "sa-IN", "fr-FR", "de-DE",
-    "es-ES", "it-IT", "pt-PT", "pt-BR", "ru-RU", "zh-CN", "zh-TW", "ja-JP", "ko-KR", "vi-VN",
-    "th-TH", "id-ID", "ms-MY", "tr-TR", "ar-SA", "he-IL", "fa-IR", "nl-NL", "sv-SE", "no-NO",
-    "da-DK", "fi-FI", "pl-PL", "cs-CZ", "sk-SK", "hu-HU", "ro-RO", "el-GR", "uk-UA", "bg-BG",
-    "hr-HR", "sr-RS", "sl-SI", "et-EE", "lv-LV", "lt-LT", "ka-GE", "hy-AM", "az-AZ", "uz-UZ",
-    "kk-KZ", "ky-KG", "tg-TJ", "tk-TM", "mn-MN", "km-KH", "lo-LA", "my-MM", "am-ET", "sw-KE",
-    "zu-ZA", "xh-ZA", "af-ZA", "yo-NG", "ig-NG", "ha-NG", "rw-RW", "mg-MG", "st-LS", "tn-BW",
-    "sq-AL", "mk-MK", "bs-BA", "mt-MT", "ga-IE", "cy-GB", "gd-GB", "is-IS", "gl-ES", "eu-ES",
-    "ca-ES", "be-BY", "mi-NZ", "haw-US", "fil-PH", "jv-ID", "su-ID"
-  ];
-
-  elements.languageOptions.innerHTML = "";
-  const dnEnglish = new Intl.DisplayNames(["en"], { type: "language" });
-
-  for (const code of langOptionsList) {
-    const option = document.createElement("div");
-    option.className = "custom-select-option";
-    option.setAttribute("data-value", code);
-    
-    let displayName = "";
-    if (code === "en-US") displayName = "English (American)";
-    else if (code === "en-GB") displayName = "English (British)";
-    else if (code === "en-IN") displayName = "English (India)";
-    else {
-      const langOnly = code.split("-")[0];
-      let englishName = langOnly;
-      let nativeName = langOnly;
-      try { 
-        englishName = dnEnglish.of(langOnly) || langOnly;
-        const dnNative = new Intl.DisplayNames([code], { type: "language" });
-        nativeName = dnNative.of(langOnly) || langOnly;
-      } catch {}
-      displayName = nativeName !== englishName ? `${englishName} (${nativeName})` : englishName;
-    }
-
-    option.textContent = displayName;
-
-    option.addEventListener("click", () => {
-      elements.settingDisplayLanguage.value = code;
-      elements.settingDisplayLanguage.dispatchEvent(new Event("change"));
-      elements.languageOptions.hidden = true;
-    });
-
-    elements.languageOptions.appendChild(option);
-  }
-
-  elements.languageSelectButton.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const isHidden = elements.languageOptions.hidden;
-    closeAllCustomSelects();
-    elements.languageOptions.hidden = !isHidden;
-  });
-}
-
-function closeAllCustomSelects() {
-  if (elements.languageOptions) elements.languageOptions.hidden = true;
-  if (elements.regionOptions) elements.regionOptions.hidden = true;
-  document.querySelectorAll('.custom-select-options.is-dynamic').forEach(el => el.hidden = true);
-}
-
-function updateCustomRegionSelect(regionCode) {
-  if (!elements.currentRegionFlag || !elements.currentRegionName) return;
-  
-  elements.currentRegionFlag.style.backgroundImage = `url(https://flagcdn.com/w40/${regionCode.toLowerCase()}.png)`;
-  const lang = getStoredSettings().displayLanguage || "en-US";
-  try {
-    const dn = new Intl.DisplayNames([lang], { type: "region" });
-    elements.currentRegionName.textContent = dn.of(regionCode) || regionCode;
-  } catch {
-    elements.currentRegionName.textContent = regionCode;
-  }
-  
-  // Update active state in list
-  for (const opt of elements.regionOptions.querySelectorAll(".custom-select-option")) {
-    const val = opt.getAttribute("data-value");
-    opt.classList.toggle("is-selected", val === regionCode);
-  }
-}
-
-function initCustomRegionSelect() {
-  if (!elements.regionSelectButton || !elements.regionOptions) return;
-
-  const regionOptionsList = [
-    "AF", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM", "AW", "AU", "AT", "AZ",
-    "BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ", "BM", "BT", "BO", "BA", "BW", "BR", "BN",
-    "BG", "BF", "BI", "KH", "CM", "CA", "CV", "KY", "CF", "TD", "CL", "CN", "CX", "CC", "CO",
-    "KM", "CG", "CD", "CK", "CR", "CI", "HR", "CU", "CW", "CY", "CZ", "DK", "DJ", "DM", "DO",
-    "EC", "EG", "SV", "GQ", "ER", "EE", "ET", "FK", "FO", "FJ", "FI", "FR", "GF", "PF", "TF",
-    "GA", "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", "GN", "GW",
-    "GY", "HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IM", "IL",
-    "IT", "JM", "JP", "JE", "JO", "KZ", "KE", "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB",
-    "LS", "LR", "LY", "LI", "LT", "LU", "MO", "MK", "MG", "MW", "MY", "MV", "ML", "MT", "MH",
-    "MQ", "MR", "MU", "YT", "MX", "FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", "NA",
-    "NR", "NP", "NL", "NC", "NZ", "NI", "NE", "NG", "NU", "NF", "MP", "NO", "OM", "PK", "PW",
-    "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", "PT", "PR", "QA", "RE", "RO", "RU", "RW",
-    "BL", "SH", "KN", "LC", "MF", "PM", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL",
-    "SG", "SX", "SK", "SI", "SB", "SO", "ZA", "GS", "SS", "ES", "LK", "SD", "SR", "SJ", "SZ",
-    "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK", "TO", "TT", "TN", "TR", "TM",
-    "TC", "TV", "UG", "UA", "AE", "GB", "US", "UM", "UY", "UZ", "VU", "VE", "VN", "VG", "VI",
-    "WF", "EH", "YE", "ZM", "ZW"
-  ];
-
-  elements.regionOptions.innerHTML = "";
-  const lang = getStoredSettings().displayLanguage || "en-US";
-  const dn = new Intl.DisplayNames([lang], { type: "region" });
-
-  // Sort countries alphabetically by their displayed name
-  const sortedRegions = regionOptionsList.map(code => {
-    let name = code;
-    try { name = dn.of(code) || code; } catch {}
-    return { code, name };
-  }).sort((a, b) => a.name.localeCompare(b.name));
-
-  for (const { code, name } of sortedRegions) {
-    const option = document.createElement("div");
-    option.className = "custom-select-option";
-    option.setAttribute("data-value", code);
-    
-    let name = code;
-    try { name = dn.of(code) || code; } catch {}
-
-    option.innerHTML = `
-      <div class="region-flag-mini" style="background-image: url(https://flagcdn.com/w40/${code.toLowerCase()}.png)"></div>
-      <span>${name}</span>
-    `;
-
-    option.addEventListener("click", () => {
-      elements.settingRegion.value = code;
-      elements.settingRegion.dispatchEvent(new Event("change"));
-      elements.regionOptions.hidden = true;
-    });
-
-    elements.regionOptions.appendChild(option);
-  }
-
-  elements.regionSelectButton.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const isHidden = elements.regionOptions.hidden;
-    closeAllCustomSelects();
-    elements.regionOptions.hidden = !isHidden;
-  });
-
-  document.addEventListener("click", () => {
-    closeAllCustomSelects();
-  });
 }
 
 function formatHistoryDate(ts) {
@@ -4484,6 +5011,7 @@ async function checkSession() {
     if (!resp.ok) { showLoggedOutUI(); return; }
     const user = await resp.json();
     if (user.authenticated) { showLoggedInUI(user); } else { showLoggedOutUI(); }
+    if (user.authenticated) { void hydrateSettingsFromBackend(); }
   } catch { showLoggedOutUI(); }
 }
 
@@ -4610,16 +5138,15 @@ function bindEvents() {
   });
 
   for (const button of document.querySelectorAll("[data-profile-panel]")) {
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (elements.profileDropdown) {
-        elements.profileDropdown.hidden = true;
+    button.addEventListener("click", () => {
+      elements.profileDropdown.hidden = true;
+      elements.avatarButton.setAttribute("aria-expanded", "false");
+      const panel = button.getAttribute("data-profile-panel") || "overview";
+      if (panel === "settings") {
+        requestOpenSettings();
+        return;
       }
-      if (elements.avatarButton) {
-        elements.avatarButton.setAttribute("aria-expanded", "false");
-      }
-      openProfilePanel(button.getAttribute("data-profile-panel") || "overview");
+      openProfilePanel(panel);
     });
   }
 
@@ -4644,19 +5171,57 @@ function bindEvents() {
     openProfilePanel("settings");
   });
 
+  const headerSettingsButton = elements.headerSettingsBtn || document.getElementById("headerSettingsBtn");
+  if (headerSettingsButton) {
+    const handler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      requestOpenSettings();
+    };
+    headerSettingsButton.addEventListener("click", handler, { capture: true });
+    headerSettingsButton.addEventListener("pointerup", handler, { capture: true });
+  }
+
+  const settingsCloseButton = elements.settingsCloseBtn || document.getElementById("settingsCloseBtn");
+  if (settingsCloseButton) {
+    settingsCloseButton.addEventListener("click", closeSettingsPopup);
+  }
+
+  const settingsBackdropEl = elements.settingsBackdrop || document.getElementById("settingsBackdrop");
+  if (settingsBackdropEl) {
+    settingsBackdropEl.addEventListener("click", closeSettingsPopup);
+  }
+
+  if (elements.settingsPopupForm) {
+    elements.settingsPopupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      saveSettingsPopup();
+    });
+  }
+
+  const settingsThemeButtons = [
+    elements.settingsPopupThemeSystem,
+    elements.settingsPopupThemeLight,
+    elements.settingsPopupThemeDark,
+  ];
+  for (const btn of settingsThemeButtons) {
+    if (!btn) continue;
+    btn.addEventListener("click", () => {
+      setSettingsPopupThemeActive(btn.dataset.themeValue);
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && elements.settingsModal?.classList.contains("is-open")) {
+      closeSettingsPopup();
+    }
+  });
+
   if (elements.menuAdminDashboard) {
     elements.menuAdminDashboard.addEventListener("click", () => {
       elements.profileDropdown.hidden = true;
       elements.avatarButton.setAttribute("aria-expanded", "false");
       openProfilePanel("admin");
-    });
-  }
-
-  if (elements.menuRegion) {
-    elements.menuRegion.addEventListener("click", () => {
-      elements.profileDropdown.hidden = true;
-      elements.avatarButton.setAttribute("aria-expanded", "false");
-      openProfilePanel("settings");
     });
   }
 
@@ -5077,6 +5642,101 @@ function bindEvents() {
     });
   }
 
+  // Time zone custom dropdowns (digital + analog share the same stored prefs)
+  const tzPrefs = ensureUtilityTimezoneDefaults();
+
+  const applyTzToHiddenSelect = (selectEl, tzValue) => {
+    if (!selectEl) return;
+    if (!selectEl.options.length) {
+      populateUtilityTimezoneSelect(selectEl, tzValue);
+    } else {
+      selectEl.value = tzValue;
+    }
+  };
+
+  applyTzToHiddenSelect(elements.utilityTzSelect1, tzPrefs.tz1);
+  applyTzToHiddenSelect(elements.utilityTzSelect2, tzPrefs.tz2);
+  applyTzToHiddenSelect(elements.utilityTzSelect3, tzPrefs.tz3);
+  applyTzToHiddenSelect(elements.utilityTzSelectA1, tzPrefs.tz1);
+  applyTzToHiddenSelect(elements.utilityTzSelectA2, tzPrefs.tz2);
+  applyTzToHiddenSelect(elements.utilityTzSelectA3, tzPrefs.tz3);
+
+  const setupTzDropdown = (dropdownId, hiddenSelect, mirrorSelects = []) => {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown || dropdown.dataset.tzInitialized === "true") return;
+
+    const menu = dropdown.querySelector(".custom-dropdown-menu");
+    const trigger = dropdown.querySelector(".custom-dropdown-trigger");
+    const valueEl = trigger?.querySelector(".custom-dropdown-value");
+
+    if (menu) {
+      menu.innerHTML = "";
+      for (const opt of UTILITY_TIMEZONE_OPTIONS) {
+        const li = document.createElement("li");
+        li.className = "custom-dropdown-option";
+        li.setAttribute("role", "option");
+        li.dataset.value = opt.value;
+        li.textContent = opt.label;
+        li.addEventListener("click", () => {
+          if (valueEl) valueEl.textContent = opt.label;
+          trigger?.setAttribute("aria-expanded", "false");
+          menu.hidden = true;
+          for (const o of menu.querySelectorAll(".custom-dropdown-option")) {
+            o.classList.toggle("is-selected", o.dataset.value === opt.value);
+          }
+          if (hiddenSelect) hiddenSelect.value = opt.value;
+          for (const sel of mirrorSelects) {
+            if (sel) sel.value = opt.value;
+            const mirrorId = sel?.id?.replace("TzSelect", "TzDropdown")?.replace("utilityTzSelect", "utilityTzDropdown");
+            if (mirrorId) {
+              const mirrorDrop = document.getElementById(mirrorId);
+              if (mirrorDrop) {
+                const mirrorValueEl = mirrorDrop.querySelector(".custom-dropdown-value");
+                if (mirrorValueEl) mirrorValueEl.textContent = opt.label;
+                for (const mo of (mirrorDrop.querySelector(".custom-dropdown-menu")?.querySelectorAll(".custom-dropdown-option") || [])) {
+                  mo.classList.toggle("is-selected", mo.dataset.value === opt.value);
+                }
+              }
+            }
+          }
+          const next = {
+            tz1: elements.utilityTzSelect1?.value || tzPrefs.tz1,
+            tz2: elements.utilityTzSelect2?.value || tzPrefs.tz2,
+            tz3: elements.utilityTzSelect3?.value || tzPrefs.tz3,
+          };
+          setUtilityTzPrefs(next);
+          updateUtilityTime();
+        });
+        menu.appendChild(li);
+      }
+    }
+
+    const currentValue = hiddenSelect?.value;
+    const currentLabel = UTILITY_TIMEZONE_OPTIONS.find((o) => o.value === currentValue)?.label || currentValue;
+    if (valueEl && currentLabel) valueEl.textContent = currentLabel;
+    if (currentValue && menu) {
+      for (const o of menu.querySelectorAll(".custom-dropdown-option")) {
+        o.classList.toggle("is-selected", o.dataset.value === currentValue);
+      }
+    }
+
+    if (trigger) {
+      trigger.addEventListener("click", (e) => {
+        e.preventDefault();
+        toggleCustomDropdown(dropdown);
+      });
+    }
+
+    dropdown.dataset.tzInitialized = "true";
+  };
+
+  setupTzDropdown("utilityTzDropdown1", elements.utilityTzSelect1, [elements.utilityTzSelectA1]);
+  setupTzDropdown("utilityTzDropdown2", elements.utilityTzSelect2, [elements.utilityTzSelectA2]);
+  setupTzDropdown("utilityTzDropdown3", elements.utilityTzSelect3, [elements.utilityTzSelectA3]);
+  setupTzDropdown("utilityTzDropdownA1", elements.utilityTzSelectA1, [elements.utilityTzSelect1]);
+  setupTzDropdown("utilityTzDropdownA2", elements.utilityTzSelectA2, [elements.utilityTzSelect2]);
+  setupTzDropdown("utilityTzDropdownA3", elements.utilityTzSelectA3, [elements.utilityTzSelect3]);
+
   if (elements.utilityCalculatorForm) {
     elements.utilityCalculatorForm.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -5150,50 +5810,57 @@ function bindEvents() {
 
     if (elements.utilityDistanceSwap) {
       elements.utilityDistanceSwap.addEventListener("click", () => {
-        const fromUnit = elements.utilityDistanceFromUnit?.value;
-        const toUnit = elements.utilityDistanceToUnit?.value;
-        if (elements.utilityDistanceFromUnit) {
-          elements.utilityDistanceFromUnit.value = toUnit;
-          elements.utilityDistanceFromUnit.dispatchEvent(new Event("change"));
-        }
-        if (elements.utilityDistanceToUnit) {
-          elements.utilityDistanceToUnit.value = fromUnit;
-          elements.utilityDistanceToUnit.dispatchEvent(new Event("change"));
-        }
+        const fromUnit = elements.utilityDistanceFromUnit?.value ?? "km";
+        const toUnit = elements.utilityDistanceToUnit?.value ?? "mi";
+        if (elements.utilityDistanceFromUnit) elements.utilityDistanceFromUnit.value = toUnit;
+        if (elements.utilityDistanceToUnit) elements.utilityDistanceToUnit.value = fromUnit;
+        const currentOptions = Array.from(elements.utilityDistanceFromUnit?.options || []).map((option) => ({
+          value: option.value,
+          label: option.textContent || option.value,
+        }));
+        refreshUtilityUnitDropdown("unit-from", currentOptions, toUnit);
+        refreshUtilityUnitDropdown("unit-to", currentOptions, fromUnit);
         syncDistanceConversion("from");
       });
     }
-
-    const tabs = document.querySelectorAll(".utility-convert-tab");
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("is-active"));
-        tab.classList.add("is-active");
-        currentConvertMode = tab.getAttribute("data-convert-mode");
-        
-        const titleEl = document.querySelector(".utility-card-convert .utility-card-title");
-        if (titleEl) {
-          if (currentConvertMode === "distance") titleEl.textContent = "Distance & Length";
-          if (currentConvertMode === "weight") titleEl.textContent = "Weight & Mass";
-          if (currentConvertMode === "area") titleEl.textContent = "Area";
-        }
-
-        let opts = [];
-        if (currentConvertMode === "distance") opts = [{v:"km", l:"km"}, {v:"mi", l:"miles"}];
-        if (currentConvertMode === "weight") opts = [{v:"kg", l:"kg"}, {v:"lbs", l:"lbs"}];
-        if (currentConvertMode === "area") opts = [{v:"sqkm", l:"sq km"}, {v:"sqmi", l:"sq miles"}];
-
-        if (elements.utilityDistanceFromUnit && elements.utilityDistanceToUnit) {
-          elements.utilityDistanceFromUnit.innerHTML = opts.map(o => `<option value="${o.v}">${o.l}</option>`).join("");
-          elements.utilityDistanceToUnit.innerHTML = opts.reverse().map(o => `<option value="${o.v}">${o.l}</option>`).join("");
-        }
-
-        syncDistanceConversion("from");
-      });
-    });
-
     // initial sync
     syncDistanceConversion("from");
+  }
+
+  // Unit mode buttons + big result copy button
+  const modeButtons = [
+    document.getElementById("utilityConvertModeWeight"),
+    document.getElementById("utilityConvertModeDistance"),
+    document.getElementById("utilityConvertModeArea"),
+  ];
+  for (const btn of modeButtons) {
+    if (!btn) continue;
+    btn.addEventListener("click", () => {
+      const mode = btn.dataset.unitMode || "distance";
+      const next = setUtilityUnitMode(mode);
+      applyUtilityUnitModeUi(next);
+      syncDistanceConversion("from");
+    });
+  }
+
+  const initialMode = getUtilityUnitMode();
+  applyUtilityUnitModeUi(initialMode);
+
+  const resultBtn = document.getElementById("utilityConvertResultBtn");
+  if (resultBtn) {
+    resultBtn.addEventListener("click", async () => {
+      const text = String(resultBtn.textContent || "").trim();
+      if (!text || text.toLowerCase().includes("result will appear")) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        resultBtn.textContent = `${text} (Copied)`;
+        window.setTimeout(() => {
+          resultBtn.textContent = text;
+        }, 900);
+      } catch {
+        // ignore
+      }
+    });
   }
 
   if (elements.utilityCurrencyForm) {
@@ -5214,70 +5881,55 @@ function bindEvents() {
       }
 
       setCurrencyUi("Converting…", "");
-      if (elements.utilityCurrencyToAmount) {
-        elements.utilityCurrencyToAmount.textContent = "…";
-      }
 
       let fxResult;
       try {
         fxResult = await fetchFxRate(from, to);
       } catch {
         setCurrencyUi("Rate unavailable for this currency pair.", "");
-        if (elements.utilityCurrencyToAmount) elements.utilityCurrencyToAmount.textContent = "—";
         return;
       }
 
-      const { rate, source } = fxResult;
+      const { rate, source, updatedAt } = fxResult;
       if (!Number.isFinite(rate) || rate <= 0) {
         setCurrencyUi("Rate unavailable for this currency pair.", "");
-        if (elements.utilityCurrencyToAmount) elements.utilityCurrencyToAmount.textContent = "—";
         return;
       }
 
       const converted = amount * rate;
-      const formatted = formatCurrencyNumber(converted);
-      if (elements.utilityCurrencyToAmount) {
-        elements.utilityCurrencyToAmount.textContent = formatted;
-      }
-      setCurrencyUpdatedLabel(new Date());
+      const formatted = new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 6,
+      }).format(converted);
 
       setCurrencyUi(
         `${formatted} ${to}`,
-        `1 ${from} = ${formatCurrencyNumber(rate)} ${to} (${source})`
+        `1 ${from} = ${new Intl.NumberFormat(undefined, { maximumFractionDigits: 6 }).format(rate)} ${to} (${source})${updatedAt ? ` • Updated ${updatedAt.toLocaleString()}` : ""}`
       );
     });
+  }
 
-    // Live updates (so it feels like the screenshot UI)
-    elements.utilityCurrencyAmount?.addEventListener("input", () => {
-      resetCurrencyManualRateMessage();
-      scheduleCurrencyConvert();
+  if (elements.utilityCurrencyFrom) {
+    elements.utilityCurrencyFrom.addEventListener("change", () => {
+      void updateCurrencyRatePreview();
     });
-    elements.utilityCurrencyFrom?.addEventListener("change", () => {
-      resetCurrencyManualRateMessage();
-      scheduleCurrencyConvert();
+  }
+  if (elements.utilityCurrencyTo) {
+    elements.utilityCurrencyTo.addEventListener("change", () => {
+      void updateCurrencyRatePreview();
     });
-    elements.utilityCurrencyTo?.addEventListener("change", () => {
-      resetCurrencyManualRateMessage();
-      scheduleCurrencyConvert();
-    });
+  }
 
-    if (elements.utilityCurrencySwap) {
-      elements.utilityCurrencySwap.addEventListener("click", () => {
-        const from = elements.utilityCurrencyFrom?.value;
-        const to = elements.utilityCurrencyTo?.value;
-        if (from && to) {
-          elements.utilityCurrencyFrom.value = to;
-          elements.utilityCurrencyFrom.dispatchEvent(new Event("change"));
-          elements.utilityCurrencyTo.value = from;
-          elements.utilityCurrencyTo.dispatchEvent(new Event("change"));
-        }
-        resetCurrencyManualRateMessage();
-        scheduleCurrencyConvert();
-      });
-    }
-
-    // initial render
-    scheduleCurrencyConvert();
+  if (elements.utilityCurrencyOutput) {
+    elements.utilityCurrencyOutput.addEventListener("click", async () => {
+      const value = String(elements.utilityCurrencyOutput.textContent || "").trim();
+      if (!value || value.toLowerCase().includes("enter an amount")) return;
+      try {
+        await navigator.clipboard.writeText(value);
+        setCurrencyUi(value, "Copied result to clipboard.");
+      } catch {
+        // Ignore clipboard failures (browser permissions).
+      }
+    });
   }
 
 }
@@ -5327,88 +5979,6 @@ function startLocalAutoRefresh() {
   }, 10000);
 }
 
-function enhanceNativeSelect(select) {
-  if (!select || select.dataset.enhanced) return;
-  select.dataset.enhanced = "true";
-  
-  const container = document.createElement("div");
-  container.className = "custom-select-container utility-custom-select";
-  
-  const button = document.createElement("button");
-  button.className = "custom-select-button";
-  button.type = "button";
-  button.style.flex = "1";
-  
-  const textSpan = document.createElement("span");
-  textSpan.style.marginRight = "6px";
-  textSpan.style.textOverflow = "ellipsis";
-  textSpan.style.overflow = "hidden";
-  textSpan.style.whiteSpace = "nowrap";
-  
-  const iconSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  iconSvg.setAttribute("class", "chevron-icon");
-  iconSvg.setAttribute("viewBox", "0 0 24 24");
-  iconSvg.setAttribute("fill", "none");
-  iconSvg.setAttribute("stroke", "currentColor");
-  iconSvg.setAttribute("stroke-width", "2");
-  iconSvg.setAttribute("stroke-linecap", "round");
-  iconSvg.setAttribute("stroke-linejoin", "round");
-  const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-  polyline.setAttribute("points", "6 9 12 15 18 9");
-  iconSvg.appendChild(polyline);
-  
-  button.appendChild(textSpan);
-  button.appendChild(iconSvg);
-  
-  const optionsDiv = document.createElement("div");
-  optionsDiv.className = "custom-select-options is-dynamic";
-  optionsDiv.hidden = true;
-  optionsDiv.style.minWidth = "max-content";
-  optionsDiv.style.width = "auto";
-  
-  container.appendChild(button);
-  container.appendChild(optionsDiv);
-  
-  select.parentNode.insertBefore(container, select.nextSibling);
-  select.style.display = "none"; // Hard hide the native select
-  
-  function renderOptions() {
-    optionsDiv.innerHTML = "";
-    Array.from(select.options).forEach(opt => {
-      const optionDiv = document.createElement("div");
-      optionDiv.className = "custom-select-option";
-      optionDiv.dataset.value = opt.value;
-      optionDiv.textContent = opt.textContent;
-      if (opt.value === select.value) {
-        optionDiv.classList.add("is-selected");
-        textSpan.textContent = opt.textContent;
-      }
-      
-      optionDiv.addEventListener("click", () => {
-        select.value = opt.value;
-        select.dispatchEvent(new Event("change"));
-        optionsDiv.hidden = true;
-        renderOptions();
-      });
-      optionsDiv.appendChild(optionDiv);
-    });
-  }
-  
-  renderOptions();
-  
-  const observer = new MutationObserver(renderOptions);
-  observer.observe(select, { childList: true });
-  
-  select.addEventListener("change", renderOptions);
-  
-  button.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const isHidden = optionsDiv.hidden;
-    closeAllCustomSelects();
-    optionsDiv.hidden = !isHidden;
-  });
-}
-
 async function initializePage() {
   // Always show the default logo favicon during initial load.
   setTabFavicon(TAB_FAVICON_DEFAULT);
@@ -5449,12 +6019,6 @@ async function initializePage() {
 
   await syncGeolocationPermission();
   applySettingsUi();
-  initCustomLanguageSelect();
-  initCustomRegionSelect();
-  enhanceNativeSelect(elements.utilityCurrencyFrom);
-  enhanceNativeSelect(elements.utilityCurrencyTo);
-  enhanceNativeSelect(elements.utilityDistanceFromUnit);
-  enhanceNativeSelect(elements.utilityDistanceToUnit);
   scrubIncognitoUi();
   bindEvents();
   resetCurrencyManualRateMessage();
@@ -5479,3 +6043,16 @@ async function initializePage() {
 }
 
 initializePage();
+
+window.openSettingsPopup = openSettingsPopup;
+window.closeSettingsPopup = closeSettingsPopup;
+window.requestOpenSettings = requestOpenSettings;
+
+// Failsafe: open settings even if some handlers are blocked.
+document.addEventListener("click", (event) => {
+  const settingsBtn = event.target?.closest?.("#headerSettingsBtn");
+  if (!settingsBtn) return;
+  event.preventDefault();
+  event.stopPropagation();
+  requestOpenSettings();
+}, true);

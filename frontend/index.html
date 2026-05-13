@@ -7,17 +7,30 @@
   <title>[QuAir Search]</title>
   <link id="favicon" rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%234870ff'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5' transform='rotate(60 32 32)'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5' transform='rotate(120 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23fff'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="/assets/styles.css?v=20260508v12" />
+  <link rel="stylesheet" href="/assets/styles.css?v=20260424w42" />
 </head>
 
 <body>
   <main class="page">
     <header class="page-header">
-      <div class="header-brand-stack">
-        <a id="topBrandButton" class="top-brand" href="/" aria-label="QuAir Search">[QuAir Search]™</a>
-      </div>
+      <!-- Left: Brand -->
+      <a id="topBrandButton" class="top-brand" href="/" aria-label="QuAir Search">[QuAir Search]™</a>
 
-      <div class="header-actions">
+      <!-- Right: Sign up + Settings gear -->
+      <div class="header-right-stack">
+        <nav class="auth-actions" aria-label="Account actions" hidden>
+          <button class="auth-button auth-button-primary" type="button" data-auth-trigger="signup">
+            Sign up for more ↓
+          </button>
+        </nav>
+        <button id="headerSettingsBtn" class="header-settings-btn" type="button" aria-label="Settings" title="Settings"
+          onclick="if(typeof window.requestOpenSettings==='function'){window.requestOpenSettings();} else { return false; }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+
         <div id="userProfile" class="user-profile" hidden>
           <button id="avatarButton" class="avatar-button" type="button" aria-label="User menu" aria-expanded="false"
             aria-controls="profileDropdown">
@@ -78,22 +91,15 @@
               </button>
 
               <button id="menuLanguage" class="dropdown-feature-item" type="button" role="menuitem">
-                <div class="dropdown-feature-icon-wrap">
-                  <svg class="dropdown-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 19L10 5L16 19M6 15H14" />
-                    <path d="M15 15C15 12.2 17.2 10 20 10V19M22 19H18" />
-                  </svg>
-                </div>
+                <svg class="dropdown-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path
+                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
                 <span class="dropdown-feature-text">Display languages</span>
                 <span id="languageStatusLabel" class="dropdown-feature-badge">English</span>
-              </button>
-
-              <button id="menuRegion" class="dropdown-feature-item" type="button" role="menuitem">
-                <div class="dropdown-feature-icon-wrap">
-                  <div id="regionFlagIcon" class="region-flag-mini"></div>
-                </div>
-                <span class="dropdown-feature-text">Region results</span>
-                <span id="regionStatusLabel" class="dropdown-feature-badge">India</span>
               </button>
 
               <button id="menuBookmarks" class="dropdown-feature-item" type="button" role="menuitem">
@@ -106,18 +112,6 @@
             </div>
           </div>
         </div>
-
-        <nav class="auth-actions" aria-label="Account actions" hidden>
-          <button class="auth-button auth-button-primary" type="button" data-auth-trigger="signup">
-            Sign up for more ↓
-          </button>
-          <button id="externalSettingsButton" class="auth-button auth-button-secondary auth-button-icon" type="button" data-profile-panel="settings" aria-label="Settings">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-          </button>
-        </nav>
       </div>
     </header>
 
@@ -240,21 +234,146 @@
                   </div>
                 </div>
                 <div class="utility-time-layout">
-                  <div id="utilityTimeDigitalWrap" class="utility-time-digital-modern">
-                    <div class="utility-time-city">Local</div>
-                    <div class="utility-time-big">
-                      <span id="utilityTimeOutput" class="utility-time-big-value">00:00</span>
-                      <span id="utilityTimeAmPm" class="utility-time-ampm">PM</span>
+                  <!-- Digital: 2x2 grid (Local + 3 custom) -->
+                  <div id="utilityTimeDigitalWrap" class="utility-time-grid" aria-label="Digital time zones">
+                    <div class="utility-time-tile">
+                      <div class="utility-time-tile-head">
+                        <div class="utility-time-city">Local</div>
+                      </div>
+                      <div class="utility-time-big">
+                        <span id="utilityTimeOutput" class="utility-time-big-value">00:00</span>
+                      </div>
+                      <div id="utilityTimeMeta" class="utility-time-meta">Loading local time</div>
                     </div>
-                    <div id="utilityTimeMeta" class="utility-time-meta">Loading local time</div>
+
+                    <div class="utility-time-tile">
+                      <div class="utility-time-tile-head">
+                        <div id="utilityTzDropdown1" class="custom-dropdown utility-tz-dropdown" data-dropdown="tz1">
+                          <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="custom-dropdown-value">Tokyo</span>
+                            <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                          </button>
+                          <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+                        </div>
+                        <select id="utilityTzSelect1" class="utility-timezone-select" aria-label="Time zone 1" hidden></select>
+                      </div>
+                      <div class="utility-time-big">
+                        <span id="utilityTimeTzOutput1" class="utility-time-big-value">00:00</span>
+                      </div>
+                      <div id="utilityTimeTzMeta1" class="utility-time-meta">—</div>
+                    </div>
+
+                    <div class="utility-time-tile">
+                      <div class="utility-time-tile-head">
+                        <div id="utilityTzDropdown2" class="custom-dropdown utility-tz-dropdown" data-dropdown="tz2">
+                          <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="custom-dropdown-value">London</span>
+                            <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                          </button>
+                          <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+                        </div>
+                        <select id="utilityTzSelect2" class="utility-timezone-select" aria-label="Time zone 2" hidden></select>
+                      </div>
+                      <div class="utility-time-big">
+                        <span id="utilityTimeTzOutput2" class="utility-time-big-value">00:00</span>
+                      </div>
+                      <div id="utilityTimeTzMeta2" class="utility-time-meta">—</div>
+                    </div>
+
+                    <div class="utility-time-tile">
+                      <div class="utility-time-tile-head">
+                        <div id="utilityTzDropdown3" class="custom-dropdown utility-tz-dropdown" data-dropdown="tz3">
+                          <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="custom-dropdown-value">New York</span>
+                            <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                          </button>
+                          <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+                        </div>
+                        <select id="utilityTzSelect3" class="utility-timezone-select" aria-label="Time zone 3" hidden></select>
+                      </div>
+                      <div class="utility-time-big">
+                        <span id="utilityTimeTzOutput3" class="utility-time-big-value">00:00</span>
+                      </div>
+                      <div id="utilityTimeTzMeta3" class="utility-time-meta">—</div>
+                    </div>
                   </div>
-                  <div id="utilityTimeAnalogWrap" class="utility-time-analog-modern" hidden>
-                    <div class="utility-analog-clock" aria-hidden="true">
-                      <div class="utility-analog-face">
-                        <div id="utilityAnalogHourHand" class="utility-analog-hand utility-analog-hour"></div>
-                        <div id="utilityAnalogMinuteHand" class="utility-analog-hand utility-analog-minute"></div>
-                        <div id="utilityAnalogSecondHand" class="utility-analog-hand utility-analog-second"></div>
-                        <div class="utility-analog-center"></div>
+
+                  <!-- Analog: 2x2 grid -->
+                  <div id="utilityTimeAnalogWrap" class="utility-time-grid utility-time-grid-analog" aria-label="Analog time zones" hidden>
+                    <div class="utility-time-tile utility-time-tile-analog">
+                      <div class="utility-time-tile-head">
+                        <div class="utility-time-city">Local</div>
+                      </div>
+                      <div class="utility-analog-clock" aria-hidden="true" data-analog-slot="local">
+                        <div class="utility-analog-face">
+                          <div class="utility-analog-hand utility-analog-hour" data-analog-hand="hour"></div>
+                          <div class="utility-analog-hand utility-analog-minute" data-analog-hand="minute"></div>
+                          <div class="utility-analog-hand utility-analog-second" data-analog-hand="second"></div>
+                          <div class="utility-analog-center"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="utility-time-tile utility-time-tile-analog">
+                      <div class="utility-time-tile-head">
+                        <div id="utilityTzDropdownA1" class="custom-dropdown utility-tz-dropdown" data-dropdown="tz-a1">
+                          <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="custom-dropdown-value">Tokyo</span>
+                            <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                          </button>
+                          <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+                        </div>
+                        <select id="utilityTzSelectA1" class="utility-timezone-select" aria-label="Analog time zone 1" hidden></select>
+                      </div>
+                      <div class="utility-analog-clock" aria-hidden="true" data-analog-slot="1">
+                        <div class="utility-analog-face">
+                          <div class="utility-analog-hand utility-analog-hour" data-analog-hand="hour"></div>
+                          <div class="utility-analog-hand utility-analog-minute" data-analog-hand="minute"></div>
+                          <div class="utility-analog-hand utility-analog-second" data-analog-hand="second"></div>
+                          <div class="utility-analog-center"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="utility-time-tile utility-time-tile-analog">
+                      <div class="utility-time-tile-head">
+                        <div id="utilityTzDropdownA2" class="custom-dropdown utility-tz-dropdown" data-dropdown="tz-a2">
+                          <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="custom-dropdown-value">London</span>
+                            <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                          </button>
+                          <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+                        </div>
+                        <select id="utilityTzSelectA2" class="utility-timezone-select" aria-label="Analog time zone 2" hidden></select>
+                      </div>
+                      <div class="utility-analog-clock" aria-hidden="true" data-analog-slot="2">
+                        <div class="utility-analog-face">
+                          <div class="utility-analog-hand utility-analog-hour" data-analog-hand="hour"></div>
+                          <div class="utility-analog-hand utility-analog-minute" data-analog-hand="minute"></div>
+                          <div class="utility-analog-hand utility-analog-second" data-analog-hand="second"></div>
+                          <div class="utility-analog-center"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="utility-time-tile utility-time-tile-analog">
+                      <div class="utility-time-tile-head">
+                        <div id="utilityTzDropdownA3" class="custom-dropdown utility-tz-dropdown" data-dropdown="tz-a3">
+                          <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="custom-dropdown-value">New York</span>
+                            <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                          </button>
+                          <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+                        </div>
+                        <select id="utilityTzSelectA3" class="utility-timezone-select" aria-label="Analog time zone 3" hidden></select>
+                      </div>
+                      <div class="utility-analog-clock" aria-hidden="true" data-analog-slot="3">
+                        <div class="utility-analog-face">
+                          <div class="utility-analog-hand utility-analog-hour" data-analog-hand="hour"></div>
+                          <div class="utility-analog-hand utility-analog-minute" data-analog-hand="minute"></div>
+                          <div class="utility-analog-hand utility-analog-second" data-analog-hand="second"></div>
+                          <div class="utility-analog-center"></div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -321,7 +440,14 @@
                     <div class="utility-convert-label">From</div>
                     <div class="utility-convert-input-row">
                       <input id="utilityDistanceFrom" class="utility-convert-input" type="number" step="any" value="150" />
-                      <select id="utilityDistanceFromUnit" class="utility-convert-unit">
+                      <div id="utilityUnitFromDropdown" class="custom-dropdown utility-custom-dropdown utility-unit-dropdown" data-dropdown="unit-from">
+                        <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                          <span class="custom-dropdown-value">km</span>
+                          <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+                      </div>
+                      <select id="utilityDistanceFromUnit" class="utility-convert-unit" hidden>
                         <option value="km">km</option>
                         <option value="mi">miles</option>
                       </select>
@@ -334,7 +460,14 @@
                     <div class="utility-convert-label">To</div>
                     <div class="utility-convert-input-row">
                       <input id="utilityDistanceTo" class="utility-convert-input" type="number" step="any" value="93.2" />
-                      <select id="utilityDistanceToUnit" class="utility-convert-unit">
+                      <div id="utilityUnitToDropdown" class="custom-dropdown utility-custom-dropdown utility-unit-dropdown" data-dropdown="unit-to">
+                        <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                          <span class="custom-dropdown-value">miles</span>
+                          <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+                      </div>
+                      <select id="utilityDistanceToUnit" class="utility-convert-unit" hidden>
                         <option value="mi">miles</option>
                         <option value="km">km</option>
                       </select>
@@ -342,11 +475,15 @@
                   </div>
                 </div>
 
-                <div class="utility-convert-tabs" aria-label="Converter mode">
-                  <button class="utility-convert-tab" type="button" data-convert-mode="weight">Weight</button>
-                  <button class="utility-convert-tab is-active" type="button" data-convert-mode="distance">Distance</button>
-                  <button class="utility-convert-tab" type="button" data-convert-mode="area">Area</button>
+                <div class="utility-convert-modes" role="group" aria-label="Unit converter modes">
+                  <button id="utilityConvertModeWeight" class="utility-mode-btn" type="button" data-unit-mode="weight">Weight</button>
+                  <button id="utilityConvertModeDistance" class="utility-mode-btn is-active" type="button" data-unit-mode="distance">Distance</button>
+                  <button id="utilityConvertModeArea" class="utility-mode-btn" type="button" data-unit-mode="area">Area</button>
                 </div>
+
+                <button id="utilityConvertResultBtn" class="utility-output utility-convert-result" type="button">
+                  Result will appear here.
+                </button>
 
                 <!-- keep old form hidden for compatibility -->
                 <form id="utilityConverterForm" class="utility-form" hidden>
@@ -359,55 +496,44 @@
               <article class="utility-card">
                 <div class="utility-card-head">
                   <h3>Currency Converter</h3>
-                  <span id="utilityCurrencyUpdated" class="utility-currency-updated">Last Updated —</span>
+                  <span>Rate conversion</span>
                 </div>
-                <form id="utilityCurrencyForm" class="utility-currency-rate" aria-label="Currency converter">
-                  <div class="utility-currency-rate-card">
-                    <div class="utility-currency-rate-head">
-                      <span class="utility-currency-rate-symbol" aria-hidden="true">$</span>
-                      <select id="utilityCurrencyFrom" class="utility-currency-rate-select" aria-label="From currency">
-                        <option value="USD">USD - United States Dollar</option>
-                        <option value="EUR">EUR - Euro</option>
-                        <option value="GBP">GBP - British Pound</option>
-                        <option value="INR">INR - Indian Rupee</option>
-                        <option value="JPY">JPY - Japanese Yen</option>
-                        <option value="CAD">CAD - Canadian Dollar</option>
-                        <option value="AUD">AUD - Australian Dollar</option>
-                        <option value="SGD">SGD - Singapore Dollar</option>
-                        <option value="CNY">CNY - Chinese Yuan</option>
-                        <option value="BRL">BRL - Brazilian Real</option>
-                      </select>
+                <form id="utilityCurrencyForm" class="utility-form utility-currency-form">
+                  <div class="utility-currency-field">
+                    <label class="utility-currency-field-label">FROM</label>
+                    <div id="utilityCurrencyFromDropdown" class="custom-dropdown utility-custom-dropdown" data-dropdown="currency-from">
+                      <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="custom-dropdown-value">USD</span>
+                        <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                      </button>
+                      <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
                     </div>
-                    <input id="utilityCurrencyAmount" class="utility-currency-rate-amount" type="number" step="any" value="1" aria-label="Amount" />
+                    <select id="utilityCurrencyFrom" class="utility-input utility-select" aria-label="From currency" hidden>
+                      <option value="USD" selected>USD</option>
+                    </select>
                   </div>
-
-                  <button id="utilityCurrencySwap" class="utility-currency-rate-swap" type="button" aria-label="Swap currencies">
-                    <span aria-hidden="true">↻</span>
-                  </button>
-
-                  <div class="utility-currency-rate-card">
-                    <div class="utility-currency-rate-head">
-                      <span class="utility-currency-rate-symbol" aria-hidden="true">₹</span>
-                      <select id="utilityCurrencyTo" class="utility-currency-rate-select" aria-label="To currency">
-                        <option value="INR">INR - Indian Rupee</option>
-                        <option value="USD">USD - United States Dollar</option>
-                        <option value="EUR">EUR - Euro</option>
-                        <option value="GBP">GBP - British Pound</option>
-                        <option value="JPY">JPY - Japanese Yen</option>
-                        <option value="CAD">CAD - Canadian Dollar</option>
-                        <option value="AUD">AUD - Australian Dollar</option>
-                        <option value="SGD">SGD - Singapore Dollar</option>
-                        <option value="CNY">CNY - Chinese Yuan</option>
-                        <option value="BRL">BRL - Brazilian Real</option>
-                      </select>
+                  <div class="utility-currency-field">
+                    <label class="utility-currency-field-label">TO</label>
+                    <div id="utilityCurrencyToDropdown" class="custom-dropdown utility-custom-dropdown" data-dropdown="currency-to">
+                      <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="custom-dropdown-value">INR</span>
+                        <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                      </button>
+                      <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
                     </div>
-                    <div id="utilityCurrencyToAmount" class="utility-currency-rate-result" aria-live="polite">—</div>
+                    <select id="utilityCurrencyTo" class="utility-input utility-select" aria-label="To currency" hidden>
+                      <option value="INR" selected>INR</option>
+                    </select>
                   </div>
-
-                  <button class="utility-currency-rate-submit" type="submit">Convert</button>
+                  <div class="utility-currency-field">
+                    <label class="utility-currency-field-label" for="utilityCurrencyAmount">AMOUNT</label>
+                    <input id="utilityCurrencyAmount" class="utility-input" type="number" step="any" placeholder="0.00" />
+                  </div>
+                  <button class="utility-action utility-action-wide" type="submit">Convert</button>
                 </form>
-
-                <div id="utilityCurrencyOutput" class="utility-output utility-output-subtle">Enter an amount to convert.</div>
+                <button id="utilityCurrencyOutput" class="utility-output utility-currency-result" type="button">
+                  Enter an amount to convert.
+                </button>
                 <div id="utilityCurrencyMeta" class="utility-output utility-output-subtle"></div>
               </article>
             </div>
@@ -700,22 +826,21 @@
         <div class="settings-field">
           <div class="settings-field-head">
             <span class="settings-field-icon" aria-hidden="true">
-              <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M12 22s4-5.5 4-10-4-10-4-10-4 5.5-4 10 4 10 4 10z"></path>
-                <path d="M2 12h20"></path>
+              <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
               </svg>
             </span>
             <span class="settings-field-label">Display Language</span>
           </div>
-          <div class="custom-select-container">
-            <button id="languageSelectButton" class="custom-select-button" type="button">
-              <span id="currentLanguageName">English</span>
-              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
+          <div id="settingLanguageDropdown" class="custom-dropdown" data-dropdown="card-language">
+            <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+              <span class="custom-dropdown-value">English (India)</span>
+              <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <div id="languageOptions" class="custom-select-options" hidden></div>
+            <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
           </div>
           <select id="settingDisplayLanguage" class="settings-select" hidden></select>
         </div>
@@ -723,22 +848,21 @@
         <div class="settings-field">
           <div class="settings-field-head">
             <span class="settings-field-icon" aria-hidden="true">
-              <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
+              <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
               </svg>
             </span>
             <span class="settings-field-label">Region results</span>
           </div>
-          <div class="custom-select-container">
-            <button id="regionSelectButton" class="custom-select-button" type="button">
-              <div id="currentRegionFlag" class="region-flag-mini"></div>
-              <span id="currentRegionName">India</span>
-              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
+          <div id="settingRegionDropdown" class="custom-dropdown" data-dropdown="card-region">
+            <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+              <span class="custom-dropdown-value"><span class="custom-dropdown-trigger-inner"><img src="https://flagcdn.com/w20/in.png" srcset="https://flagcdn.com/w40/in.png 2x" width="20" height="15" alt="IN flag" class="flag-img"> <span>India</span></span></span>
+              <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <div id="regionOptions" class="custom-select-options" hidden></div>
+            <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
           </div>
           <select id="settingRegion" class="settings-select" hidden></select>
         </div>
@@ -915,6 +1039,132 @@
     </section>
   </div>
 
+  <!-- Standalone Settings Popup -->
+  <div id="settingsModal" class="settings-modal" aria-hidden="true">
+    <div id="settingsBackdrop" class="settings-backdrop"
+      onclick="document.getElementById('settingsModal').classList.remove('is-open'); document.getElementById('settingsModal').setAttribute('aria-hidden','true');"></div>
+    <section class="settings-popup" role="dialog" aria-modal="true" aria-labelledby="settingsPopupTitle">
+      <div class="settings-popup-header">
+        <div>
+          <span class="settings-popup-kicker">ACCOUNT</span>
+          <h2 id="settingsPopupTitle" class="settings-popup-title">Settings</h2>
+        </div>
+        <button id="settingsCloseBtn" class="settings-popup-close" type="button" aria-label="Close settings"
+          onclick="document.getElementById('settingsModal').classList.remove('is-open'); document.getElementById('settingsModal').setAttribute('aria-hidden','true');">&times;</button>
+      </div>
+
+      <form id="settingsPopupForm" class="settings-popup-form">
+        <div class="settings-popup-field">
+          <div class="settings-popup-field-head">
+            <span class="settings-popup-field-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+            </span>
+            <span class="settings-popup-field-label">Display Language</span>
+          </div>
+          <div id="settingsPopupLanguageDropdown" class="custom-dropdown" data-dropdown="language">
+            <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+              <span class="custom-dropdown-value">English (India)</span>
+              <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+          </div>
+          <select id="settingsPopupLanguage" class="settings-popup-select" hidden></select>
+        </div>
+
+        <div class="settings-popup-field">
+          <div class="settings-popup-field-head">
+            <span class="settings-popup-field-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+            </span>
+            <span class="settings-popup-field-label">Region results</span>
+          </div>
+          <div id="settingsPopupRegionDropdown" class="custom-dropdown" data-dropdown="region">
+            <button type="button" class="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+              <span class="custom-dropdown-value"><span class="custom-dropdown-trigger-inner"><img src="https://flagcdn.com/w20/in.png" srcset="https://flagcdn.com/w40/in.png 2x" width="20" height="15" alt="IN flag" class="flag-img"> <span>India</span></span></span>
+              <svg class="custom-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <ul class="custom-dropdown-menu" role="listbox" hidden></ul>
+          </div>
+          <select id="settingsPopupRegion" class="settings-popup-select" hidden></select>
+        </div>
+
+        <div class="settings-popup-field">
+          <div class="settings-popup-field-head">
+            <span class="settings-popup-field-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22a10 10 0 1 1 10-10c0 1.1-.9 2-2 2h-2.2c-1.2 0-2.1 1-2.1 2.1 0 .6.2 1.1.6 1.5.4.4.6.9.6 1.5 0 1.1-.9 2-2 2z" />
+                <circle cx="6.5" cy="11.5" r=".6" />
+                <circle cx="8.5" cy="7.5" r=".6" />
+                <circle cx="12.5" cy="6.5" r=".6" />
+                <circle cx="16.5" cy="8.5" r=".6" />
+              </svg>
+            </span>
+            <span class="settings-popup-field-label">Theme</span>
+          </div>
+          <div class="settings-popup-theme-row" role="group" aria-label="Theme">
+            <button id="settingsPopupThemeSystem" class="settings-popup-theme-btn" type="button" data-theme-value="system">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="12" rx="2" />
+                <path d="M8 20h8" />
+                <path d="M12 16v4" />
+              </svg>
+              <span>System</span>
+            </button>
+            <button id="settingsPopupThemeLight" class="settings-popup-theme-btn" type="button" data-theme-value="light">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="M4.93 4.93l1.41 1.41" />
+                <path d="M17.66 17.66l1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="M4.93 19.07l1.41-1.41" />
+                <path d="M17.66 6.34l1.41-1.41" />
+              </svg>
+              <span>Light</span>
+            </button>
+            <button id="settingsPopupThemeDark" class="settings-popup-theme-btn" type="button" data-theme-value="dark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+              </svg>
+              <span>Dark</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-popup-field settings-popup-toggle-field">
+          <div class="settings-popup-field-head">
+            <span class="settings-popup-field-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l8 4v6c0 5-3.4 9.4-8 10-4.6-.6-8-5-8-10V6l8-4z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+            </span>
+            <div class="settings-popup-toggle-text">
+              <span class="settings-popup-field-label">Safe Search</span>
+              <span class="settings-popup-field-sub">Filter explicit content from results</span>
+            </div>
+          </div>
+          <label class="settings-popup-switch">
+            <input id="settingsPopupSafeSearch" class="settings-popup-switch-input" type="checkbox" />
+            <span class="settings-popup-switch-slider"></span>
+          </label>
+        </div>
+
+        <button class="settings-popup-save" type="submit">Save settings</button>
+      </form>
+    </section>
+  </div>
+
   <div id="imagePreviewModal" class="image-preview-modal" aria-hidden="true">
     <div id="imagePreviewBackdrop" class="image-preview-backdrop"></div>
     <section class="image-preview-dialog" role="dialog" aria-modal="true" aria-label="Image preview">
@@ -927,7 +1177,7 @@
 
   <div id="accountSwitchToast" class="account-switch-toast" aria-live="polite" hidden></div>
 
-  <script type="module" src="/assets/app.js?v=20260508v12"></script>
+  <script type="module" src="/assets/app.js?v=20260424w42"></script>
 </body>
 
 </html>

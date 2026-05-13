@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/config")
 async def get_public_config() -> dict:
-    """Expose only public-safe config values to the frontend."""
+    """Expose only public-safe flags to the frontend. Never return API keys or secrets."""
     return {
-        "youtube_api_key": settings.youtube_api_key,
+        "youtube_integration_enabled": bool(settings.youtube_api_key.strip()),
     }

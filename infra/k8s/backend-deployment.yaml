@@ -22,7 +22,15 @@ spec:
             - name: ES_URL
               value: http://opensearch:9200
             - name: DATABASE_URL
-              value: postgresql://quantum:quantum@postgres:5432/quantum_seo
+              valueFrom:
+                secretKeyRef:
+                  name: quantum-seo-secrets
+                  key: DATABASE_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: quantum-seo-secrets
+                  key: JWT_SECRET
             - name: REDIS_URL
               value: redis://redis:6379/0
 ---

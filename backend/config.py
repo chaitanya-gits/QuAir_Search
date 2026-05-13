@@ -55,10 +55,7 @@ class Settings:
     search_web_fallback_timeout_seconds: float = float(os.getenv("SEARCH_WEB_FALLBACK_TIMEOUT_SECONDS", "8.0"))
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-<<<<<<< HEAD
     tesseract_cmd: str = os.getenv("TESSERACT_CMD", "")
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
     tavily_api_key: str = os.getenv("TAVILY_API_KEY", "")
     tavily_api_url: str = os.getenv("TAVILY_API_URL", "https://api.tavily.com/search")
     google_client_id: str = os.getenv("GOOGLE_CLIENT_ID", "")
@@ -66,7 +63,6 @@ class Settings:
     oauth_redirect_base: str = os.getenv("OAUTH_REDIRECT_BASE", "http://localhost:3000")
     jwt_secret: str = os.getenv("JWT_SECRET", "change-me-in-production")
     youtube_api_key: str = os.getenv("YOUTUBE_API_KEY", "")
-<<<<<<< HEAD
     cors_allow_origins: list[str] = field(
         default_factory=lambda: _parse_csv_env(
             os.getenv("CORS_ALLOW_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001"),
@@ -76,15 +72,26 @@ class Settings:
     cookie_secure: bool = _as_bool_env("COOKIE_SECURE", str(_default_cookie_secure()).lower())
     cookie_samesite: str = os.getenv("COOKIE_SAMESITE", "lax")
     allow_insecure_default_jwt: bool = _as_bool_env("ALLOW_INSECURE_DEFAULT_JWT", "false")
-=======
->>>>>>> 082393a (Remove nested repo and clean structure)
 
 
 settings = Settings()
 
 
 def validate_security_settings() -> None:
-    if settings.jwt_secret == "change-me-in-production" and not settings.allow_insecure_default_jwt:
+    weak_placeholders = {
+        "",
+        "change-me",
+        "change-me-in-production",
+        "replace-me",
+        "replace-with-strong-secret",
+    }
+    jwt_secret = settings.jwt_secret.strip()
+    is_weak_secret = (
+        jwt_secret.lower() in weak_placeholders
+        or jwt_secret.upper().startswith("REPLACE_WITH")
+        or len(jwt_secret) < 32
+    )
+    if is_weak_secret and not settings.allow_insecure_default_jwt:
         raise RuntimeError(
             "Refusing to start with insecure JWT_SECRET. Set JWT_SECRET to a strong random value "
             "or explicitly set ALLOW_INSECURE_DEFAULT_JWT=true for temporary local-only development."

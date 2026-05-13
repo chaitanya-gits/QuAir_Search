@@ -1,0 +1,198 @@
+# Apply namespace and infrastructure first, then create secrets (never commit real values):
+#   kubectl apply -f infra/k8s/secrets.example.yaml   # after editing a local copy, or use:
+#   kubectl create secret generic quantum-seo-secrets -n quantum-seo --from-env-file=./secrets.env
+# See infra/k8s/secrets.example.yaml for required keys.
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: quantum-seo
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quantum-seo-config
+  namespace: quantum-seo
+data:
+  HOST: "0.0.0.0"
+  PORT: "3000"
+  ENABLE_SEARCH_INDEX: "false"
+  ENABLE_CRAWL_SCHEDULER: "false"
+  REDIS_URL: "redis://quantum-seo-redis:6379/0"
+  # IMPORTANT: DATABASE_URL must come from a Secret in real deployments.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quantum-seo-postgres-pvc
+  namespace: quantum-seo
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantum-seo-postgres
+  namespace: quantum-seo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quantum-seo-postgres
+  template:
+    metadata:
+      labels:
+        app: quantum-seo-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "quantum_seo"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "postgres"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: quantum-seo-postgres-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quantum-seo-postgres
+  namespace: quantum-seo
+spec:
+  selector:
+    app: quantum-seo-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantum-seo-redis
+  namespace: quantum-seo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quantum-seo-redis
+  template:
+    metadata:
+      labels:
+        app: quantum-seo-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.4-alpine
+          ports:
+            - containerPort: 6379
+          args: ["redis-server", "--appendonly", "no", "--save", "", "--maxmemory", "64mb", "--maxmemory-policy", "allkeys-lru"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quantum-seo-redis
+  namespace: quantum-seo
+spec:
+  selector:
+    app: quantum-seo-redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantum-seo-backend
+  namespace: quantum-seo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quantum-seo-backend
+  template:
+    metadata:
+      labels:
+        app: quantum-seo-backend
+    spec:
+      containers:
+        - name: backend
+          image: quantum-seo-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: quantum-seo-config
+            - secretRef:
+                name: quantum-seo-secrets
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: quantum-seo-secrets
+                  key: DATABASE_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: quantum-seo-secrets
+                  key: JWT_SECRET
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: quantum-seo-secrets
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: quantum-seo-secrets
+                  key: GOOGLE_CLIENT_SECRET
+            - name: OAUTH_REDIRECT_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: quantum-seo-secrets
+                  key: OAUTH_REDIRECT_BASE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quantum-seo-backend
+  namespace: quantum-seo
+spec:
+  selector:
+    app: quantum-seo-backend
+  ports:
+    - port: 3000
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: quantum-seo-ingress
+  namespace: quantum-seo
+spec:
+  rules:
+    - host: quantum-seo.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: quantum-seo-backend
+                port:
+                  number: 3000
+

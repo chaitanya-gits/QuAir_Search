@@ -6,8 +6,8 @@ import asyncpg
 
 
 SQL_FILES = [
-    "infrastructure/sql/search-schema.sql",
-    "infrastructure/sql/analytics-schema.sql",
+    "infra/sql/search-schema.sql",
+    "infra/sql/analytics-schema.sql",
 ]
 
 

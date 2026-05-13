@@ -290,12 +290,8 @@ class SearchEngine:
         self._pagerank_cache.invalidate()
         self._response_cache.invalidate()
 
-<<<<<<< HEAD
     async def search(self, query: str, limit: int = 30, filters: SearchFilters | None = None, request: Any | None = None) -> dict:
         start_time = asyncio.get_running_loop().time()
-=======
-    async def search(self, query: str, limit: int = 30, filters: SearchFilters | None = None) -> dict:
->>>>>>> 082393a (Remove nested repo and clean structure)
         filters = filters or SearchFilters()
         parsed_query = parse_query(query)
         search_queries = [item for item in parsed_query.search_queries if item]
@@ -315,11 +311,7 @@ class SearchEngine:
         )
         cached_payload = await self._response_cache.get(cache_key)
         if cached_payload is not None:
-<<<<<<< HEAD
             await self._safe_record_query(parsed_query.normalized)
-=======
-            await self.redis.record_query(parsed_query.normalized)
->>>>>>> 082393a (Remove nested repo and clean structure)
             return cached_payload
 
         mode_timeout = settings.search_mode_timeout_seconds
@@ -475,7 +467,6 @@ class SearchEngine:
         }
 
         await self._response_cache.set(cache_key, payload)
-<<<<<<< HEAD
         if request is not None:
             response_ms = round((asyncio.get_running_loop().time() - start_time) * 1000)
             asyncio.create_task(
@@ -519,11 +510,6 @@ class SearchEngine:
         except Exception:  # pragma: no cover - defensive
             logger.exception("failed to record search event")
 
-=======
-        await record_task
-        return payload
-
->>>>>>> 082393a (Remove nested repo and clean structure)
     @staticmethod
     async def _drain_cancelled_task(task: asyncio.Task[Any]) -> None:
         try:
