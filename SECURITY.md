@@ -2,20 +2,44 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+Security fixes are applied to the current `main` branch.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Older snapshots, experimental branches, and unpublished local environments are
+not guaranteed to receive backported fixes.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security issue, please avoid opening a public issue with
+exploit details.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Instead:
+
+1. Gather the affected area, impact, reproduction steps, and any suggested mitigation.
+2. Contact the repository maintainer privately through GitHub security reporting or a private maintainer channel.
+3. Allow reasonable time for verification, remediation, and coordinated disclosure.
+
+When submitting a report, include:
+
+- affected file, endpoint, or deployment surface
+- prerequisites and reproduction steps
+- expected impact
+- whether credentials, tokens, or personal data may be exposed
+
+## Response Goals
+
+- Initial acknowledgement: as soon as practical
+- Triage and severity review: after reproduction
+- Fix and validation: based on impact and deployment risk
+
+## Scope Notes
+
+Please report issues related to:
+
+- authentication and session handling
+- secret exposure
+- dependency vulnerabilities
+- infrastructure or deployment misconfiguration
+- access control or data exposure
+
+Do not include real secrets, production credentials, or customer data in public
+reports.

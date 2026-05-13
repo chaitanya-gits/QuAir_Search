@@ -19,11 +19,11 @@ _CACHE_TTL = 3600  # seconds
 # These are genuinely popular global/Indian searches, NOT user history.
 _FALLBACK_TRENDING: list[dict] = [
     {"title": "IPL 2025 live score",       "image": "", "description": "Trending"},
-    {"title": "AI news today",             "image": "", "description": "Trending"},
-    {"title": "ChatGPT latest update",     "image": "", "description": "Trending"},
+    {"title": "Technology news today",     "image": "", "description": "Trending"},
+    {"title": "Startup funding news",      "image": "", "description": "Trending"},
     {"title": "India vs Pakistan cricket", "image": "", "description": "Trending"},
     {"title": "Stock market today",        "image": "", "description": "Trending"},
-    {"title": "Gemini AI",                 "image": "", "description": "Trending"},
+    {"title": "Product launch updates",    "image": "", "description": "Trending"},
     {"title": "Weather forecast",          "image": "", "description": "Trending"},
     {"title": "Tesla stock price",         "image": "", "description": "Trending"},
     {"title": "Gold rate today",           "image": "", "description": "Trending"},

@@ -535,7 +535,7 @@ class SearchEngine:
 
     @staticmethod
     async def _generate_ai_summary(query: str, sources: list[dict]) -> str:
-        """Generate a 4-5 sentence encyclopedic About summary using Gemini.
+        """Generate a short encyclopedic About summary from collected sources.
 
         Prefers Wikipedia sources so the About section reads like a clean factual
         overview rather than a mix of news articles.
@@ -585,12 +585,12 @@ class SearchEngine:
             text = _re.sub(r"[*#`]+", "", text).strip()
             return text if len(text) > 20 else "insufficient data"
         except Exception:
-            logger.exception("Gemini AI summary failed")
+            logger.exception("overview summary generation failed")
             return "insufficient data"
 
     @staticmethod
     async def _suggest_spelling_correction(query: str) -> str | None:
-        """Use Gemini to detect and correct spelling mistakes in search queries.
+        """Detect and correct spelling mistakes in search queries.
 
         Returns the corrected query if a mistake was detected, or None if the
         query appears correct.

@@ -1,8 +1,8 @@
 # QuAir Search (Quantum SEO)
 
-QuAir Search is a full-stack search experience: a FastAPI backend (search, suggestions, trending, auth, analytics), OpenSearch-backed retrieval with BM25-style ranking, PostgreSQL and Redis for persistence and caching, and a static vanilla JS/CSS frontend served by the API.
+QuAir Search is a search platform built with a FastAPI backend, a static frontend, and supporting storage services for indexing, ranking, authentication, analytics, and operational workflows. The repository is organized for local development, container-based runs, and straightforward deployment handoff.
 
-## Repository layout
+## Repository Layout
 
 | Path | Purpose |
 |------|---------|
@@ -21,13 +21,13 @@ QuAir Search is a full-stack search experience: a FastAPI backend (search, sugge
 - **Node.js** 18+ (for the static dev server and smoke tests)
 - **PostgreSQL**, **Redis**, and **OpenSearch** (or Elasticsearch-compatible URL) when running the full backend locally or in Docker
 
-Copy `.env.example` to `.env` and set `DATABASE_URL`, `REDIS_URL`, and `ES_URL`. Keep **API keys, JWT secrets, OAuth client secrets, database passwords, AWS keys, and deployment tokens** only in `.env`, your shell environment, or a managed secret store — never commit them. `.env` is gitignored; use `infra/k8s/secrets.example.yaml` as a Kubernetes Secret template only after copying to an untracked file or use `kubectl create secret`.
+Copy `.env.example` to `.env` and set `DATABASE_URL`, `REDIS_URL`, and `ES_URL`. Keep **API keys, JWT secrets, OAuth client secrets, database passwords, AWS keys, and deployment tokens** only in `.env`, your shell environment, or a managed secret store. Never commit them. `.env` is gitignored; for Kubernetes, use `infra/k8s/secrets.example.yaml` only as a template and apply a local untracked copy or create the secret directly with `kubectl create secret`.
 
 For production, set a strong `JWT_SECRET` (see `validate_security_settings` in `backend/config.py`).
 
 ## Run without Docker
 
-From the repository root (so `PYTHONPATH` includes the project):
+From the repository root:
 
 1. Create a virtual environment and install dependencies:
 
@@ -62,7 +62,7 @@ python -m backend.main
 
 5. Open `http://localhost:3000` in a browser.
 
-**UI-only smoke (no Python services):** proxies the UI for quick checks when the full stack is not running:
+**UI-only smoke (no Python services):** serves the frontend for quick checks when the full stack is not running:
 
 ```powershell
 cd G:\Quantum_SEO
