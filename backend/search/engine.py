@@ -221,7 +221,7 @@ def apply_safe_search_filter(
     - moderate → remove results from adult domains
     - strict   → remove adult + violence domains AND filter unsafe snippets
     """
-    level = (level or "moderate").lower().strip()
+    level = (level or "strict").lower().strip()
     if level == "off":
         return results
 
@@ -263,7 +263,7 @@ class SearchFilters:
     filetype: str = ""
     date_range: str = ""
     region: str = ""
-    safe_search: str = "moderate"
+    safe_search: str = "strict"
 
 
 @dataclass(slots=True)
@@ -307,6 +307,7 @@ class SearchEngine:
             filters.filetype.strip().lower(),
             filters.date_range.strip().lower(),
             filters.region.strip().upper(),
+            filters.safe_search.strip().lower(),
             int(limit),
         )
         cached_payload = await self._response_cache.get(cache_key)

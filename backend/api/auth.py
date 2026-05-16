@@ -549,7 +549,10 @@ async def get_me(request: Request):
     if not user:
         qtoken = request.cookies.get("qsession", "")
         if qtoken:
-            session = await request.app.state.postgres.get_session(qtoken)
+            try:
+                session = await request.app.state.postgres.get_session(qtoken)
+            except Exception:
+                return JSONResponse({"authenticated": False, "error": "session_lookup_failed"}, status_code=503)
             if session:
                 user_data = {
                     "authenticated": True,

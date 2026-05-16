@@ -109,6 +109,54 @@ function setTabLoadingState(isLoading, query) {
   }
 }
 
+function syncSearchInputs(value, source = "hero") {
+  const nextValue = String(value || "");
+  if (source !== "hero" && elements.queryInput && elements.queryInput.value !== nextValue) {
+    elements.queryInput.value = nextValue;
+  }
+  if (source !== "results" && elements.resultsQueryInput && elements.resultsQueryInput.value !== nextValue) {
+    elements.resultsQueryInput.value = nextValue;
+  }
+  if (elements.resultsClearButton) {
+    elements.resultsClearButton.hidden = !nextValue.trim();
+  }
+}
+
+function setResultsView(isResultsView) {
+  document.body.classList.toggle("is-results-view", Boolean(isResultsView));
+  if (elements.searchResultsPage) {
+    elements.searchResultsPage.hidden = !isResultsView;
+  }
+}
+
+function clearSearchInput(keepResultsView = false) {
+  state.lastSubmittedQuery = "";
+  syncSearchInputs("", "results");
+
+  if (keepResultsView) {
+    setSearchStatus("");
+    if (elements.clearButton) {
+      elements.clearButton.classList.remove("is-visible");
+    }
+    return;
+  }
+
+  window.history.replaceState({}, "", "/");
+  setTabTitleForQuery("");
+  setTabFavicon(TAB_FAVICON_DEFAULT);
+  closeDropdown();
+  clearAnalytics();
+  renderResults("");
+  setSearchStatus("");
+  if (elements.clearButton) {
+    elements.clearButton.classList.remove("is-visible");
+  }
+}
+
+function syncHeaderScrollState() {
+  document.body.classList.toggle("is-header-scrolled", window.scrollY > 20);
+}
+
 const elements = {
   answerText: document.getElementById("answerText"),
   answerWrap: document.getElementById("aiAnswer"),
@@ -195,6 +243,28 @@ const elements = {
   bookmarksBackdrop: document.getElementById("bookmarksBackdrop"),
   bookmarksCloseButton: document.getElementById("bookmarksCloseButton"),
   bookmarksList: document.getElementById("bookmarksList"),
+  knowledgePanel: document.getElementById("knowledgePanel"),
+  knowledgePanelAction: document.getElementById("knowledgePanelAction"),
+  knowledgePanelFacts: document.getElementById("knowledgePanelFacts"),
+  knowledgePanelImage: document.getElementById("knowledgePanelImage"),
+  knowledgePanelImageFallback: document.getElementById("knowledgePanelImageFallback"),
+  knowledgePanelMedia: document.querySelector("#knowledgePanel .knowledge-panel-media"),
+  knowledgePanelPhotoRail: document.getElementById("knowledgePanelPhotoRail"),
+  knowledgePanelProfiles: document.getElementById("knowledgePanelProfiles"),
+  knowledgePanelProfilesWrap: document.getElementById("knowledgePanelProfilesWrap"),
+  knowledgePanelShare: document.getElementById("knowledgePanelShare"),
+  knowledgePanelSummary: document.getElementById("knowledgePanelSummary"),
+  knowledgePanelTitle: document.getElementById("knowledgePanelTitle"),
+  peopleAlsoAskList: document.getElementById("peopleAlsoAskList"),
+  peopleAlsoAskSection: document.getElementById("peopleAlsoAskSection"),
+  relatedSearchesList: document.getElementById("relatedSearchesList"),
+  relatedSearchesSection: document.getElementById("relatedSearchesSection"),
+  resultsAttachButton: document.getElementById("resultsAttachButton"),
+  resultsClearButton: document.getElementById("resultsClearButton"),
+  resultsQueryInput: document.getElementById("resultsQuery"),
+  resultsSearchButton: document.getElementById("resultsSearchButton"),
+  resultsSearchForm: document.getElementById("resultsSearchForm"),
+  searchResultsPage: document.getElementById("searchResultsPage"),
   utilitiesToggle: document.getElementById("utilitiesToggle"),
   utilitiesPanel: document.getElementById("utilitiesPanel"),
   utilityCalculatorForm: document.getElementById("utilityCalculatorForm"),
@@ -284,7 +354,7 @@ const elements = {
   results: document.getElementById("results"),
   resultsHead: document.getElementById("resultsHead"),
   analyticsBoard: document.getElementById("analyticsBoard"),
-  searchTabs: Array.from(document.querySelectorAll("[data-search-tab]")),
+  searchTabs: Array.from(document.querySelectorAll(".search-tabs > [data-search-tab]")),
   searchButton: document.getElementById("searchButton"),
   searchShell: document.querySelector(".search-shell"),
   statusPill: document.getElementById("statusPill"),
@@ -360,7 +430,7 @@ async function trackSearch({ queryRaw, queryNormalized, resultCount, responseMs,
         response_ms: responseMs,
         region: settings?.region || "",
         display_language: settings?.displayLanguage || "en-US",
-        safe_search: settings?.safeSearch || "moderate",
+        safe_search: settings?.safeSearch || "strict",
         has_attachment: Boolean(state.attachments?.length),
         search_tab: "all",
       }),
@@ -1472,6 +1542,37 @@ function openSearchVertical(tabName) {
     return;
   }
 
+  if (tabName === "books") {
+    const booksUrl = new URL("https://www.google.com/search");
+    if (query) {
+      booksUrl.searchParams.set("q", query);
+    }
+    booksUrl.searchParams.set("tbm", "bks");
+    booksUrl.searchParams.set("hl", settings.displayLanguage);
+    booksUrl.searchParams.set("gl", settings.region);
+    window.open(booksUrl.toString(), "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  if (tabName === "flights") {
+    const flightsUrl = new URL("https://www.google.com/travel/flights");
+    if (query) {
+      flightsUrl.searchParams.set("q", query);
+    }
+    window.open(flightsUrl.toString(), "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  if (tabName === "forums") {
+    const forumsUrl = new URL("https://www.google.com/search");
+    forumsUrl.searchParams.set("q", query ? `${query} forum discussions` : "forum discussions");
+    forumsUrl.searchParams.set("hl", settings.displayLanguage);
+    forumsUrl.searchParams.set("gl", settings.region);
+    forumsUrl.searchParams.set("safe", safeSearchMode);
+    window.open(forumsUrl.toString(), "_blank", "noopener,noreferrer");
+    return;
+  }
+
   const url = new URL("https://www.google.com/search");
 
   if (query) {
@@ -1599,17 +1700,45 @@ const SOCIAL_PLATFORMS = [
 function detectSocialProfiles(sources, query = "") {
   const seen = new Set();
   const profiles = [];
+  const genericPathParts = new Set([
+    "search", "results", "explore", "tags", "hashtag", "hashtag_reel",
+    "watch", "status", "reel", "video", "videos", "channel", "c", "user", "users",
+  ]);
+
+  const extractProfileLabel = (sourceUrl, fallbackName) => {
+    try {
+      const url = new URL(sourceUrl);
+      const parts = url.pathname
+        .split("/")
+        .map((part) => decodeURIComponent(part).trim())
+        .filter(Boolean)
+        .filter((part) => !genericPathParts.has(part.toLowerCase()));
+      const candidate = parts.find((part) => part.length >= 2 && part.length <= 40) || "";
+      if (!candidate) {
+        return fallbackName;
+      }
+      return candidate.startsWith("@") ? candidate : `@${candidate}`;
+    } catch {
+      return fallbackName;
+    }
+  };
+
   for (const source of (sources || [])) {
     let host = "";
     try { host = new URL(source.url).hostname.replace(/^www\./, ""); } catch { continue; }
     const platform = SOCIAL_PLATFORMS.find((p) => host === p.key || host.endsWith(`.${p.key}`));
     if (platform && !seen.has(platform.name)) {
       seen.add(platform.name);
-      profiles.push({ ...platform, url: source.url, host });
+      profiles.push({
+        ...platform,
+        url: source.url,
+        host,
+        isFallback: false,
+        label: extractProfileLabel(source.url, platform.name),
+      });
     }
   }
 
-  // Force generic fallback profiles if they weren't found in search results
   if (query) {
     const fallbacks = [
       { key: "linkedin.com", name: "LinkedIn", searchUrl: `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(query)}` },
@@ -1621,7 +1750,13 @@ function detectSocialProfiles(sources, query = "") {
     for (const fb of fallbacks) {
       if (!seen.has(fb.name)) {
         seen.add(fb.name);
-        profiles.push({ ...fb, url: fb.searchUrl, host: fb.key });
+        profiles.push({
+          ...fb,
+          url: fb.searchUrl,
+          host: fb.key,
+          isFallback: true,
+          label: `Search ${toTitleCase(query)}`,
+        });
       }
     }
   }
@@ -1646,6 +1781,123 @@ function formatRelativeDate(dateStr) {
     if (days < 7) return `${days} day${days > 1 ? "s" : ""} ago`;
     return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   } catch { return dateStr; }
+}
+
+function buildOverviewSourceChips(sources = []) {
+  const seen = new Set();
+  const chips = [];
+  for (const source of sources) {
+    if (!source?.url) continue;
+    let host = "";
+    try { host = new URL(source.url).hostname.replace(/^www\./, ""); } catch { continue; }
+    if (!host || seen.has(host) || /wikipedia\.org/i.test(host)) continue;
+    seen.add(host);
+    chips.push(`
+      <a class="overview-source-chip" href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer noopener">
+        <img class="overview-source-chip-icon" src="https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(host)}" alt="" />
+        <span>${escapeHtml(host)}</span>
+      </a>
+    `);
+    if (chips.length >= 4) break;
+  }
+  return chips.join("");
+}
+
+function buildAiOverviewSummary(query, message, sources = []) {
+  const cleanedMessage = stripMarkdown((message || "").trim());
+  const validSources = (sources || []).filter((source) => source?.url);
+  const sourceSentences = [];
+
+  for (const source of validSources) {
+    const text = stripMarkdown(String(source.summary || source.body || "").trim());
+    const sentence = splitIntoSentences(text)[0] || "";
+    if (!sentence) continue;
+    if (sourceSentences.some((entry) => entry.toLowerCase() === sentence.toLowerCase())) continue;
+    sourceSentences.push(sentence);
+    if (sourceSentences.length >= 3) break;
+  }
+
+  const leadSentences = splitIntoSentences(cleanedMessage)
+    .filter(Boolean)
+    .slice(0, 3);
+  const narrative = [...leadSentences];
+
+  for (const sentence of sourceSentences) {
+    if (narrative.some((entry) => entry.toLowerCase() === sentence.toLowerCase())) continue;
+    narrative.push(sentence);
+    if (narrative.length >= 4) break;
+  }
+
+  const summary = narrative.join(" ").trim();
+  if (summary) {
+    return summary;
+  }
+
+  return `Source-backed overview for ${query} is still forming. Explore cited results below for latest coverage.`;
+}
+
+function extractKnowledgePanelPhotos(sources = []) {
+  const seen = new Set();
+  const photos = [];
+  for (const source of sources) {
+    const src = String(source?.image || "").trim();
+    if (!src || seen.has(src) || /wikipedia\.org/i.test(String(source?.url || ""))) {
+      continue;
+    }
+    seen.add(src);
+    photos.push({
+      src,
+      title: String(source?.title || "").trim() || "Related photo",
+      url: String(source?.url || "").trim(),
+      host: getStoryHost(source?.url || ""),
+    });
+    if (photos.length >= 4) break;
+  }
+  return photos;
+}
+
+function buildWikipediaSummary(query, wikiSource) {
+  const text = stripMarkdown(String(wikiSource?.summary || wikiSource?.body || "").trim());
+  const sentences = splitIntoSentences(text).slice(0, 3);
+  if (sentences.length) {
+    return sentences.join(" ");
+  }
+  return `Wikipedia summary for ${query} is not available in current results yet.`;
+}
+
+function buildKnowledgePanelFacts(query, wikiSource, sources = [], profiles = [], photos = []) {
+  const facts = [];
+  const wikiText = `${wikiSource?.summary || ""} ${wikiSource?.body || ""}`.trim();
+  const firstSentence = splitIntoSentences(wikiText)[0] || "";
+
+  const occupationMatch = firstSentence.match(/\b(?:is|was)\s+(?:an?|the)\s+([^.,;]+)/i);
+  if (occupationMatch?.[1]) {
+    facts.push(["Known for", occupationMatch[1].trim()]);
+  }
+
+  const bornMatch = wikiText.match(/\(born\s+([^)]+)\)/i) || wikiText.match(/\bborn\s+([A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{4})/i);
+  if (bornMatch?.[1]) {
+    facts.push(["Born", bornMatch[1].trim()]);
+  }
+
+  if (photos.length) {
+    facts.push(["Photos", `${photos.length} related result image${photos.length === 1 ? "" : "s"}`]);
+  }
+
+  if (profiles.length) {
+    facts.push(["Official handles", `${profiles.filter((profile) => !profile.isFallback).length || profiles.length} surfaced`]);
+  }
+
+  const resultCount = (sources || []).filter((source) => source?.url).length;
+  if (resultCount) {
+    facts.push(["Coverage", `${resultCount} cited result${resultCount === 1 ? "" : "s"}`]);
+  }
+
+  if (!facts.length) {
+    facts.push(["Topic", toTitleCase(query)]);
+  }
+
+  return facts.slice(0, 5);
 }
 
 // Google-News-style card: full-cover image + source + title + time
@@ -1693,13 +1945,7 @@ function buildNewsCard(source) {
 }
 
 function formatOverviewHtml(query, message, sources) {
-  const cleanedMessage = stripMarkdown((message || "").trim());
-
-  // ── About: truncate to exactly 4-5 lines (sentences) ─────────────────────
-  const sentences = splitIntoSentences(cleanedMessage);
-  const summaryText = sentences.slice(0, 5).join(" ") || cleanedMessage;
-
-  // ── Source helpers ────────────────────────────────────────────────────────
+  const summaryText = buildAiOverviewSummary(query, message, sources);
   const validSources = (sources || []).filter((s) => s.url);
   const socialDomains = ["facebook.com","instagram.com","twitter.com","x.com",
     "youtube.com","linkedin.com","tiktok.com","reddit.com","pinterest.com",
@@ -1767,39 +2013,19 @@ function formatOverviewHtml(query, message, sources) {
       </a>`;
   })();
 
-  // ── Social Profiles ───────────────────────────────────────────────────────
-  const socialProfiles = detectSocialProfiles(validSources, query);
-  const socialHtml = socialProfiles.length
-    ? `<section class="overview-section">
-        <h3 class="overview-heading">Profiles</h3>
-        <div class="social-profiles-row">
-          ${socialProfiles.map((p) => `
-            <a class="sp-card" href="${escapeHtml(p.url)}" target="_blank" rel="noreferrer noopener" title="${escapeHtml(p.name)}">
-              <div class="sp-circle">
-                <img class="sp-icon" src="https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(p.key)}" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'" />
-              </div>
-              <span class="sp-name">${escapeHtml(p.name)}</span>
-            </a>`).join("")}
-        </div>
-      </section>`
-    : "";
-
-  const wikiUrl = wikiSource ? wikiSource.url : `https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(query)}`;
+  const sourceChips = buildOverviewSourceChips(validSources);
 
   const html = `
     <section class="overview-section">
       <h3 class="overview-heading">About</h3>
-      <p class="overview-text ai-summary-text">
-        ${escapeHtml(summaryText)}
-        <a class="wiki-source-link" href="${escapeHtml(wikiUrl)}" target="_blank" rel="noreferrer noopener">Wikipedia</a>
-      </p>
+      <p class="overview-text ai-summary-text">${escapeHtml(summaryText)}</p>
+      ${sourceChips ? `<div class="overview-source-chips">${sourceChips}</div>` : ""}
     </section>
     ${storiesHtml ? `
     <section class="overview-section">
       <h3 class="overview-heading">Top Stories</h3>
       ${storiesHtml}
     </section>` : ""}
-    ${socialHtml}
   `;
   return { html, topStoryUrls };
 }
@@ -1812,6 +2038,178 @@ function renderOverview(query, message, sources = []) {
   const result = formatOverviewHtml(query, message, sources);
   elements.answerText.innerHTML = result.html;
   return result.topStoryUrls;
+}
+
+function toTitleCase(text) {
+  return String(text || "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function buildPeopleAlsoAsk(query, sources = []) {
+  const subject = String(query || "").trim() || "this topic";
+  const candidates = (sources || []).filter((source) => source?.url);
+  const prompts = [
+    `What is ${subject}?`,
+    `How does ${subject} work?`,
+    `Why is ${subject} important?`,
+    `What should I know about ${subject}?`,
+  ];
+  return prompts.map((question, index) => {
+    const source = candidates[index] || candidates[0] || null;
+    const answer = stripMarkdown(String(source?.summary || source?.body || "").trim())
+      || `Explore source-backed results for ${subject}.`;
+    const url = String(source?.url || "").trim();
+    const host = url ? getStoryHost(url) : "";
+    return { q: question, answer, url, host };
+  });
+}
+
+function buildRelatedSearchTerms(query, sources = []) {
+  const seen = new Set();
+  const terms = [];
+  const normalizedQuery = String(query || "").trim();
+
+  const pushTerm = (value) => {
+    const cleaned = String(value || "").replace(/\s+/g, " ").trim();
+    if (!cleaned) return;
+    const key = cleaned.toLowerCase();
+    if (seen.has(key) || key === normalizedQuery.toLowerCase()) return;
+    seen.add(key);
+    terms.push(cleaned);
+  };
+
+  pushTerm(`${normalizedQuery} explained`);
+  pushTerm(`${normalizedQuery} applications`);
+  pushTerm(`${normalizedQuery} examples`);
+
+  for (const source of sources) {
+    const title = String(source?.title || "");
+    const titleParts = title.split(/[|:,\-]/).map((part) => part.trim()).filter(Boolean);
+    for (const part of titleParts) {
+      if (part.length >= 8 && part.length <= 40) {
+        pushTerm(part);
+      }
+      if (terms.length >= 8) {
+        return terms.slice(0, 8);
+      }
+    }
+  }
+
+  return terms.slice(0, 8);
+}
+
+function renderPeopleAlsoAsk(query, sources = []) {
+  if (!elements.peopleAlsoAskSection || !elements.peopleAlsoAskList) {
+    return;
+  }
+
+  const questions = buildPeopleAlsoAsk(query, sources);
+  elements.peopleAlsoAskList.innerHTML = questions.map((item) => `
+    <details class="people-ask-item">
+      <summary class="people-ask-question">
+        <span>${escapeHtml(item.q)}</span>
+        <span class="people-ask-chevron" aria-hidden="true">⌄</span>
+      </summary>
+      <p class="people-ask-answer">${escapeHtml(item.answer)}</p>
+      ${item.url ? `
+      <a class="people-ask-source" href="${escapeHtml(item.url)}" target="_blank" rel="noreferrer noopener">
+        <img src="https://www.google.com/s2/favicons?sz=32&domain=${encodeURIComponent(item.host)}" alt="" />
+        <span>${escapeHtml(item.host)}</span>
+      </a>` : ""}
+    </details>
+  `).join("");
+  elements.peopleAlsoAskSection.hidden = !questions.length;
+}
+
+function renderRelatedSearches(query, sources = []) {
+  if (!elements.relatedSearchesSection || !elements.relatedSearchesList) {
+    return;
+  }
+
+  const terms = buildRelatedSearchTerms(query, sources);
+  elements.relatedSearchesList.innerHTML = terms.map((term) => `
+    <button class="related-search-chip" type="button" data-related-query="${escapeAttribute(term)}">
+      ${escapeHtml(term)}
+    </button>
+  `).join("");
+  elements.relatedSearchesSection.hidden = !terms.length;
+
+  for (const button of elements.relatedSearchesList.querySelectorAll("[data-related-query]")) {
+    button.addEventListener("click", () => {
+      const nextQuery = button.getAttribute("data-related-query") || "";
+      syncSearchInputs(nextQuery);
+      void executeSearch(nextQuery, state.attachmentContext, { inputValue: nextQuery });
+    });
+  }
+}
+
+function renderKnowledgePanel(query, sources = []) {
+  if (!elements.knowledgePanel) {
+    return;
+  }
+
+  const validSources = (sources || []).filter((source) => source?.url);
+  const wikiSource = validSources.find((source) => /wikipedia\.org/i.test(source.url)) || null;
+  const socialProfiles = detectSocialProfiles(validSources, query).slice(0, 4);
+  const photoCandidates = extractKnowledgePanelPhotos(validSources);
+  const facts = buildKnowledgePanelFacts(query, wikiSource, validSources, socialProfiles, photoCandidates);
+  const wikipediaUrl = wikiSource?.url || `https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(query)}`;
+
+  elements.knowledgePanelTitle.textContent = toTitleCase(query);
+  elements.knowledgePanelSummary.textContent = buildWikipediaSummary(query, wikiSource);
+
+  elements.knowledgePanelFacts.innerHTML = facts.map(([label, value]) => `
+    <div class="knowledge-panel-fact">
+      <span class="knowledge-panel-fact-label">${escapeHtml(label)}</span>
+      <strong class="knowledge-panel-fact-value">${escapeHtml(value)}</strong>
+    </div>
+  `).join("");
+
+  const leadPhoto = photoCandidates[0] || null;
+  const trailingPhotos = photoCandidates.slice(1, 4);
+  if (elements.knowledgePanelMedia) {
+    elements.knowledgePanelMedia.hidden = !leadPhoto;
+  }
+  if (leadPhoto) {
+    elements.knowledgePanelImage.src = leadPhoto.src;
+    elements.knowledgePanelImage.alt = toTitleCase(query);
+    elements.knowledgePanelImage.hidden = false;
+    elements.knowledgePanelImage.classList.toggle("is-solo", trailingPhotos.length === 0);
+    elements.knowledgePanelPhotoRail.innerHTML = trailingPhotos.map((photo) => `
+      <a class="knowledge-panel-photo-card" href="${escapeHtml(photo.url || "#")}" target="_blank" rel="noreferrer noopener">
+        <img src="${escapeHtml(photo.src)}" alt="${escapeAttribute(photo.title)}" />
+        <span class="knowledge-panel-photo-caption">${escapeHtml(photo.host || photo.title)}</span>
+      </a>
+    `).join("");
+    elements.knowledgePanelPhotoRail.hidden = !trailingPhotos.length;
+    elements.knowledgePanelImageFallback.hidden = true;
+  } else {
+    elements.knowledgePanelImage.hidden = true;
+    elements.knowledgePanelImage.classList.remove("is-solo");
+    elements.knowledgePanelPhotoRail.innerHTML = "";
+    elements.knowledgePanelPhotoRail.hidden = true;
+    elements.knowledgePanelImageFallback.innerHTML = `
+      <div class="knowledge-panel-fallback-card">
+        <img class="knowledge-panel-fallback-icon" src="https://www.google.com/s2/favicons?sz=128&domain=wikipedia.org" alt="" />
+        <span class="knowledge-panel-fallback-label">Wikipedia</span>
+      </div>
+    `;
+    elements.knowledgePanelImageFallback.hidden = true;
+  }
+
+  elements.knowledgePanelProfiles.innerHTML = socialProfiles.map((profile) => `
+    <a class="knowledge-profile-link" href="${escapeHtml(profile.url)}" target="_blank" rel="noreferrer noopener" title="${escapeAttribute(profile.name)}" aria-label="${escapeHtml(profile.name)}">
+      <img class="knowledge-profile-icon" src="https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(profile.key)}" alt="" width="32" height="32" />
+    </a>
+  `).join("");
+  elements.knowledgePanelProfilesWrap.hidden = !socialProfiles.length;
+
+  elements.knowledgePanelAction.href = wikipediaUrl;
+  elements.knowledgePanelAction.textContent = "Open on Wikipedia";
+  elements.knowledgePanel.hidden = false;
 }
 
 function getCurrentPositionAsync(options) {
@@ -2494,7 +2892,7 @@ async function handleGoogleAuthPopupMessage(event) {
     if (payload.user) {
       // Set session cookies on main page
       if (payload.session_token && payload.jwt_token) {
-        fetch("/api/auth/set-session", {
+        const sessionResponse = await fetch("/api/auth/set-session", {
           method: "POST",
           credentials: "same-origin",
           headers: { "Content-Type": "application/json" },
@@ -2502,9 +2900,10 @@ async function handleGoogleAuthPopupMessage(event) {
             session_token: payload.session_token,
             jwt_token: payload.jwt_token,
           }),
-        }).catch(() => {
-          // Ignore errors, UI will update anyway
         });
+        if (!sessionResponse.ok) {
+          throw new Error("set_session_failed");
+        }
       }
       showLoggedInUI(payload.user);
       const resolvedUser = getResolvedUser(payload.user);
@@ -2693,6 +3092,8 @@ function renderResults(query) {
   const trimmedQuery = query.trim();
 
   if (!trimmedQuery) {
+    syncSearchInputs("", "hero");
+    setResultsView(false);
     setTabTitleForQuery("");
     clearAnswerTyping();
     elements.answerWrap.classList.remove("is-visible");
@@ -2704,17 +3105,24 @@ function renderResults(query) {
     return;
   }
 
+  syncSearchInputs(trimmedQuery, "hero");
+  setResultsView(true);
   elements.answerWrap.classList.add("is-visible");
   renderOverview(trimmedQuery, "Searching...", []);
   elements.citations.innerHTML = "";
   elements.results.innerHTML = "";
   elements.emptyState.style.display = "none";
   elements.emptyState.textContent = "";
+  renderPeopleAlsoAsk(trimmedQuery, []);
+  renderRelatedSearches(trimmedQuery, []);
+  renderKnowledgePanel(trimmedQuery, []);
 }
 
 function renderErrorState(query, message) {
   const trimmedQuery = query.trim();
 
+  syncSearchInputs(trimmedQuery, "hero");
+  setResultsView(true);
   elements.answerWrap.classList.add("is-visible");
   renderOverview(trimmedQuery, message || "Search is temporarily unavailable.", []);
   elements.citations.innerHTML = "";
@@ -2724,6 +3132,9 @@ function renderErrorState(query, message) {
   elements.emptyState.textContent = trimmedQuery
     ? `No live results returned for "${trimmedQuery}".`
     : "Search is temporarily unavailable.";
+  renderPeopleAlsoAsk(trimmedQuery, []);
+  renderRelatedSearches(trimmedQuery, []);
+  renderKnowledgePanel(trimmedQuery, []);
 }
 
 // ── YouTube video helpers ─────────────────────────────────────────────────────
@@ -2936,6 +3347,8 @@ function renderLiveResults(query, payload) {
   const sources = Array.isArray(payload.sources) ? payload.sources : [];
   state.lastSearchPayload = payload;
   state.displayedResultCount = 0;
+  syncSearchInputs(query, "hero");
+  setResultsView(true);
 
   tryInstantAnswer(query);
 
@@ -2949,15 +3362,15 @@ function renderLiveResults(query, payload) {
     // Click corrected query → search with correct spelling
     elements.spellCorrectedLink.onclick = (e) => {
       e.preventDefault();
-      elements.queryInput.value = correctedQuery;
-      performSearch();
+      syncSearchInputs(correctedQuery);
+      void executeSearch(correctedQuery, state.attachmentContext, { inputValue: correctedQuery });
     };
 
     // Click original query → search with original (as-is)
     elements.spellOriginalLink.onclick = (e) => {
       e.preventDefault();
-      elements.queryInput.value = query;
-      performSearch();
+      syncSearchInputs(query);
+      void executeSearch(query, state.attachmentContext, { inputValue: query });
     };
   } else {
     elements.spellCorrection.hidden = true;
@@ -3021,6 +3434,9 @@ function renderLiveResults(query, payload) {
   const emptyMessage = String(payload.empty_state || "").trim();
   elements.emptyState.style.display = sources.length === 0 || Boolean(emptyMessage) ? "block" : "none";
   elements.emptyState.textContent = emptyMessage || (sources.length === 0 ? "No matching results found." : "");
+  renderPeopleAlsoAsk(query, sources);
+  renderRelatedSearches(query, sources);
+  renderKnowledgePanel(query, sources);
 }
 
 function buildSearchStatus(query, payload) {
@@ -3292,11 +3708,19 @@ async function executeSearch(query, attachmentContext = "", options = {}) {
   const displayQuery = String(options.displayQuery ?? trimmedQuery).trim() || trimmedQuery;
   const inputValue = typeof options.inputValue === "string" ? options.inputValue : trimmedQuery;
   const shouldSaveHistory = options.saveHistory !== false;
+  const keepResultsView = options.keepResultsView === true
+    || options.source === "results"
+    || document.body.classList.contains("is-results-view");
   setActiveSearchTab("all");
 
   if (!trimmedQuery) {
-    renderResults("");
-    clearAnalytics();
+    clearSearchInput(keepResultsView);
+
+    if (!keepResultsView) {
+      clearAnalytics();
+      renderResults("");
+    }
+
     closeDropdown();
 
     return;
@@ -3310,6 +3734,9 @@ async function executeSearch(query, attachmentContext = "", options = {}) {
   state.searchController = new AbortController();
   const settings = getStoredSettings();
   elements.queryInput.value = inputValue;
+  syncSearchInputs(inputValue, options.source === "results" ? "results" : "hero");
+  setResultsView(true);
+  window.history.replaceState({}, "", `/?q=${encodeURIComponent(displayQuery)}`);
 
   if (shouldSaveHistory) {
     saveHistory(trimmedQuery);
@@ -4086,7 +4513,7 @@ function saveSettingsPopup() {
     displayLanguage: elements.settingsPopupLanguage?.value || currentSettings.displayLanguage,
     region: elements.settingsPopupRegion?.value || currentSettings.region,
     theme: document.querySelector(".settings-popup-theme-btn.is-active")?.dataset?.themeValue || "system",
-    safeSearch: elements.settingsPopupSafeSearch?.checked ? "moderate" : "off",
+    safeSearch: elements.settingsPopupSafeSearch?.checked ? "strict" : "off",
   };
   saveSettings(newSettings);
   applyTheme(newSettings.theme);
@@ -4445,7 +4872,7 @@ function getStoredSettings() {
     displayLanguage: "en-US",
     region: "IN",
     theme: "system",
-    safeSearch: "moderate",
+    safeSearch: "strict",
   });
 }
 
@@ -5008,11 +5435,12 @@ function toggleProfileDropdown() {
 async function checkSession() {
   try {
     const resp = await fetch("/api/auth/me", { credentials: "same-origin" });
-    if (!resp.ok) { showLoggedOutUI(); return; }
+    if (resp.status === 401) { showLoggedOutUI(); return; }
+    if (!resp.ok) { return; }
     const user = await resp.json();
     if (user.authenticated) { showLoggedInUI(user); } else { showLoggedOutUI(); }
     if (user.authenticated) { void hydrateSettingsFromBackend(); }
-  } catch { showLoggedOutUI(); }
+  } catch {}
 }
 
 async function handleLogout() {
@@ -5032,7 +5460,7 @@ async function handleLogout() {
 function bindEvents() {
   elements.topBrandButton.addEventListener("click", (event) => {
     event.preventDefault();
-    window.location.reload();
+    window.location.assign("/");
   });
 
   // Weather refresh button
@@ -5350,9 +5778,8 @@ function bindEvents() {
 
   if (elements.settingSafeSearchToggle) {
     elements.settingSafeSearchToggle.addEventListener("change", () => {
-      const current = elements.settingSafeSearch.value;
       if (elements.settingSafeSearchToggle.checked) {
-        elements.settingSafeSearch.value = current === "strict" ? "strict" : "moderate";
+        elements.settingSafeSearch.value = "strict";
       } else {
         elements.settingSafeSearch.value = "off";
       }
@@ -5367,6 +5794,8 @@ function bindEvents() {
       applySettingsUi();
     }
   });
+
+  window.addEventListener("scroll", syncHeaderScrollState, { passive: true });
 
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".user-profile")) {
@@ -5397,6 +5826,7 @@ function bindEvents() {
   });
 
   elements.queryInput.addEventListener("input", () => {
+    syncSearchInputs(elements.queryInput.value, "hero");
     if (elements.clearButton) {
       elements.clearButton.classList.toggle("is-visible", Boolean(elements.queryInput.value.trim()));
     }
@@ -5412,15 +5842,7 @@ function bindEvents() {
   if (elements.clearButton) {
     elements.clearButton.addEventListener("click", (event) => {
       event.preventDefault();
-      elements.queryInput.value = "";
-      state.lastSubmittedQuery = "";
-      setTabTitleForQuery("");
-      setTabFavicon(TAB_FAVICON_DEFAULT);
-      closeDropdown();
-      clearAnalytics();
-      renderResults("");
-      setSearchStatus("");
-      elements.clearButton.classList.remove("is-visible");
+      clearSearchInput(document.body.classList.contains("is-results-view"));
       elements.queryInput.focus();
     });
   }
@@ -5577,6 +5999,50 @@ function bindEvents() {
     void executeSearch(elements.queryInput.value, state.attachmentContext);
   });
 
+  if (elements.resultsQueryInput) {
+    elements.resultsQueryInput.addEventListener("focus", () => {
+      void loadTrendingTopics().finally(() => {
+        openDropdown(elements.resultsQueryInput.value);
+      });
+    });
+
+    elements.resultsQueryInput.addEventListener("input", () => {
+      const query = elements.resultsQueryInput.value;
+      syncSearchInputs(query, "results");
+      if (query.trim()) {
+        scheduleSuggestionRefresh(query);
+        return;
+      }
+
+      openDropdown("");
+      setSearchStatus(state.lastSubmittedQuery ? `Last search: ${state.lastSubmittedQuery}` : "");
+    });
+  }
+
+  if (elements.resultsSearchForm) {
+    elements.resultsSearchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void executeSearch(elements.resultsQueryInput.value, state.attachmentContext, {
+        inputValue: elements.resultsQueryInput.value,
+        source: "results",
+      });
+    });
+  }
+
+  if (elements.resultsClearButton) {
+    elements.resultsClearButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      clearSearchInput(true);
+      elements.resultsQueryInput.focus();
+    });
+  }
+
+  if (elements.resultsAttachButton) {
+    elements.resultsAttachButton.addEventListener("click", () => {
+      elements.filePicker.click();
+    });
+  }
+
   elements.uploadAttachmentButton.addEventListener("click", () => {
     closeAttachMenu();
     elements.filePicker.click();
@@ -5605,6 +6071,15 @@ function bindEvents() {
   }
   if (elements.bookmarksBackdrop) {
     elements.bookmarksBackdrop.addEventListener("click", closeBookmarksModal);
+  }
+
+  if (elements.knowledgePanelShare) {
+    elements.knowledgePanelShare.addEventListener("click", async () => {
+      const url = elements.knowledgePanelAction?.href || window.location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {}
+    });
   }
 
   if (elements.historyExportButton) {
@@ -5999,6 +6474,7 @@ async function initializePage() {
   const params = new URLSearchParams(window.location.search);
   const isAuthSuccess = params.has("auth");
   const isAuthError = params.has("auth_error");
+  const initialQuery = (params.get("q") || "").trim();
   if (isAuthSuccess || isAuthError) {
     window.history.replaceState({}, "", "/");
   }
@@ -6007,6 +6483,7 @@ async function initializePage() {
     && params.has("devrefresh");
 
   renderResults("");
+  setResultsView(false);
   setTabTitleForQuery("");
   setTabFavicon(TAB_FAVICON_DEFAULT);
   const authActions = document.querySelector(".auth-actions");
@@ -6040,6 +6517,15 @@ async function initializePage() {
   }
   void loadTrendingTopics();
   void updateUserLocation();
+  syncHeaderScrollState();
+
+  if (initialQuery) {
+    syncSearchInputs(initialQuery);
+    void executeSearch(initialQuery, "", {
+      inputValue: initialQuery,
+      saveHistory: false,
+    });
+  }
 }
 
 initializePage();
