@@ -50,6 +50,14 @@ SELECT source_url, target_url
 FROM page_links
 """
 
+UPDATE_PAGERANK_SCORE_SQL = """
+UPDATE pages SET pagerank_score = $2 WHERE url = $1
+"""
+
+GET_STORED_PAGERANK_SCORES_SQL = """
+SELECT url, pagerank_score FROM pages WHERE pagerank_score > 0
+"""
+
 UPSERT_PAGE_SQL = """
 INSERT INTO pages (
   url,
@@ -95,6 +103,11 @@ SELECT url, title, body, summary, updated_at
 FROM pages
 ORDER BY updated_at DESC
 LIMIT $1
+"""
+
+PAGE_EXISTS_RECENT_SQL = """
+SELECT 1 FROM pages
+WHERE url = $1 AND updated_at > NOW() - make_interval(hours => $2)
 """
 
 UPSERT_USER_SQL = """
@@ -393,6 +406,25 @@ class PostgresStorage:
             nodes=[str(row["url"]) for row in node_rows],
         )
 
+    async def update_pagerank_scores(self, scores: dict[str, float]) -> None:
+        """Batch-update precomputed PageRank scores into the pages table."""
+        if not scores:
+            return
+        batch: list[tuple[str, float]] = []
+        async with self.pool.acquire() as connection:
+            for url, score in scores.items():
+                batch.append((url, score))
+                if len(batch) >= 500:
+                    await connection.executemany(UPDATE_PAGERANK_SCORE_SQL, batch)
+                    batch.clear()
+            if batch:
+                await connection.executemany(UPDATE_PAGERANK_SCORE_SQL, batch)
+
+    async def get_stored_pagerank_scores(self) -> dict[str, float]:
+        """Fetch precomputed PageRank scores from the pages table."""
+        rows = await self.pool.fetch(GET_STORED_PAGERANK_SCORES_SQL)
+        return {str(row["url"]): float(row["pagerank_score"]) for row in rows}
+
     async def upsert_page(
         self,
         *,
@@ -419,6 +451,10 @@ class PostgresStorage:
                 if outbound_links:
                     link_rows = [(url, target_url) for target_url in outbound_links]
                     await connection.executemany(INSERT_PAGE_LINK_SQL, link_rows)
+
+    async def page_exists_recent(self, url: str, max_age_hours: int = 24) -> bool:
+        row = await self.pool.fetchval(PAGE_EXISTS_RECENT_SQL, url, max_age_hours)
+        return row is not None
 
     async def fetch_page_documents(self, limit: int = 500) -> list[dict[str, Any]]:
         rows = await self.pool.fetch(FETCH_PAGE_DOCUMENTS_SQL, limit)
@@ -549,7 +585,7 @@ class PostgresStorage:
         user_agent: str = "",
         region: str = "",
         display_language: str = "en-US",
-        safe_search: str = "moderate",
+        safe_search: str = "strict",
         has_attachment: bool = False,
         search_tab: str = "all",
     ) -> str:
@@ -699,6 +735,15 @@ class DisabledPostgresStorage(PostgresStorage):
     async def compute_all_pagerank_scores(self) -> dict[str, float]:
         return {}
 
+    async def update_pagerank_scores(self, scores: dict[str, float]) -> None:
+        return None
+
+    async def get_stored_pagerank_scores(self) -> dict[str, float]:
+        return {}
+
+    async def page_exists_recent(self, url: str, max_age_hours: int = 24) -> bool:
+        return False
+
     async def upsert_page(
         self,
         *,
@@ -811,7 +856,7 @@ class DisabledPostgresStorage(PostgresStorage):
         user_agent: str = "",
         region: str = "",
         display_language: str = "en-US",
-        safe_search: str = "moderate",
+        safe_search: str = "strict",
         has_attachment: bool = False,
         search_tab: str = "all",
     ) -> str:

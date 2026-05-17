@@ -7,14 +7,40 @@
   <title>[QuAir Search]</title>
   <link id="favicon" rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%234870ff'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5' transform='rotate(60 32 32)'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5' transform='rotate(120 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23fff'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="/assets/styles.css?v=20260424w42" />
+  <link rel="stylesheet" href="/assets/styles.css?v=20260517w500" />
 </head>
 
 <body>
   <main class="page">
     <header class="page-header">
       <!-- Left: Brand -->
-      <a id="topBrandButton" class="top-brand" href="/" aria-label="QuAir Search">[QuAir Search]™</a>
+      <a id="topBrandButton" class="top-brand notranslate" href="/" aria-label="QuAir Search">[QuAir Search]™</a>
+
+      <div class="header-search-slot">
+        <form id="resultsSearchForm" class="results-search-form" role="search">
+          <button id="resultsAttachButton" class="results-search-attach" type="button" aria-label="Upload image or file">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M21.44 11.05l-8.49 8.49a6 6 0 0 1-8.49-8.49l9.2-9.2a4 4 0 0 1 5.66 5.66l-9.19 9.19a2 2 0 0 1-2.83-2.83l8.48-8.48">
+              </path>
+            </svg>
+          </button>
+          <span class="results-search-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="6"></circle>
+              <path d="M20 20l-4.2-4.2"></path>
+            </svg>
+          </span>
+          <input id="resultsQuery" class="results-query-input" type="text" autocomplete="off" aria-label="Search query" />
+          <button id="resultsClearButton" class="results-search-clear" type="button" aria-label="Clear search">×</button>
+          <button id="resultsSearchButton" class="results-search-submit" type="submit" aria-label="Run search">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 19V5"></path>
+              <path d="M5 12l7-7 7 7"></path>
+            </svg>
+          </button>
+        </form>
+      </div>
 
       <!-- Right: Sign up + Settings gear -->
       <div class="header-right-stack">
@@ -64,7 +90,7 @@
             </div>
 
             <div class="dropdown-more-section">
-              <span class="dropdown-more-label">More from QuAir Search</span>
+              <span class="dropdown-more-label notranslate">More from QuAir Search</span>
 
               <button id="menuSearchHistory" class="dropdown-feature-item" type="button" role="menuitem">
                 <svg class="dropdown-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -116,7 +142,7 @@
     </header>
 
     <section class="hero">
-      <h1 class="brand">QuAir</h1>
+      <h1 class="brand notranslate">QuAir</h1>
       <p class="subcopy">
         Explore hybrid search results, quick explanations, and source-backed answers in one place.
       </p>
@@ -549,34 +575,81 @@
       </div>
     </section>
 
-    <section class="results-section">
-      <article id="aiAnswer" class="ai-answer" aria-live="polite">
-        <div class="answer-label">Overview</div>
-        <div id="answerText" class="overview-body"></div>
-        <div id="citations" class="citations"></div>
-      </article>
+    <section id="searchResultsPage" class="search-results-page" hidden>
+      <div class="results-page-layout">
+        <div class="results-primary">
+          <article id="aiAnswer" class="ai-answer" aria-live="polite">
+            <div class="answer-label">AI Overview</div>
+            <div id="answerText" class="overview-body"></div>
+            <div id="citations" class="citations"></div>
+          </article>
 
-      <div class="results-head" id="resultsHead">
-        <div id="statusPill" class="status-pill"></div>
-        <div id="analyticsBoard" class="analytics-board" hidden></div>
+          <div class="results-head" id="resultsHead">
+            <div id="statusPill" class="status-pill"></div>
+            <div id="analyticsBoard" class="analytics-board" hidden></div>
+          </div>
+
+          <div id="instantAnswer" class="instant-answer" hidden></div>
+
+          <div id="spellCorrection" class="spell-correction" hidden>
+            <p class="spell-correction-label">
+              These are results for <a id="spellCorrectedLink" class="spell-corrected-link" href="#"></a>
+            </p>
+            <p class="spell-correction-original">
+              Search instead for <a id="spellOriginalLink" class="spell-original-link" href="#"></a>
+            </p>
+          </div>
+
+          <div id="results" class="results-list"></div>
+
+          <section id="peopleAlsoAskSection" class="people-ask-section" hidden>
+            <h2 class="results-section-title">People Also Ask</h2>
+            <div id="peopleAlsoAskList" class="people-ask-list"></div>
+          </section>
+
+          <div id="loadMoreWrap" class="load-more-wrap" hidden>
+            <button id="loadMoreButton" class="load-more-button" type="button">Load more results</button>
+          </div>
+
+          <div id="emptyState" class="empty-state"></div>
+
+          <section id="relatedSearchesSection" class="related-searches-section" hidden>
+            <h2 class="results-section-title">Related Searches</h2>
+            <div id="relatedSearchesList" class="related-searches-list"></div>
+          </section>
+        </div>
+
+        <aside id="knowledgePanel" class="knowledge-panel" hidden aria-live="polite">
+          <div class="knowledge-panel-media">
+            <img id="knowledgePanelImage" class="knowledge-panel-image" src="" alt="" hidden />
+            <div id="knowledgePanelPhotoRail" class="knowledge-panel-photo-rail" hidden></div>
+            <div id="knowledgePanelImageFallback" class="knowledge-panel-image-fallback"></div>
+          </div>
+          <div class="knowledge-panel-body">
+            <div class="knowledge-panel-heading">
+              <h2 id="knowledgePanelTitle" class="knowledge-panel-title"></h2>
+              <button id="knowledgePanelShare" class="knowledge-panel-share" type="button" aria-label="Copy result link">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <path d="M8.7 13.4 15.3 17.6"></path>
+                  <path d="M15.3 6.4 8.7 10.6"></path>
+                </svg>
+              </button>
+            </div>
+            <p id="knowledgePanelSummary" class="knowledge-panel-summary"></p>
+            <div id="knowledgePanelFacts" class="knowledge-panel-facts"></div>
+            <div id="knowledgePanelProfilesWrap" class="knowledge-panel-profiles-wrap" hidden>
+              <h3 class="knowledge-panel-subtitle">Profiles</h3>
+              <div id="knowledgePanelProfiles" class="knowledge-panel-profiles"></div>
+            </div>
+            <a id="knowledgePanelAction" class="knowledge-panel-action" href="#" target="_blank" rel="noreferrer noopener">
+              Open on Wikipedia
+            </a>
+          </div>
+        </aside>
       </div>
-
-      <div id="instantAnswer" class="instant-answer" hidden></div>
-
-      <div id="spellCorrection" class="spell-correction" hidden>
-        <p class="spell-correction-label">
-          These are results for <a id="spellCorrectedLink" class="spell-corrected-link" href="#"></a>
-        </p>
-        <p class="spell-correction-original">
-          Search instead for <a id="spellOriginalLink" class="spell-original-link" href="#"></a>
-        </p>
-      </div>
-
-      <div id="results" class="results-list"></div>
-      <div id="loadMoreWrap" class="load-more-wrap" hidden>
-        <button id="loadMoreButton" class="load-more-button" type="button">Load more results</button>
-      </div>
-      <div id="emptyState" class="empty-state"></div>
     </section>
 
     <section class="weather-card" id="weatherCard" aria-live="polite">
@@ -698,7 +771,7 @@
     </section>
 
     <footer class="page-footer">
-      <p class="footer-tagline">[QuAir Search]™</p>
+      <p class="footer-tagline notranslate">[QuAir Search]™</p>
       <nav class="footer-links" aria-label="Footer navigation">
         <a href="/about" target="_blank" rel="noreferrer noopener">About us</a>
         <a href="/privacy" target="_blank" rel="noreferrer noopener">Privacy</a>
@@ -706,7 +779,7 @@
         <a href="/help" target="_blank" rel="noreferrer noopener">Help</a>
         <a href="/feedback" target="_blank" rel="noreferrer noopener">Feedback</a>
       </nav>
-      <p class="footer-copy">&copy; 2026 QuAir Search.</p>
+      <p class="footer-copy notranslate">&copy; 2026 QuAir Search.</p>
     </footer>
   </main>
 
@@ -719,7 +792,7 @@
       </button>
 
       <div class="auth-dialog-header">
-        <span id="authEyebrow" class="auth-eyebrow">QuAir account</span>
+        <span id="authEyebrow" class="auth-eyebrow notranslate">QuAir account</span>
         <h2 id="authTitle" class="auth-title">Create your account</h2>
         <p id="authDescription" class="auth-description"></p>
       </div>
@@ -1177,7 +1250,7 @@
 
   <div id="accountSwitchToast" class="account-switch-toast" aria-live="polite" hidden></div>
 
-  <script type="module" src="/assets/app.js?v=20260424w42"></script>
+  <script type="module" src="/assets/app.js?v=20260518instant"></script>
 </body>
 
 </html>

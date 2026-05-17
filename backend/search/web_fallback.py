@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from backend.config import settings
 
 
-async def search_public_web(query: str, *, limit: int = 8, region: str = "", safe_search: str = "moderate") -> list[dict]:
+async def search_public_web(query: str, *, limit: int = 8, region: str = "", safe_search: str = "strict") -> list[dict]:
     tavily_results = await _search_tavily(query, limit=limit, region=region)
     if tavily_results:
         return tavily_results
@@ -70,7 +70,7 @@ async def _search_tavily(query: str, *, limit: int, region: str = "") -> list[di
 
 
 
-async def _search_duckduckgo(query: str, *, limit: int, region: str = "", safe_search: str = "moderate") -> list[dict]:
+async def _search_duckduckgo(query: str, *, limit: int, region: str = "", safe_search: str = "strict") -> list[dict]:
     # Map region codes to DuckDuckGo region parameter
     ddg_regions = {
         "IN": "in-en", "US": "us-en", "GB": "uk-en", "CA": "ca-en",

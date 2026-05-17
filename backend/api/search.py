@@ -19,7 +19,7 @@ async def search(
     filetype: str = Query("", alias="filetype"),
     date_range: str = Query("", alias="date_range"),
     region: str = Query("", alias="region"),
-    safe_search: str = Query("moderate", alias="safe_search"),
+    safe_search: str = Query("strict", alias="safe_search"),
 ) -> dict:
     query = q.strip()
     if not query:

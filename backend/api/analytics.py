@@ -15,7 +15,7 @@ class SearchTrackPayload(BaseModel):
     response_ms: int | None = None
     region: str = ""
     display_language: str = "en-US"
-    safe_search: str = "moderate"
+    safe_search: str = "strict"
     has_attachment: bool = False
     search_tab: str = "all"
 

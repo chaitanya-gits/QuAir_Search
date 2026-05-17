@@ -72,6 +72,7 @@ class Settings:
     cookie_secure: bool = _as_bool_env("COOKIE_SECURE", str(_default_cookie_secure()).lower())
     cookie_samesite: str = os.getenv("COOKIE_SAMESITE", "lax")
     allow_insecure_default_jwt: bool = _as_bool_env("ALLOW_INSECURE_DEFAULT_JWT", "false")
+    enable_real_quantum: bool = _as_bool_env("ENABLE_REAL_QUANTUM", "false")
 
 
 settings = Settings()

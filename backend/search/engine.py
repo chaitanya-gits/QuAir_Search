@@ -15,8 +15,8 @@ from backend.search.cache import QueryResponseCache, TTLCache
 from backend.search.quantum import (
     apply_quantum_boost,
     count_amplified_candidates,
-    simulate_grover_search,
 )
+from backend.search.quantum_circuit import run_grover_search
 from backend.search.query_parser import parse_query
 from backend.search.result_builder import build_answer, build_sources
 from backend.search.semantic import (
@@ -415,9 +415,9 @@ class SearchEngine:
         if web_results and not (bm25_results or opensearch_results):
             fallback_mode = "web"
 
-        quantum_metrics = simulate_grover_search(
+        quantum_metrics = run_grover_search(
             corpus_size=max(document_count, len(ranked_results)),
-            candidate_count=max(1, len(web_results) or len(ranked_results)),
+            marked_count=max(1, len(web_results) or len(ranked_results)),
             amplified_candidates=count_amplified_candidates(ranked_results),
         )
         source_payload = build_sources(ranked_results, limit=limit)
@@ -629,9 +629,9 @@ class SearchEngine:
 
     async def _load_pagerank_scores(self) -> dict[str, float]:
         try:
-            return await self.postgres.compute_all_pagerank_scores()
+            return await self.postgres.get_stored_pagerank_scores()
         except Exception:  # pragma: no cover - defensive
-            logger.exception("failed to compute PageRank scores")
+            logger.exception("failed to load PageRank scores")
             return {}
 
     async def _build_index_status(self) -> dict:

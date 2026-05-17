@@ -1,3 +1,11 @@
+import {
+  initPageI18nObserver,
+  refreshPageLanguage,
+  schedulePageLanguage,
+  syncOverlayModalState,
+  translateQueryForSearch,
+} from "./page-i18n.js";
+
 const historyKey = "ai-search-history";
 const historySavingKey = "quair-history-saving";
 const profilePrefsKey = "quair-profile-preferences";
@@ -5,7 +13,6 @@ const settingsPrefsKey = "quair-settings";
 const knownAccountsKey = "quair-known-accounts";
 const bookmarksKey = "quair-bookmarks";
 const defaultSearchPlaceholder = "Search anything";
-const translationBatchSize = 60;
 const searchCacheTtlMs = 60_000;
 const LIVE_LOCATION_MIN_UPDATE_METERS = 20;
 const WEATHER_REFRESH_MIN_UPDATE_METERS = 10;
@@ -40,12 +47,6 @@ const topRegionOptions = [
   "TW", "TJ", "TZ", "TH", "TL", "TG", "TO", "TT", "TN", "TR", "TM", "TV", "UG", "UA", "AE", "GB", "US", "UY", "UZ",
   "VU", "VA", "VE", "VN", "YE", "ZM", "ZW"
 ];
-
-const textNodeOriginalMap = new WeakMap();
-const attrOriginalMap = new WeakMap();
-const translationCache = new Map();
-const translatableTextNodes = [];
-const translatableAttrTargets = [];
 
 const TAB_FAVICON_DEFAULT = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%234870ff'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5' transform='rotate(60 32 32)'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='8' fill='none' stroke='%23fff' stroke-width='2.5' transform='rotate(120 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23fff'/%3E%3C/svg%3E";
 function buildTabSpinnerFrame(deg) {
@@ -391,7 +392,6 @@ const state = {
   profileUser: null,
   recognition: null,
   searchController: null,
-  languageApplyToken: 0,
   voiceDraft: "",
   voicePreviousValue: "",
   lastSearchPayload: null,
@@ -3341,6 +3341,7 @@ function showMoreResults() {
   }
   state.displayedResultCount = end;
   elements.loadMoreWrap.hidden = end >= sources.length;
+  schedulePageLanguage(getStoredSettings().displayLanguage);
 }
 
 function renderLiveResults(query, payload) {
@@ -3437,6 +3438,7 @@ function renderLiveResults(query, payload) {
   renderPeopleAlsoAsk(query, sources);
   renderRelatedSearches(query, sources);
   renderKnowledgePanel(query, sources);
+  schedulePageLanguage(getStoredSettings().displayLanguage);
 }
 
 function buildSearchStatus(query, payload) {
@@ -3754,7 +3756,7 @@ async function executeSearch(query, attachmentContext = "", options = {}) {
     if (cachedPayload) {
       renderLiveResults(displayQuery, cachedPayload);
       setSearchLoading(false, `Ready from recent search for "${displayQuery}"`);
-      void applyPageLanguage(settings.displayLanguage);
+      schedulePageLanguage(settings.displayLanguage);
       return;
     }
 
@@ -3805,7 +3807,7 @@ async function executeSearch(query, attachmentContext = "", options = {}) {
         setSearchStatus(`Partial results for "${displayQuery}"`);
       }
     }
-    void applyPageLanguage(settings.displayLanguage);
+    schedulePageLanguage(settings.displayLanguage);
   } catch (error) {
     if (error.name === "AbortError") {
       return;
@@ -3813,7 +3815,7 @@ async function executeSearch(query, attachmentContext = "", options = {}) {
 
     console.error(error);
     renderErrorState(displayQuery, error?.message || "Live search could not complete.");
-    void applyPageLanguage(settings.displayLanguage);
+    schedulePageLanguage(settings.displayLanguage);
   } finally {
     if (searchToken === state.activeSearchToken) {
       state.searchController = null;
@@ -4108,19 +4110,22 @@ function setAuthMode() {
   const googleLabel = document.getElementById("googleLabel");
   if (googleLabel) googleLabel.textContent = "Sign up with Google";
 
-  void applyPageLanguage(getStoredSettings().displayLanguage);
+  schedulePageLanguage(getStoredSettings().displayLanguage);
 }
 
 function openAuthModal() {
   setAuthMode();
   elements.authModal.classList.add("is-open");
   elements.authModal.setAttribute("aria-hidden", "false");
+  syncOverlayModalState();
+  refreshPageLanguage();
   elements.authEmailInput.focus();
 }
 
 function closeAuthModal() {
   elements.authModal.classList.remove("is-open");
   elements.authModal.setAttribute("aria-hidden", "true");
+  syncOverlayModalState();
 }
 
 function buildDisplayNames() {
@@ -4298,7 +4303,47 @@ function selectCustomDropdownOption(dropdown, value, labelText, isRegion = false
   } else if (dropdownType === "card-region") {
     hiddenSelect = elements.settingRegion;
   }
-  if (hiddenSelect) hiddenSelect.value = value;
+  if (hiddenSelect) {
+    hiddenSelect.value = value;
+    if (dropdownType === "card-language") {
+      hiddenSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    } else if (dropdownType === "language") {
+      const s = getStoredSettings();
+      if (value !== s.displayLanguage) {
+        const next = { ...s, displayLanguage: value };
+        writeJsonStorage(settingsPrefsKey, next);
+        document.documentElement.lang = value;
+        syncHistoryUiState();
+        void loadTrendingTopics();
+        if (state.profileUser?.authenticated) {
+          void persistSettingsToBackend(next);
+        }
+      }
+      schedulePageLanguage(value, { immediate: true });
+    }
+  }
+}
+
+function getSettingsFromPopup() {
+  const currentSettings = getStoredSettings();
+  const displayLanguage = getCustomDropdownSelectedValue(customDropdownState.languageDropdown)
+    || elements.settingsPopupLanguage?.value
+    || currentSettings.displayLanguage;
+  const region = getCustomDropdownSelectedValue(customDropdownState.regionDropdown)
+    || elements.settingsPopupRegion?.value
+    || currentSettings.region;
+  const theme = document.querySelector(".settings-popup-theme-btn.is-active")?.dataset?.themeValue
+    || currentSettings.theme
+    || "system";
+  const safeSearch = elements.settingsPopupSafeSearch?.checked ? "strict" : "off";
+
+  return {
+    ...currentSettings,
+    displayLanguage,
+    region,
+    theme,
+    safeSearch,
+  };
 }
 
 function buildCustomDropdownOptions(dropdown, options, formatter, withFlag = false) {
@@ -4402,6 +4447,12 @@ function initCustomDropdowns() {
   }
 }
 
+function getCustomDropdownSelectedValue(dropdown) {
+  if (!dropdown) return "";
+  const selected = dropdown.querySelector(".custom-dropdown-option.is-selected");
+  return selected?.dataset?.value || "";
+}
+
 function syncCustomDropdownValue(dropdown, value, withFlag = false) {
   const menu = dropdown.querySelector(".custom-dropdown-menu");
   const trigger = dropdown.querySelector(".custom-dropdown-trigger");
@@ -4420,6 +4471,21 @@ function syncCustomDropdownValue(dropdown, value, withFlag = false) {
     } else {
       valueEl.textContent = formatLanguageLabel(value);
     }
+  }
+
+  const dropdownType = dropdown?.dataset?.dropdown;
+  let hiddenSelect = null;
+  if (dropdownType === "language") {
+    hiddenSelect = elements.settingsPopupLanguage;
+  } else if (dropdownType === "region") {
+    hiddenSelect = elements.settingsPopupRegion;
+  } else if (dropdownType === "card-language") {
+    hiddenSelect = elements.settingDisplayLanguage;
+  } else if (dropdownType === "card-region") {
+    hiddenSelect = elements.settingRegion;
+  }
+  if (hiddenSelect && value) {
+    hiddenSelect.value = value;
   }
 }
 
@@ -4454,7 +4520,7 @@ function setSettingsPopupThemeActive(themeValue) {
 }
 
 function applySettingsPopupUi() {
-  const settings = loadSettings();
+  const settings = getStoredSettings();
   if (elements.settingsPopupLanguage) {
     elements.settingsPopupLanguage.value = settings.displayLanguage;
   }
@@ -4482,16 +4548,16 @@ function openSettingsPopup() {
   applySettingsPopupUi();
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
-  // Force visibility even if some CSS/JS interferes.
   modal.style.display = "grid";
   modal.style.opacity = "1";
   modal.style.pointerEvents = "auto";
+  syncOverlayModalState();
+  refreshPageLanguage();
 }
 
 function requestOpenSettings() {
-  // Always route to the Profile card Settings UI (works signed-in and signed-out).
-  closeSettingsPopup();
-  openProfilePanel("settings");
+  closeProfilePanel();
+  openSettingsPopup();
 }
 
 function closeSettingsPopup() {
@@ -4504,225 +4570,24 @@ function closeSettingsPopup() {
     modal.style.pointerEvents = "";
   }
   closeAllCustomDropdowns();
+  syncOverlayModalState();
 }
 
 function saveSettingsPopup() {
-  const currentSettings = loadSettings();
-  const newSettings = {
-    ...currentSettings,
-    displayLanguage: elements.settingsPopupLanguage?.value || currentSettings.displayLanguage,
-    region: elements.settingsPopupRegion?.value || currentSettings.region,
-    theme: document.querySelector(".settings-popup-theme-btn.is-active")?.dataset?.themeValue || "system",
-    safeSearch: elements.settingsPopupSafeSearch?.checked ? "strict" : "off",
-  };
-  saveSettings(newSettings);
-  applyTheme(newSettings.theme);
-  closeSettingsPopup();
-}
-
-function getLanguageCodeForTranslation(displayLanguage) {
-  return String(displayLanguage || "en").split("-")[0].toLowerCase();
-}
-
-function collectTranslatableTargets() {
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  let currentNode = walker.nextNode();
-
-  while (currentNode) {
-    const parentElement = currentNode.parentElement;
-    const currentText = currentNode.nodeValue || "";
-
-    if (
-      parentElement
-      && currentText.trim()
-      && !parentElement.closest("script, style, noscript, code, pre, svg")
-      && !parentElement.classList.contains("brand")
-      && !parentElement.classList.contains("top-brand")
-      && !["INPUT", "TEXTAREA", "SELECT", "OPTION"].includes(parentElement.tagName)
-      && !textNodeOriginalMap.has(currentNode)
-    ) {
-      textNodeOriginalMap.set(currentNode, currentText);
-      translatableTextNodes.push(currentNode);
-    }
-
-    currentNode = walker.nextNode();
-  }
-
-  for (const element of document.querySelectorAll("[placeholder], [aria-label], [title]")) {
-    if (!attrOriginalMap.has(element)) {
-      attrOriginalMap.set(element, {
-        placeholder: element.getAttribute("placeholder"),
-        ariaLabel: element.getAttribute("aria-label"),
-        title: element.getAttribute("title"),
-      });
-      translatableAttrTargets.push(element);
-    }
-  }
-}
-
-function restoreOriginalLanguage() {
-  for (const node of translatableTextNodes) {
-    const originalText = textNodeOriginalMap.get(node);
-    if (typeof originalText === "string") {
-      node.nodeValue = originalText;
-    }
-  }
-
-  for (const element of translatableAttrTargets) {
-    const originalAttrs = attrOriginalMap.get(element);
-    if (!originalAttrs) {
-      return;
-    }
-
-    const restorePairs = [
-      ["placeholder", originalAttrs.placeholder],
-      ["aria-label", originalAttrs.ariaLabel],
-      ["title", originalAttrs.title],
-    ];
-
-    for (const [attrName, attrValue] of restorePairs) {
-      if (typeof attrValue === "string") {
-        element.setAttribute(attrName, attrValue);
-      } else {
-        element.removeAttribute(attrName);
-      }
-    }
-  }
-}
-
-async function translateBatch(texts, targetLanguage, sourceLanguage = "auto") {
-  const response = await fetch("/api/translate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      texts,
-      target_language: targetLanguage,
-      source_language: sourceLanguage,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Translate request failed with status ${response.status}`);
-  }
-
-  const payload = await response.json();
-  return Array.isArray(payload.translations) ? payload.translations : texts;
-}
-
-async function translateTextsWithCache(texts, targetLanguage, sourceLanguage = "auto") {
-  const output = new Array(texts.length);
-  const uncached = [];
-  const uncachedIndices = [];
-
-  texts.forEach((text, index) => {
-    const cacheKey = `${targetLanguage}|${sourceLanguage}|${text}`;
-    if (translationCache.has(cacheKey)) {
-      output[index] = translationCache.get(cacheKey);
-    } else {
-      uncached.push(text);
-      uncachedIndices.push(index);
-    }
-  });
-
-  for (let start = 0; start < uncached.length; start += translationBatchSize) {
-    const batchTexts = uncached.slice(start, start + translationBatchSize);
-    const batchTranslations = await translateBatch(batchTexts, targetLanguage, sourceLanguage);
-
-    batchTexts.forEach((batchText, batchIndex) => {
-      const translatedText = batchTranslations[batchIndex] || batchText;
-      const cacheKey = `${targetLanguage}|${sourceLanguage}|${batchText}`;
-      translationCache.set(cacheKey, translatedText);
-      const originalIndex = uncachedIndices[start + batchIndex];
-      output[originalIndex] = translatedText;
-    });
-  }
-
-  return output;
-}
-
-async function applyPageLanguage(displayLanguage) {
-  const applyToken = ++state.languageApplyToken;
-  const targetLanguage = getLanguageCodeForTranslation(displayLanguage);
-
-  collectTranslatableTargets();
-
-  if (targetLanguage === "en") {
-    restoreOriginalLanguage();
-    return;
-  }
-
-  const textNodesPayload = translatableTextNodes
-    .map((node) => ({
-      node,
-      source: textNodeOriginalMap.get(node),
-    }))
-    .filter((item) => typeof item.source === "string" && item.source.trim());
-
-  const attrPayload = [];
-  for (const element of translatableAttrTargets) {
-    const originalAttrs = attrOriginalMap.get(element);
-    if (!originalAttrs) {
-      continue;
-    }
-
-    const attrPairs = [
-      ["placeholder", originalAttrs.placeholder],
-      ["aria-label", originalAttrs.ariaLabel],
-      ["title", originalAttrs.title],
-    ];
-
-    for (const [attrName, attrValue] of attrPairs) {
-      if (typeof attrValue === "string" && attrValue.trim()) {
-        attrPayload.push({
-          element,
-          attrName,
-          source: attrValue,
-        });
-      }
-    }
-  }
-
-  const combinedSources = [
-    ...textNodesPayload.map((item) => item.source),
-    ...attrPayload.map((item) => item.source),
-  ];
-
-  if (!combinedSources.length) {
-    return;
-  }
-
   try {
-    const translatedValues = await translateTextsWithCache(combinedSources, targetLanguage, "auto");
+    const newSettings = getSettingsFromPopup();
+    writeJsonStorage(settingsPrefsKey, newSettings);
+    applyThemePreview(newSettings.theme);
+    closeSettingsPopup();
+    applySettingsUi({ immediateLanguage: true });
+    syncHistoryUiState();
+    void loadTrendingTopics();
 
-    if (applyToken !== state.languageApplyToken) {
-      return;
+    if (state.profileUser?.authenticated) {
+      void persistSettingsToBackend(newSettings);
     }
-
-    for (const [index, item] of textNodesPayload.entries()) {
-      item.node.nodeValue = translatedValues[index] || item.source;
-    }
-
-    for (const [attrIndex, item] of attrPayload.entries()) {
-      const translatedIndex = textNodesPayload.length + attrIndex;
-      item.element.setAttribute(item.attrName, translatedValues[translatedIndex] || item.source);
-    }
-  } catch {
-    restoreOriginalLanguage();
-  }
-}
-
-async function translateQueryForSearch(query, displayLanguage) {
-  const sourceLanguage = getLanguageCodeForTranslation(displayLanguage);
-
-  if (!query.trim() || sourceLanguage === "en") {
-    return query;
-  }
-
-  try {
-    const translated = await translateTextsWithCache([query], "en", sourceLanguage);
-    return translated[0] || query;
-  } catch {
-    return query;
+  } catch (error) {
+    console.error("Failed to save settings", error);
   }
 }
 
@@ -5064,22 +4929,37 @@ function setProfilePhotoMenuOpen(isOpen) {
   }
 }
 
-function applySettingsUi() {
+function applySettingsUi(options = {}) {
   const settings = getStoredSettings();
 
   populateSettingsOptions();
   initCustomDropdowns();
 
-  elements.settingDisplayLanguage.value = settings.displayLanguage;
-  elements.settingRegion.value = settings.region;
-  elements.settingTheme.value = settings.theme;
-  elements.settingSafeSearch.value = settings.safeSearch;
+  if (elements.settingDisplayLanguage) {
+    elements.settingDisplayLanguage.value = settings.displayLanguage;
+  }
+  if (elements.settingRegion) {
+    elements.settingRegion.value = settings.region;
+  }
+  if (elements.settingTheme) {
+    elements.settingTheme.value = settings.theme;
+  }
+  if (elements.settingSafeSearch) {
+    elements.settingSafeSearch.value = settings.safeSearch;
+  }
 
   if (customDropdownState.cardLanguageDropdown) {
     syncCustomDropdownValue(customDropdownState.cardLanguageDropdown, settings.displayLanguage, false);
   }
   if (customDropdownState.cardRegionDropdown) {
     syncCustomDropdownValue(customDropdownState.cardRegionDropdown, settings.region, true);
+  }
+
+  if (customDropdownState.languageDropdown) {
+    syncCustomDropdownValue(customDropdownState.languageDropdown, settings.displayLanguage, false);
+  }
+  if (customDropdownState.regionDropdown) {
+    syncCustomDropdownValue(customDropdownState.regionDropdown, settings.region, true);
   }
 
   if (elements.settingSafeSearchToggle) {
@@ -5092,7 +4972,9 @@ function applySettingsUi() {
   document.body.dataset.safeSearch = settings.safeSearch;
   applyThemePreview(settings.theme);
 
-  void applyPageLanguage(settings.displayLanguage);
+  if (!options.skipPageLanguage) {
+    schedulePageLanguage(settings.displayLanguage, { immediate: options.immediateLanguage === true });
+  }
 }
 
 function setProfileSection(sectionName) {
@@ -5121,18 +5003,17 @@ function setProfileSection(sectionName) {
     elements.profilePanelDescription.textContent = "Track signed-up users, their search queries, and visited result websites.";
   }
 
-  void applyPageLanguage(getStoredSettings().displayLanguage);
+  schedulePageLanguage(getStoredSettings().displayLanguage);
 }
 
 
 function persistSettingsFromUi() {
-  translationCache.clear();
   const newSettings = getSettingsFromUi();
   writeJsonStorage(settingsPrefsKey, newSettings);
 
   applySettingsUi();
   syncHistoryUiState();
-  void applyPageLanguage(newSettings.displayLanguage);
+  schedulePageLanguage(newSettings.displayLanguage, { immediate: true });
   void loadTrendingTopics();
 
   if (state.profileUser?.authenticated) {
@@ -5163,17 +5044,28 @@ async function persistSettingsToBackend(settingsDoc) {
 async function hydrateSettingsFromBackend() {
   if (!state.profileUser?.authenticated) return;
   try {
+    const localBeforeSync = getStoredSettings();
     const resp = await fetch("/api/settings/me", { credentials: "same-origin" });
     if (!resp.ok) return;
     const payload = await resp.json();
     const s = payload?.settings || {};
     const merged = {
-      ...getStoredSettings(),
+      ...localBeforeSync,
       ...(typeof s.displayLanguage === "string" ? { displayLanguage: s.displayLanguage } : {}),
       ...(typeof s.region === "string" ? { region: s.region } : {}),
       ...(typeof s.theme === "string" ? { theme: s.theme } : {}),
       ...(typeof s.safeSearch === "string" ? { safeSearch: s.safeSearch } : {}),
     };
+    // Keep a language the user chose while signed out if the server has no saved preference yet.
+    const serverLang = typeof s.displayLanguage === "string" ? s.displayLanguage.trim() : "";
+    const localLang = String(localBeforeSync.displayLanguage || "").trim();
+    if (
+      localLang
+      && localLang !== "en-US"
+      && (!serverLang || serverLang === "en-US")
+    ) {
+      merged.displayLanguage = localLang;
+    }
     writeJsonStorage(settingsPrefsKey, merged);
     if (s.utility_timezones && typeof s.utility_timezones === "object") {
       localStorage.setItem("utility_timezones", JSON.stringify(s.utility_timezones));
@@ -5199,12 +5091,15 @@ function openProfilePanel(sectionName = "overview") {
   }
   elements.profileModal.classList.add("is-open");
   elements.profileModal.setAttribute("aria-hidden", "false");
+  syncOverlayModalState();
+  refreshPageLanguage();
 }
 
 function closeProfilePanel() {
   elements.profileModal.classList.remove("is-open");
   elements.profileModal.setAttribute("aria-hidden", "true");
   applySettingsUi();
+  syncOverlayModalState();
 }
 
 function showLoggedInUI(user) {
@@ -5279,6 +5174,9 @@ function showLoggedOutUI() {
   syncHistoryUiState();
   closeProfilePanel();
   populateWeatherLocationForm(null);
+  const guestSettings = getStoredSettings();
+  document.documentElement.lang = guestSettings.displayLanguage;
+  schedulePageLanguage(guestSettings.displayLanguage, { immediate: true });
 }
 
 function syncHistoryUiState() {
@@ -5353,7 +5251,7 @@ function renderHistoryList() {
   const entries = readHistoryEntries();
   if (!entries.length) {
     elements.historyList.innerHTML = '<div class="history-empty">No search history yet.</div>';
-    void applyPageLanguage(getStoredSettings().displayLanguage);
+    schedulePageLanguage(getStoredSettings().displayLanguage);
     return;
   }
 
@@ -5405,7 +5303,7 @@ function renderHistoryList() {
     });
   }
 
-  void applyPageLanguage(getStoredSettings().displayLanguage);
+  schedulePageLanguage(getStoredSettings().displayLanguage);
 }
 
 function openHistoryModal() {
@@ -5596,7 +5494,7 @@ function bindEvents() {
   elements.menuLanguage.addEventListener("click", () => {
     elements.profileDropdown.hidden = true;
     elements.avatarButton.setAttribute("aria-expanded", "false");
-    openProfilePanel("settings");
+    requestOpenSettings();
   });
 
   const headerSettingsButton = elements.headerSettingsBtn || document.getElementById("headerSettingsBtn");
@@ -6498,6 +6396,7 @@ async function initializePage() {
   applySettingsUi();
   scrubIncognitoUi();
   bindEvents();
+  initPageI18nObserver();
   resetCurrencyManualRateMessage();
   updateUtilityTime();
   setUtilityTimeMode("digital");
@@ -6513,7 +6412,7 @@ async function initializePage() {
 
   const savedLang = getStoredSettings().displayLanguage;
   if (savedLang) {
-    void applyPageLanguage(savedLang);
+    schedulePageLanguage(savedLang);
   }
   void loadTrendingTopics();
   void updateUserLocation();

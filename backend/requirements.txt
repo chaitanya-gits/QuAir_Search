@@ -16,3 +16,4 @@ pytesseract==0.3.13
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.27
 email-validator==2.3.0
+sentence-transformers==3.0.1

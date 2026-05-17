@@ -1,21 +1,57 @@
 from __future__ import annotations
 
+import logging
 import math
 import re
 from collections import Counter
 from collections.abc import Iterable
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
+logger = logging.getLogger(__name__)
+
+# ── Sentence-Transformers lazy init ──────────────────────────────────────────
+_SBERT_MODEL: Any = None
+_SBERT_AVAILABLE: bool | None = None  # None = not yet checked
+
+
+def _get_sbert_model() -> Any:
+    """Load the SentenceTransformer model on first call and cache it."""
+    global _SBERT_MODEL, _SBERT_AVAILABLE
+
+    if _SBERT_AVAILABLE is False:
+        return None
+
+    if _SBERT_MODEL is not None:
+        return _SBERT_MODEL
+
+    try:
+        from sentence_transformers import SentenceTransformer  # type: ignore
+
+        _SBERT_MODEL = SentenceTransformer("all-MiniLM-L6-v2")
+        _SBERT_AVAILABLE = True
+        logger.info("Loaded sentence-transformers model: all-MiniLM-L6-v2")
+        return _SBERT_MODEL
+    except Exception:
+        _SBERT_AVAILABLE = False
+        logger.warning(
+            "sentence-transformers unavailable — falling back to hash-based embeddings."
+        )
+        return None
+
+
+# ── Constants ────────────────────────────────────────────────────────────────
 
 TOKEN_PATTERN = re.compile(r"[a-z0-9]+")
-EMBEDDING_DIMENSIONS = 64
+EMBEDDING_DIMENSIONS = 384
 
 
 def tokenize(text: str) -> list[str]:
     return TOKEN_PATTERN.findall((text or "").lower())
 
 
-def build_embedding(text: str, dimensions: int = EMBEDDING_DIMENSIONS) -> list[float]:
+def _hash_embedding(text: str, dimensions: int) -> list[float]:
+    """Original hash-based embedding used as a fallback."""
     tokens = tokenize(text)
     if not tokens:
         return [0.0] * dimensions
@@ -26,6 +62,18 @@ def build_embedding(text: str, dimensions: int = EMBEDDING_DIMENSIONS) -> list[f
     for token, count in counts.items():
         vector[hash(token) % dimensions] += count / total
     return vector
+
+
+def build_embedding(text: str, dimensions: int = EMBEDDING_DIMENSIONS) -> list[float]:
+    model = _get_sbert_model()
+    if model is not None:
+        try:
+            vec = model.encode(text or "", show_progress_bar=False)
+            return vec.tolist()
+        except Exception:
+            pass
+    # Fallback to hash-based embedding
+    return _hash_embedding(text, dimensions)
 
 
 def cosine_similarity(left: list[float], right: list[float]) -> float:
@@ -124,16 +172,41 @@ def rank_documents(
 
 
 def precompute_document_embeddings(documents: Iterable[dict]) -> list[dict]:
-    """Attach cached tf embeddings to each document for fast semantic scoring."""
+    """Batch-encode all documents using the sentence-transformer model.
 
-    cached: list[dict] = []
-    for document in documents:
+    Falls back to per-document hash embeddings if the model is unavailable.
+    """
+    doc_list = list(documents)
+    if not doc_list:
+        return []
+
+    model = _get_sbert_model()
+
+    if model is not None:
+        texts = [
+            " ".join(str(doc.get(key, "")) for key in ("title", "summary", "body"))
+            for doc in doc_list
+        ]
+        try:
+            vectors = model.encode(texts, batch_size=32, show_progress_bar=False)
+            cached: list[dict] = []
+            for doc, vec in zip(doc_list, vectors):
+                enriched = dict(doc)
+                enriched["_embedding"] = vec.tolist()
+                cached.append(enriched)
+            return cached
+        except Exception:
+            logger.exception("Batch encoding failed — falling back to hash embeddings.")
+
+    # Fallback: hash-based embeddings one-by-one
+    cached = []
+    for document in doc_list:
         enriched = dict(document)
         semantic_text = " ".join(
             str(enriched.get(key, ""))
             for key in ("title", "summary", "body")
         )
-        enriched["_embedding"] = build_embedding(semantic_text)
+        enriched["_embedding"] = _hash_embedding(semantic_text, EMBEDDING_DIMENSIONS)
         cached.append(enriched)
     return cached
 

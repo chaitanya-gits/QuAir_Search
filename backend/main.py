@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+import logging
 import os
 from pathlib import Path
 from typing import Iterable
@@ -22,6 +23,7 @@ from backend.api.trending import router as trending_router
 from backend.api.attachments import router as attachments_router
 from backend.api.config_api import router as config_router
 from backend.api.settings import router as settings_router
+from backend.api.translate import router as translate_router
 from backend.config import settings, validate_security_settings
 from backend.crawler.scheduler import CrawlScheduler
 from backend.runtime import build_frontier, open_runtime_services, require_redis, require_search_index
@@ -59,6 +61,22 @@ async def lifespan(app: FastAPI):
             search_index=search_index,
         )
         app.state.frontier = frontier
+
+        _SEED_URLS = [
+            "https://en.wikipedia.org/wiki/Main_Page",
+            "https://news.ycombinator.com",
+            "https://arxiv.org",
+        ]
+        try:
+            frontier_len = await redis.client.llen("crawl:frontier")
+            if frontier_len == 0:
+                await frontier.seed(_SEED_URLS)
+                logging.getLogger(__name__).info(
+                    "Seeded crawl frontier with %d URLs", len(_SEED_URLS),
+                )
+        except Exception:
+            logging.getLogger(__name__).warning("Failed to seed crawl frontier", exc_info=True)
+
         app.state.scheduler = None
         if settings.enable_crawl_scheduler and services.postgres.is_available:
             app.state.scheduler = CrawlScheduler(frontier, services.postgres, search_index)
@@ -113,6 +131,7 @@ app.include_router(admin_router, prefix="/api")
 app.include_router(attachments_router, prefix="/api")
 app.include_router(config_router, prefix="/api")
 app.include_router(settings_router, prefix="/api")
+app.include_router(translate_router, prefix="/api")
 
 
 def _iter_tracked_files() -> Iterable[Path]:
