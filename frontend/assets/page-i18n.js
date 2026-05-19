@@ -192,7 +192,8 @@ function buildTranslationItems() {
  * Applies every string we already know (RAM + persisted) in one synchronous layout pass.
  * Call this FIRST on language changes so switching back to Telugu etc. snaps instantly.
  */
-export function flushTranslationCacheToDom(displayLanguage) {
+export function flushTranslationCacheToDom(displayLanguage) {
+  if (document.readyState === 'loading') return;
   hydratePersistedTranslationCache();
   _suppressDomTranslateObserver += 1;
   try {
@@ -443,10 +444,10 @@ export function initPageI18nObserver() {
   _domTranslateObserver = new MutationObserver(() => {
     if (_suppressDomTranslateObserver > 0) return;
     if (_domTranslateDebounceTimer) clearTimeout(_domTranslateDebounceTimer);
-    _domTranslateDebounceTimer = setTimeout(() => {
-      _domTranslateDebounceTimer = null;
-      schedulePageLanguage(getStoredDisplayLanguage());
-    }, 80);
+    _domTranslateDebounceTimer = setTimeout(() => {
+      _domTranslateDebounceTimer = null;
+      schedulePageLanguage(getStoredDisplayLanguage());
+    }, 300);
   });
 
   _domTranslateObserver.observe(document.body, {

@@ -3438,7 +3438,7 @@ function renderLiveResults(query, payload) {
   renderPeopleAlsoAsk(query, sources);
   renderRelatedSearches(query, sources);
   renderKnowledgePanel(query, sources);
-  schedulePageLanguage(getStoredSettings().displayLanguage);
+  schedulePageLanguage(getStoredSettings().displayLanguage, { immediate: true });
 }
 
 function buildSearchStatus(query, payload) {

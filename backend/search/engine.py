@@ -419,6 +419,7 @@ class SearchEngine:
             corpus_size=max(document_count, len(ranked_results)),
             marked_count=max(1, len(web_results) or len(ranked_results)),
             amplified_candidates=count_amplified_candidates(ranked_results),
+            use_real=settings.enable_real_quantum or document_count <= 16,
         )
         source_payload = build_sources(ranked_results, limit=limit)
 

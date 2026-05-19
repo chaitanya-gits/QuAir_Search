@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import logging
 import secrets
 import time
 import urllib.parse
@@ -14,6 +15,8 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, EmailStr
 
 from backend.config import settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth")
 
@@ -70,7 +73,8 @@ def _verify_jwt(token: str) -> dict | None:
         if payload.get("exp", 0) < time.time():
             return None
         return payload
-    except Exception:
+    except Exception as e:
+        logger.debug("JWT verify failed: %s", e)
         return None
 
 

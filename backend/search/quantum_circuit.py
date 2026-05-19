@@ -132,6 +132,7 @@ def run_grover_search(
     corpus_size: int,
     marked_count: int,
     amplified_candidates: int | None = None,
+    use_real: bool | None = None,
 ) -> dict[str, float | int | str]:
     """Run Grover's search — real Qiskit circuit when possible, math-sim otherwise.
 
@@ -144,8 +145,9 @@ def run_grover_search(
     safe_corpus = max(1, int(corpus_size))
     safe_marked = max(1, min(int(marked_count), safe_corpus))
 
-    # Gate 1: feature flag
-    if not settings.enable_real_quantum:
+    # Gate 1: feature flag (caller can override via use_real)
+    _enable = use_real if use_real is not None else settings.enable_real_quantum
+    if not _enable:
         return simulate_grover_search(
             corpus_size=safe_corpus,
             candidate_count=safe_marked,
