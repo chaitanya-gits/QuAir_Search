@@ -4,6 +4,9 @@ from backend.search.engine import SearchFilters
 
 router = APIRouter()
 
+MAX_QUERY_LENGTH = 512
+MAX_FILTER_LENGTH = 128
+
 EMPTY_SEARCH_PAYLOAD = {
     "query": "",
     "search_queries": [],
@@ -14,12 +17,12 @@ EMPTY_SEARCH_PAYLOAD = {
 @router.get("/search")
 async def search(
     request: Request,
-    q: str = Query("", alias="q"),
-    site: str = Query("", alias="site"),
-    filetype: str = Query("", alias="filetype"),
-    date_range: str = Query("", alias="date_range"),
-    region: str = Query("", alias="region"),
-    safe_search: str = Query("strict", alias="safe_search"),
+    q: str = Query(..., alias="q", min_length=1, max_length=MAX_QUERY_LENGTH),
+    site: str = Query("", alias="site", max_length=MAX_FILTER_LENGTH),
+    filetype: str = Query("", alias="filetype", max_length=32),
+    date_range: str = Query("", alias="date_range", max_length=64),
+    region: str = Query("", alias="region", max_length=16),
+    safe_search: str = Query("strict", alias="safe_search", max_length=16),
 ) -> dict:
     query = q.strip()
     if not query:
