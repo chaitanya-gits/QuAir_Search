@@ -3,6 +3,7 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 import logging
 import os
+import time
 from pathlib import Path
 from typing import Iterable
 
@@ -29,9 +30,13 @@ from backend.crawler.scheduler import CrawlScheduler
 from backend.runtime import build_frontier, open_runtime_services, require_redis, require_search_index
 from backend.search.engine import SearchEngine
 
-
+logger = logging.getLogger(__name__)
 validate_security_settings()
 
+_VERSION_CACHE = {
+    "value": "0",
+    "expires": 0.0,
+}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -43,8 +48,6 @@ async def lifespan(app: FastAPI):
     }
     async with open_runtime_services(
         with_redis=True,
-        # Always attach a search_index object to the app (real or disabled),
-        # so downstream components don't need special-casing.
         with_search_index=True,
         ensure_index=enable_search_index,
     ) as services:
@@ -67,15 +70,16 @@ async def lifespan(app: FastAPI):
             "https://news.ycombinator.com",
             "https://arxiv.org",
         ]
+
         try:
             frontier_len = await redis.client.llen("crawl:frontier")
             if frontier_len == 0:
                 await frontier.seed(_SEED_URLS)
-                logging.getLogger(__name__).info(
-                    "Seeded crawl frontier with %d URLs", len(_SEED_URLS),
-                )
-        except Exception:
-            logging.getLogger(__name__).warning("Failed to seed crawl frontier", exc_info=True)
+                logger.info("Seeded crawl frontier with %d URLs", len(_SEED_URLS))
+        except RuntimeError:
+            logger.exception("Runtime error while seeding crawl frontier")
+        except ConnectionError:
+            logger.exception("Redis connection failed during crawl seeding")
 
         app.state.scheduler = None
         if settings.enable_crawl_scheduler and services.postgres.is_available:
@@ -100,19 +104,26 @@ app.add_middleware(
 
 @app.middleware("http")
 async def session_middleware(request: Request, call_next):
+    request.state.session = None
+
     token = request.cookies.get("qsession")
     if token:
         try:
-            session = await request.app.state.postgres.get_session(token)
-            request.state.session = session
-        except Exception:
-            request.state.session = None
-    else:
-        request.state.session = None
+            request.state.session = await request.app.state.postgres.get_session(token)
+        except RuntimeError:
+            logger.exception("Session runtime error")
+        except ConnectionError:
+            logger.exception("Database connection error while loading session")
+
     response = await call_next(request)
+
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
 
     host = (request.url.hostname or "").lower()
     path = request.url.path
+
     if request.method == "GET" and host in {"localhost", "127.0.0.1"}:
         if path == "/" or path.startswith("/assets/") or path.endswith((".html", ".js", ".css")):
             response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
@@ -143,6 +154,7 @@ def _iter_tracked_files() -> Iterable[Path]:
     for root in tracked_roots:
         if not root.exists():
             continue
+
         for file_path in root.rglob("*"):
             if file_path.is_file():
                 yield file_path
@@ -150,16 +162,29 @@ def _iter_tracked_files() -> Iterable[Path]:
 
 @app.get("/api/dev/version")
 async def get_dev_version() -> JSONResponse:
+    now = time.time()
+
+    if _VERSION_CACHE["expires"] > now:
+        return JSONResponse({"version": _VERSION_CACHE["value"]})
+
     latest_mtime_ns = 0
 
     for file_path in _iter_tracked_files():
         latest_mtime_ns = max(latest_mtime_ns, file_path.stat().st_mtime_ns)
 
-    return JSONResponse({"version": str(latest_mtime_ns)})
+    version = str(latest_mtime_ns)
+
+    _VERSION_CACHE["value"] = version
+    _VERSION_CACHE["expires"] = now + 10
+
+    return JSONResponse({"version": version})
 
 
 @app.get("/api/location/reverse")
-async def reverse_location(lat: float = Query(...), lng: float = Query(...)) -> JSONResponse:
+async def reverse_location(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+) -> JSONResponse:
     url = "https://nominatim.openstreetmap.org/reverse"
     params = {
         "format": "jsonv2",
@@ -177,10 +202,12 @@ async def reverse_location(lat: float = Query(...), lng: float = Query(...)) -> 
             )
             response.raise_for_status()
     except httpx.HTTPError:
+        logger.exception("Reverse geolocation request failed")
         return JSONResponse({"lat": lat, "lng": lng, "results": []})
 
     payload = response.json()
     address = payload.get("address", {})
+
     result = {
         "formattedAddress": payload.get("display_name", ""),
         "areaName": address.get("suburb", ""),
@@ -193,6 +220,7 @@ async def reverse_location(lat: float = Query(...), lng: float = Query(...)) -> 
         "placeId": str(payload.get("place_id", "")),
         "types": [payload["type"]] if payload.get("type") else [],
     }
+
     return JSONResponse({"lat": lat, "lng": lng, "results": [result]})
 
 
